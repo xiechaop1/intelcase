@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)http://www.juhui-cn.com/mp4/index.html -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jquery+video实现点击播弹窗放视频功能</title>
+
+  <!--可无视-->
+  <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+  <link href="css/theme.css" rel="stylesheet">
+  <link href="css/video.css" rel="stylesheet">
+</head>
+<body>
+<div class="header">
+  <div class="container">
+    <img src="img/logo_yicun.png" class="img-logo">
+  </div>
+</div>
+<div class="video">
+  <div class="container" style="margin-top: 0px">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="video-list-left">
+          <div class="videolist active" vtype="mp4" vpath="v1.jpg" ipath="http://web.chzm.cn/vod/juhui.mp4">
+            <img src="img/example.png" class="img-auto">
+            <img src="img/bg-play.png" class="icon-play">
+          </div>
+          <div class="videolist" vtype="MOV" vpath="v1.jpg" ipath="video/IMG_3722.MOV">
+            <img src="img/example.png" class="img-auto">
+            <img src="img/bg-play.png" class="icon-play">
+          </div>
+          <div class="videolist" vtype="avi" vpath="v1.jpg" ipath="video/Test.avi">
+            <img src="img/example.png" class="img-auto">
+            <img src="img/bg-play.png" class="icon-play">
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-10">
+        <!--MP4播放器-->
+        <div class="video-player hide">
+
+          <video controls class="video_player_box">
+            <source src="https://msm-music-data.oss-cn-beijing.aliyuncs.com/uploadfile/20240508/tmp_8e621e437767dbca20d1e2104a210d72.mp4" type="video/mp4">
+            <source src="" type="video/ogg">
+          </video>
+        </div>
+        <!--AVI播放器-->
+        <div class="video-player hide">
+          <video controls class="video_player_box">
+            <source src="video/Test.avi" type="video/mp4">
+            <source src="video/Test.avi" type="video/ogg">
+          </video>
+        </div>
+        <!--MOV播放器-->
+        <div class="video-player">
+          <div class="videos video_player_box" style="display: block;">
+            <video id="video" class="video_player_box"  src="video/IMG_3722.MOV" preload="auto" controls="controls" autoplay="autoplay"></video>
+<!--            <img onclick="close1()" class="vclose" src="./jquery+video实现点击播弹窗放视频功能_files/gb.png" width="25" height="25">-->
+          </div>
+
+        </div>
+
+
+      </div>
+
+      <div class="col-md-12">
+        <div class="video-player text-center">
+          <h2>消息</h2>
+          <div class="npc-name">
+            消息
+          </div>
+          您指定的歌曲，暂时没有对应视频信息
+          <?= $msg ?>
+        </div>
+
+
+
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/video.js"></script>
+
+
+</body></html>

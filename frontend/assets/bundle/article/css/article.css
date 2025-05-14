@@ -1,0 +1,71 @@
+.title{
+    width: 265px;
+    height: 60px;
+}
+.tree{
+    height: 724px;
+}
+.tree a:hover{
+    color: #FFFFFF!important;
+    background-color: #FF9E8F;
+    border-radius: 15px;
+    transition: background-color ease-in-out 0.3s;
+}
+.tree a.active{
+    color: #FFFFFF!important;
+    background-color: #FF9E8F;
+    border-radius: 15px;
+}
+.content a{
+    border-bottom: 1px solid #EDEDED;
+}
+.content a:nth-last-of-type(1){
+    border: none;
+}
+.right{
+    width: 570px;
+}
+
+.pagination li a{
+    
+}
+.page_link{
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    height: 31px;
+    width: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #E0E0E0;
+    background-color: #fff;
+    color: #666666;
+}
+.page_link:hover {
+    z-index: 2;
+    color: #F66D57!important;
+    text-decoration: none;
+    background-color: #FFF4F2;
+    border-color: #F66D57;
+}
+.page_link.active {
+    z-index: 2;
+    font-weight: bold;
+    color: #F66D57!important;
+    text-decoration: none;
+    background-color: #FFF4F2;
+    border-color: #F66D57;
+}
+.more{
+    text-align: center;
+    display: flex;
+    height: 31px;
+    width: 40px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.more:hover{
+    color: #D8D8D8!important;
+}

@@ -1,0 +1,116 @@
+.select{
+    position: relative;
+    width: 151px;
+    padding: .375rem .75rem;
+}
+.select input{
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    width: 0;
+    height: 0;
+}
+.select ul{
+    display: none;
+    position: absolute;
+    z-index: 99;
+    list-style: none;
+    width: 100%;
+    left: 0;
+    padding: 1px 2px;
+    border: 1px #E2E2E2 solid;
+    top: calc(2.25rem - 3px);
+    border-radius: 0;
+    background-color: #fff;
+    max-height: 300px;
+    margin-bottom: 0!important;
+    overflow-y: auto;
+}
+.region .select ul{
+    overflow-y: scroll;
+}
+.select ul li{
+    cursor: pointer;
+    border-bottom: 1px solid #E2E2E2;
+    padding: 5px 10px;
+    background-color:#fff;
+}
+/* .select ul li:hover{
+    background-color:#f8f9fa;
+} */
+.select ul li:hover{
+    /*background-color: #FFF4F3!important;*/
+    color: #26B275!important;
+}
+.select ul li.active{
+    background-color:#FAB9AE;
+    color: #fff;
+    border-radius: 5px;
+}
+.select ul li:nth-last-of-type(1){
+    border-bottom: none;
+}
+.dropdown-toggle,.dropdown-toggle-F6{
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.dropdown-toggle::after{
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    bottom: 0px;
+    height: 2px;
+    margin: auto;
+}
+.dropdown-toggle-F6::after{
+    color: #26B275;
+    position: absolute;
+    right: 5px;
+    display: inline-block;
+    margin-left: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+}
+.up>.dropdown-toggle::after{
+    border-top: 0;
+    border-right: .3em solid transparent;
+    border-bottom: .3em solid;
+    border-left: .3em solid transparent;
+}
+.up>.dropdown-toggle-F6::after{
+    border-top: 0;
+    border-right: .3em solid transparent;
+    border-bottom: .3em solid;
+    border-left: .3em solid transparent;
+}
+
+.hover-exit{
+    position: relative;
+}
+.hover-exit:hover{
+    background-color: #FFF4F3!important;
+    color: #26B275!important;
+}
+.hover-exit:hover::after{
+    /* font-family: "iconfont"; */
+    content: 'X';
+    color : #fff;
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+    text-align: center;
+    font-size: 10px!important;
+    background-color: #26B275;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+.dropdown-toggle.text{
+    font-size: 14px;
+}

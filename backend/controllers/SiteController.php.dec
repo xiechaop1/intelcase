@@ -1,0 +1,36 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: leeyifiei
+ * Date: 2019/2/25
+ * Time: 10:09 PM
+ */
+
+namespace backend\controllers;
+
+
+use backend\models\AdminIdentity;
+use liyifei\base\controllers\ApiController;
+use liyifei\base\helpers\Net;
+use yii;
+
+class SiteController extends ApiController
+{
+    public function actionLogin()
+    {
+        $name = Net::post('name');
+        $password = Net::post('password');
+
+        $admin = AdminIdentity::findOne(['name' => $name]);
+        if (!$admin || !Yii::$app->security->validatePassword($password, $admin->password)) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->user->logout();
+            }
+            return $this->fail('用户名或密码不正确');
+        }
+
+        Yii::$app->user->login($admin);
+
+        return $this->success();
+    }
+}

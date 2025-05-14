@@ -1,0 +1,34 @@
+{
+  "name": "calendar-price-jquery",
+  "version": "1.4.2",
+  "author": "capricorncd",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-css-base64": "^1.3.4",
+    "gulp-header": "^1.8.9",
+    "gulp-rename": "^1.2.2",
+    "gulp-stylus": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.3.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/capricorncd/calendar-price-jquery.git"
+  },
+  "keywords": [
+    "calendar",
+    "pirce",
+    "jquery"
+  ],
+  "description": "calendar-pirce-jquery",
+  "bugs": {
+    "url": "https://github.com/capricorncd/calendar-price-jquery/issues"
+  },
+  "homepage": "https://github.com/capricorncd/calendar-price-jquery",
+  "main": "dist/js/calendar-pirce-jquery.min.js",
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,133 @@
+.video{
+    margin: 20px 0;
+}
+.videolist1{
+    position:relative;
+    float:left;
+    width:500px;
+    height:300px;
+    margin-right:50px;
+    margin-top:15px;
+    margin-bottom:30px; }
+.videolist:hover,.videolist2:hover{
+    cursor: pointer;
+}
+.videoed {
+    display:none;
+    width:50px;
+    height:50px;
+    position: absolute;
+    left:45%;
+    top:45%;
+    z-index:99;
+    border-radius:100%;
+}
+.videos1{
+    display:none;
+    border: 1px solid #080808;
+    position:fixed;
+    left:50%;
+    top:50%;
+    margin-left:-320px;
+    margin-top:-210px;
+    z-index:100;
+    width:640px;
+    height:360px;
+}
+.vclose {
+    position:absolute;
+    right:1%;
+    top:1%;
+    border-radius:100%;
+    cursor: pointer;
+}
+.video_player_box{
+    display: inline-block;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    max-height: 600px;
+}
+.img-auto{
+    width:100%;
+    height: auto;
+}
+.img-logo{
+    height: 40px;
+    margin: 8px auto 0 auto;
+}
+.icon-play{
+    width: 30px;
+    position: absolute;
+    left: 50%;
+    margin-left: -15PX;
+    top: 50%;
+    margin-top: -15px;
+}
+.videolist{
+    margin: 0 auto 10px auto;
+    position: relative;
+    min-height: 55px;
+    background-color: #333333;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+}
+.videolist.active{
+    border: 2px solid red;
+
+}
+.videolist2{
+    margin: 0 auto 10px auto;
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #dfdfdf;
+    color: #666666;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+    padding: 10px;
+    border-radius: 2px;
+}
+.videolist2.active{
+    background-color: #FF7800;
+    color: #ffffff;
+}
+.videolist.active .icon-play{
+    display: none;
+}
+.videolist .img-auto{
+    opacity: 0.6;
+}
+.videolist.active .img-auto{
+    opacity: 1;
+}
+.video-list-left{
+    padding: 10px 10px;
+    max-height: 580px;
+    overflow: auto;
+    background-color: #fff;
+    border-radius: 6px;
+    min-height: 120px;
+    box-sizing: border-box;
+}
+.video-player{
+    background-color: #fff;
+    border-radius: 6px;
+    min-height: 120px;
+    box-sizing: border-box;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+body {
+    background-color: #f4f5f8;
+}
+.hide{
+    display: none;
+}
+.header{
+    height: 60px;
+    width: 100%;
+    background-color: #ffffff;
+}

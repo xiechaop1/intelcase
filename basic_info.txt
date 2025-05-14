@@ -1,0 +1,40 @@
+192.168.13.175   117.78.27.137   dVMaeKgm7OyPjG@h
+
+192.168.0.156 : 3306 foreign u@xYeJdWv1SpglsR
+
+
+BBEJ355Y1419B006521X
+
+
+staffNumRange
+
+type
+
+  'company_logo',
+  'group_name',
+  'introduce',
+
+  'name' 			=> 'company_name',
+  'alias' 			=> 'abbreviation',
+  'regLocation' 	=> 'work_address',
+  'industry'		=> 'industry_str',
+  'type'			=> 'company_type',
+  'staffNumRage'	=> 'company_size',
+  Date('estiblishTime')	=> 'date_of_establishment',
+  'websiteList'		=> 'website',
+  'tyc_id'			=> 'id',
+  
+
+  `group_name` varchar(200) DEFAULT NULL COMMENT '集团',
+  `work_address` varchar(500) DEFAULT NULL COMMENT '工作地点',
+  `product_name` varchar(200) DEFAULT NULL COMMENT '产品名称',
+  `industry` int(16) DEFAULT '0' COMMENT '所属行业',
+  `company_type` varchar(50) DEFAULT NULL COMMENT '公司性质',
+  `company_size` varchar(200) DEFAULT NULL COMMENT '公司规模',
+  `date_of_establishment` varchar(20) DEFAULT NULL COMMENT '成立日期',
+  `website` varchar(500) DEFAULT NULL COMMENT '公司网址',
+  `introduce` text COMMENT '公司介绍',
+  `struct_contract` varchar(500) DEFAULT NULL COMMENT '框架合同',
+  `contract_start_date` datetime DEFAULT NULL COMMENT '合同有效期起始',
+  `contract_end_date` datetime DEFAULT NULL COMMENT '合同有效期结束',
+  `tyc_id`
