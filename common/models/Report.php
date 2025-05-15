@@ -9,10 +9,21 @@
 namespace common\models;
 
 
-class Tag extends \common\models\gii\Tag
+class Report extends \common\models\gii\Report
 {
+
+    const REPORT_STATUS_PASS         = 1;
+    const REPORT_STATUS_INVALID      = 2;
+
+    public $reportStatus2Name = [
+        self::REPORT_STATUS_PASS     => '有效',
+        self::REPORT_STATUS_INVALID  => '无效',
+    ];
+
+
     public function behaviors()
     {
+
         return [
             [
                 'class' => 'yii\behaviors\TimestampBehavior'
@@ -20,19 +31,5 @@ class Tag extends \common\models\gii\Tag
         ];
     }
 
-    public function fields()
-    {
-        return [
-            'id',
-            'tag_name',
-            'tag_type',
-        ];
-    }
 
-    public function attributeLabels()
-    {
-        return [
-            'tag_name' => 'Tag',
-        ];
-    }
 }

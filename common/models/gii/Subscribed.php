@@ -5,10 +5,10 @@ namespace common\models\gii;
 use Yii;
 
 /**
- * This is the model class for table "{{%upload_music}}".
+ * This is the model class for table "{{%subscribed}}".
  *
  */
-class MusicVideo extends \yii\db\ActiveRecord
+class Subscribed extends \yii\db\ActiveRecord
 {
 
     public $lyricJson;
@@ -18,7 +18,7 @@ class MusicVideo extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%music_video}}';
+        return '{{%subscribed}}';
     }
 
     /**
@@ -27,9 +27,12 @@ class MusicVideo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['music_title', 'video_title', 'video_info', 'filename', 'video_url', 'file_type'], 'string'],
-            [[ 'status'], 'integer'],
-            [['is_delete', 'created_at', 'updated_at',], 'integer'],
+            [['room_no', 'building_area', 'sub_guest', 'id_no', 'mobile', 'owner', 'lessor', 'lessor_detail', 'free_rent_date', 'increase_date', ], 'string'],
+            [['project_id', 'report_id', 'visit_id', 'pay_method', 'id_type', 'sub_type', 'increase_rate', ], 'integer'],
+            [['balance_price', 'sub_total_price', 'daily_amount', 'monthly_amount', 'yearly_amount', 'deposit', 'rent_amount',
+                'pro_rent_amount', 'al_daily_amount', 'al_amount', 'al_other', 'al_total_amount'], 'number'],
+            [['rent_date_begin', 'rent_date_end', 'al_date_begin', 'al_date_end', ], 'string'],
+            [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
 

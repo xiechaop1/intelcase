@@ -5,17 +5,20 @@ namespace common\models\gii;
 use Yii;
 
 /**
- * This is the model class for table "{{%music_category}}".
+ * This is the model class for table "{{%report}}".
  *
  */
-class MusicCategory extends \yii\db\ActiveRecord
+class Report extends \yii\db\ActiveRecord
 {
+
+    public $lyricJson;
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%music_category}}';
+        return '{{%report}}';
     }
 
     /**
@@ -24,8 +27,10 @@ class MusicCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['music_id', 'category_id', ], 'integer'],
-            [['created_at', 'updated_at',], 'integer'],
+            [['guest_name', 'guest_mobile', 'guest_channel', 'staff_mobile', ], 'string'],
+            [['staff_id', 'project_id', 'report_status', ], 'integer'],
+            [['visit_time', 'visit_type', ], 'integer'],
+            [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
 

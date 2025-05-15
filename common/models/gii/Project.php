@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "{{%music}}".
  *
  */
-class Music extends \yii\db\ActiveRecord
+class Project extends \yii\db\ActiveRecord
 {
 
     public $lyricJson;
@@ -18,7 +18,7 @@ class Music extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%music}}';
+        return '{{%project}}';
     }
 
     /**
@@ -27,10 +27,9 @@ class Music extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'comment', 'composer', 'singer', 'lyricist', 'duration', 'verse_url', 'lyric', 'lyric_url', 'resource_download_url', 'resource_download_file', 'chorus_start_time', 'chorus_end_time', 'background_image', 'chorus_url', 'cover_image', 'cover_thumbnail', 'music_rate'], 'string'],
-            [['singer_id', 'upload_user_id', 'music_type', 'music_status', 'op_user_id', 'status'], 'integer'],
-            [['price'], 'number'],
-            [['is_delete', 'created_at', 'updated_at',], 'integer'],
+            [['project_name', 'opts'], 'string'],
+            [['staff_id', 'target_product', 'project_class', ], 'integer'],
+            [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
 

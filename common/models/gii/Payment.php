@@ -5,10 +5,10 @@ namespace common\models\gii;
 use Yii;
 
 /**
- * This is the model class for table "{{%upload_music}}".
+ * This is the model class for table "{{%payment}}".
  *
  */
-class UploadMusicGroup extends \yii\db\ActiveRecord
+class Payment extends \yii\db\ActiveRecord
 {
 
     public $lyricJson;
@@ -18,7 +18,7 @@ class UploadMusicGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%upload_music_group}}';
+        return '{{%payment}}';
     }
 
     /**
@@ -27,9 +27,12 @@ class UploadMusicGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'comment', 'composer', 'singer', 'lyricist', 'duration', 'lyric', ], 'string'],
-            [[ 'score', 'user_id', 'group_status', 'status'], 'integer'],
-            [['is_delete', 'created_at', 'updated_at',], 'integer'],
+            [['pay_account', 'recv_account', 'receipt_no',  ], 'string'],
+            [['project_id', 'sub_id', ], 'integer'],
+            [['pay_way', 'amount_type', 'pay_status' ], 'integer'],
+            [['amount', 'recv_amount', 'fee', ], 'number'],
+            [['pay_time', 'recv_time', ], 'integer'],
+            [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
 
