@@ -29,7 +29,10 @@ class Visit extends \yii\db\ActiveRecord
         return [
             [['guest_name', 'guest_mobile', 'guest_appeal', 'budget', 'staff_mobile', 'visit_status_comment', ], 'string'],
             [['staff_id', 'report_id', 'project_id', 'adv_staff_id', 'person_ct', ], 'integer'],
-            [['visit_time', 'visit_type', 'visit_status', 'visit_confirm_status', 'visit_ct', ], 'integer'],
+            [[
+//                'visit_time',
+                'visit_type', 'visit_status', 'visit_confirm_status', 'visit_ct', ], 'integer'],
+            [['visit_time',], 'string'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }

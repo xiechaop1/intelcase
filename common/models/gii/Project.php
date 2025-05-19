@@ -27,7 +27,7 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['project_name', 'opts'], 'string'],
+            [['project_name', 'opts', 'qr_code', ], 'string'],
             [['staff_id', 'target_product', 'project_class', ], 'integer'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];

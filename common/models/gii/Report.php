@@ -29,7 +29,10 @@ class Report extends \yii\db\ActiveRecord
         return [
             [['guest_name', 'guest_mobile', 'guest_channel', 'staff_mobile', ], 'string'],
             [['staff_id', 'project_id', 'report_status', ], 'integer'],
-            [['visit_time', 'visit_type', ], 'integer'],
+            [[
+//                'visit_time',
+                'visit_type', ], 'integer'],
+            [['visit_time'], 'string'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }

@@ -27,7 +27,7 @@ class Payment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pay_account', 'recv_account', 'receipt_no',  ], 'string'],
+            [['pay_account', 'recv_account', 'receipt_no', 'payer',  ], 'string'],
             [['project_id', 'sub_id', ], 'integer'],
             [['pay_way', 'amount_type', 'pay_status' ], 'integer'],
             [['amount', 'recv_amount', 'fee', ], 'number'],
