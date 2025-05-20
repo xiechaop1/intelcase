@@ -28,7 +28,7 @@ class Project extends \yii\db\ActiveRecord
     {
         return [
             [['project_name', 'opts', 'qr_code', ], 'string'],
-            [['staff_id', 'target_product', 'project_class', ], 'integer'],
+            [['staff_id', 'target_product', 'project_class', 'pm_staff_id', 'consultant_staff_id', 'advisor_staff_id', 'financial_staff_id', ], 'integer'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }

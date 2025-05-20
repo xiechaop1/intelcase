@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\models\Msg;
 use common\models\Report;
 use common\models\Visit;
 //use common\services\Log;
@@ -23,6 +24,8 @@ class VisitApi extends ApiAction
     private $_projectId;
     private $_reportId;
 
+    private $_project;
+
     public function run()
     {
         try {
@@ -34,6 +37,10 @@ class VisitApi extends ApiAction
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
             }
+
+            $this->_project = Report::find()
+                ->where(['id' => $this->_projectId])
+                ->one();
 
             if (empty($this->_reportId)) {
                 return $this->fail('需要指定报备', -1000);
@@ -159,7 +166,6 @@ class VisitApi extends ApiAction
             $model->visit_ct = $visitCt;
             $model->person_ct = $personCt;
 
-
             $model->save();
 
             $transaction->commit();
@@ -167,6 +173,14 @@ class VisitApi extends ApiAction
             // 获取最新一条数据ID
             $visitId = Yii::$app->db->getLastInsertID();
 
+            $recvId = $this->_project['pm_staff_id'];
+            $content = [
+                'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
+                'report_id' => $reportId,
+                'project_id' => $this->_projectId,
+                'visit_id' => $visitId,
+            ];
+            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
             return $this->success([
                 'visit_id' => $visitId,

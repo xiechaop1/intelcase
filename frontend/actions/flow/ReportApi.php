@@ -10,6 +10,8 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\models\Msg;
+use common\models\Project;
 use common\models\Report;
 use common\services\Log;
 use frontend\actions\ApiAction;
@@ -20,6 +22,7 @@ class ReportApi extends ApiAction
     public $action;
     private $_get;
     private $_projectId;
+    private $_project;
 
     public function run()
     {
@@ -31,6 +34,10 @@ class ReportApi extends ApiAction
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
             }
+
+            $this->_project = Project::find()
+                ->where(['id' => $this->_projectId])
+                ->one();
 
             $this->valToken();
             switch ($this->action) {
@@ -126,10 +133,17 @@ class ReportApi extends ApiAction
             $model->report_status = $reportStatus;
             $model->save();
 
-
             $transaction->commit();
             // 获取最新一条数据ID
             $reportId = Yii::$app->db->getLastInsertID();
+
+            $pmStaffId = $this->_project['pm_staff_id'];
+            $content = [
+                'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
+                'report_id' => $reportId,
+                'project_id' => $this->_projectId,
+            ];
+            Yii::$app->msg->add($pmStaffId, $content, Msg::MSG_SENDER_SYSTEM);
 
             return $this->success([
                 'report_id' => $reportId,

@@ -96,6 +96,10 @@ class ProjectApi extends ApiAction
             $projectClass = !empty($this->_get['project_class']) ? $this->_get['project_class'] : '';
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+            $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
+            $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
+            $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
+            $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
 
             if (!empty($projectName)) {
                 $model->project_name = $projectName;
@@ -111,6 +115,18 @@ class ProjectApi extends ApiAction
             }
             if (!empty($staffId)) {
                 $model->staff_id = $staffId;
+            }
+            if (!empty($pmStaffId)) {
+                $model->pm_staff_id = $pmStaffId;
+            }
+            if (!empty($consultantStaffId)) {
+                $model->consultant_staff_id = $consultantStaffId;
+            }
+            if (!empty($advisorStaffId)) {
+                $model->advisor_staff_id = $advisorStaffId;
+            }
+            if (!empty($financialStaffId)) {
+                $model->financial_staff_id = $financialStaffId;
             }
 
 
@@ -140,12 +156,20 @@ class ProjectApi extends ApiAction
             $projectClass = !empty($this->_get['project_class']) ? $this->_get['project_class'] : '';
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+            $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
+            $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
+            $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
+            $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
 
             $model->project_name = $projectName;
             $model->opts = $opts;
             $model->project_class = $projectClass;
             $model->target_product = $targetProduct;
             $model->staff_id = $staffId;
+            $model->pm_staff_id = $pmStaffId;
+            $model->consultant_staff_id = $consultantStaffId;
+            $model->advisor_staff_id = $advisorStaffId;
+            $model->financial_staff_id = $financialStaffId;
             $model->save();
 
             $transaction->commit();

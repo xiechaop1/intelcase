@@ -9,6 +9,8 @@
 namespace frontend\actions\flow;
 
 
+use common\models\Msg;
+use common\models\Project;
 use common\models\Report;
 //use common\services\Log;
 use common\models\Subscribed;
@@ -33,6 +35,10 @@ class SubscribedApi extends ApiAction
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
             }
+
+            $this->_project = Project::find()
+                ->where(['id' => $this->_projectId])
+                ->one();
 
             if (empty($this->_reportId)) {
                 return $this->fail('需要指定报备', -1000);
@@ -208,6 +214,13 @@ class SubscribedApi extends ApiAction
 
             // 获取最新一条数据ID
             $subId = Yii::$app->db->getLastInsertID();
+
+            $recvId = $this->_project['pm_staff_id'];
+            $content = [
+                'content' => '有一条新到访，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                'project_id' => $this->_projectId,
+            ];
+            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
             return $this->success([
                 'sub_id' => $subId,

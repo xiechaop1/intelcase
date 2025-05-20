@@ -12,6 +12,7 @@ namespace common\models;
 class Msg extends \common\models\gii\Msg
 {
 
+    const MSG_SENDER_SYSTEM       = 0;      // 系统消息
     const MSG_STATUS_UNREAD       = 0;      // 未读
     const MSG_STATUS_READ         = 1;      // 已读
     const MSG_STATUS_DELETE       = 2;      // 删除
