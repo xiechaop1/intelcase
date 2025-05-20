@@ -146,14 +146,25 @@ class ProjectApi extends ApiAction
             $model->project_class = $projectClass;
             $model->target_product = $targetProduct;
             $model->staff_id = $staffId;
-
-
-
             $model->save();
 
             $transaction->commit();
 
-            return $this->success('操作成功');
+            // 获取刚存储的最新的ID
+            $projectId = $subId = Yii::$app->db->getLastInsertID();
+
+            // $url 获取当前的域名
+            // Todo: 这里的域名和前端确认以后给
+            $url = Yii::$app->request->hostInfo . '/project/' . $projectId;
+            $qrCode = Yii::$app->common->generateQrCode($url);
+
+            $model->qr_code = $qrCode;
+            $model->save();
+
+
+            return $this->success([
+                'project' => $model
+            ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));

@@ -172,7 +172,15 @@ class PaymentApi extends ApiAction
 
             $transaction->commit();
 
-            return $this->success('操作成功');
+            $paymentId = Yii::$app->db->getLastInsertID();
+
+            return $this->success([
+                'payment_id' => $paymentId,
+                'subscribed' => $subscribed,
+                'payment' => $model,
+                'recv_amount' => $recvAmountRet + $amount,
+                'sub_total_price' => $subTotalPrice,
+            ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));

@@ -787,4 +787,13 @@ class Common extends Component
 
         return $ret;
     }
+
+    public function generateQrCode($url, $size = 300) {
+        $qrCode = new \Da\QrCode\QrCode($url);
+        $qrCode->setSize($size);
+        $qrCode->setMargin(10);
+        
+        // 生成二维码图片并返回 base64 编码
+        return $qrCode->writeDataUri();
+    }
 }
