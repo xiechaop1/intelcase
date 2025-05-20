@@ -46,6 +46,9 @@ class StaffApi extends ApiAction
                 case 'get_by_name':
                     $ret = $this->getByName();
                     break;
+                case 'get_list':
+                    $ret = $this->getList();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -56,6 +59,24 @@ class StaffApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getList() {
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
+
+        $query = Staff::find()
+            ->orderBy([
+                'id' => SORT_DESC
+            ]);
+
+        $count = $query->count();
+        $list = $query->offset(($page - 1) * $pageSize)->limit($pageSize)->all();
+
+        return $this->success([
+            'list' => $list,
+            'total_count' => $count,
+        ]);
     }
 
     public function getByName() {
@@ -76,7 +97,7 @@ class StaffApi extends ApiAction
             return $this->fail('用户不存在', -1000);
         }
 
-        return $this->success('操作成功', $model);
+        return $this->success($model);
     }
 
     public function getById() {
@@ -97,7 +118,7 @@ class StaffApi extends ApiAction
             return $this->fail('用户不存在', -1000);
         }
 
-        return $this->success('操作成功', $model);
+        return $this->success($model);
     }
 
     public function update() {

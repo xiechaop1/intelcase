@@ -73,7 +73,7 @@ class ProjectApi extends ApiAction
             return $this->fail('项目不存在', -1000);
         }
 
-        return $model;
+        return $this->success($model);
     }
 
     public function update() {

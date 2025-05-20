@@ -37,6 +37,9 @@ class ReportApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'get_by_id':
+                    $ret = $this->getById();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -47,6 +50,24 @@ class ReportApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getById() {
+        $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+
+        if (empty($reportId)) {
+            return $this->fail('需要指定报告ID', -1000);
+        }
+
+        $model = Report::find()
+            ->where(['id' => $reportId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('报告不存在', -1000);
+        }
+
+        return $this->success($model);
     }
 
     public function add() {

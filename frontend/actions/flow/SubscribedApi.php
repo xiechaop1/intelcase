@@ -59,6 +59,9 @@ class SubscribedApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'get_by_project_id':
+                    $ret = $this->getByProjectId();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -69,6 +72,26 @@ class SubscribedApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getByProjectId() {
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
+
+        $query = Subscribed::find()
+            ->where(['project_id' => $this->_projectId])
+//            ->andFilterWhere(['report_id' => $this->_reportId])
+            ->orderBy([
+                'id' => SORT_DESC
+            ]);
+
+        $count = $query->count();
+        $list = $query->offset(($page - 1) * $pageSize)->limit($pageSize)->all();
+
+        return $this->success([
+            'list' => $list,
+            'total_count' => $count,
+        ]);
     }
 
     public function add() {
