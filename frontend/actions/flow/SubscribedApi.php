@@ -215,12 +215,14 @@ class SubscribedApi extends ApiAction
             // 获取最新一条数据ID
             $subId = Yii::$app->db->getLastInsertID();
 
-            $recvId = $this->_project['pm_staff_id'];
-            $content = [
-                'content' => '有一条新到访，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
-                'project_id' => $this->_projectId,
-            ];
-            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新到访，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'project_id' => $this->_projectId,
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
 
             return $this->success([
                 'sub_id' => $subId,

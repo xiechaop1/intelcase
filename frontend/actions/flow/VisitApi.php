@@ -173,14 +173,16 @@ class VisitApi extends ApiAction
             // 获取最新一条数据ID
             $visitId = Yii::$app->db->getLastInsertID();
 
-            $recvId = $this->_project['pm_staff_id'];
-            $content = [
-                'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
-                'report_id' => $reportId,
-                'project_id' => $this->_projectId,
-                'visit_id' => $visitId,
-            ];
-            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
+                    'report_id' => $reportId,
+                    'project_id' => $this->_projectId,
+                    'visit_id' => $visitId,
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
 
             return $this->success([
                 'visit_id' => $visitId,

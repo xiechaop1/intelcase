@@ -137,13 +137,16 @@ class ReportApi extends ApiAction
             // 获取最新一条数据ID
             $reportId = Yii::$app->db->getLastInsertID();
 
-            $pmStaffId = $this->_project['pm_staff_id'];
-            $content = [
-                'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
-                'report_id' => $reportId,
-                'project_id' => $this->_projectId,
-            ];
-            Yii::$app->msg->add($pmStaffId, $content, Msg::MSG_SENDER_SYSTEM);
+            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
+                    'report_id' => $reportId,
+                    'project_id' => $this->_projectId,
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
+
 
             return $this->success([
                 'report_id' => $reportId,
