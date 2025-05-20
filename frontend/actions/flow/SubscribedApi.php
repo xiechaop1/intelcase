@@ -206,7 +206,15 @@ class SubscribedApi extends ApiAction
 
             $transaction->commit();
 
-            return $this->success('操作成功');
+            // 获取最新一条数据ID
+            $subId = Yii::$app->db->getLastInsertID();
+
+            return $this->success([
+                'sub_id' => $subId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+                'subscribed' => $model,
+            ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));

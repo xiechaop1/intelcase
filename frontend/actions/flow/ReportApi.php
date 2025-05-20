@@ -126,9 +126,14 @@ class ReportApi extends ApiAction
             $model->report_status = $reportStatus;
             $model->save();
 
-            $transaction->commit();
 
-            return $this->success('操作成功');
+            $transaction->commit();
+            // 获取最新一条数据ID
+            $reportId = Yii::$app->db->getLastInsertID();
+
+            return $this->success([
+                'report_id' => $reportId,
+            ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
