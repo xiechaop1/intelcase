@@ -12,9 +12,9 @@ namespace common\models;
 class Project extends \common\models\gii\Project
 {
 
-    const PROJECT_CLASS_FIRST         = 1;
+    const PROJECT_CLASS_DEFAULT       = 0;      // 默认
 
-    const PROJECT_TAR_PRODUCE_SHOP    = 1;
+    const PROJECT_TAR_PRODUCE_SHOP    = 1;      // 商铺
 
     public function behaviors()
     {
