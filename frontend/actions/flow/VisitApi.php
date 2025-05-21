@@ -70,6 +70,9 @@ class VisitApi extends ApiAction
                 case 'update':
                     $ret = $this->update();
                     break;
+                case 'get_by_id':
+                    $ret = $this->getById();
+                    break;
                 case 'get_by_project_id':
                     $ret = $this->getByProjectId();
                     break;
@@ -83,6 +86,24 @@ class VisitApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getById() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+
+        if (empty($visitId)) {
+            return $this->fail('需要指定到访ID', -1000);
+        }
+
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+
+        return $this->success($model);
     }
 
     public function getByProjectId()

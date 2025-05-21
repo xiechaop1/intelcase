@@ -62,6 +62,9 @@ class PaymentApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'get_by_id':
+                    $ret = $this->getById();
+                    break;
                 case 'get_by_project_id':
                     $ret = $this->getByProjectId();
                     break;
@@ -75,6 +78,26 @@ class PaymentApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getById(){
+        $paymentId = !empty($this->_get['payment_id']) ? $this->_get['payment_id'] : 0;
+
+        if (empty($paymentId)) {
+            return $this->fail('需要指定支付ID', -1000);
+        }
+
+        $model = Payment::find()
+            ->where([
+                'id' => $paymentId,
+            ])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('支付不存在', -1000);
+        }
+
+        return $this->success($model);
     }
 
     public function getByProjectId()
