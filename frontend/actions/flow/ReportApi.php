@@ -66,7 +66,7 @@ class ReportApi extends ApiAction
         $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
 
         if (empty($reportId)) {
-            return $this->fail('需要指定报告ID', -1000);
+            return $this->fail('需要指定报备ID', -1000);
         }
 
         $model = Report::find()
@@ -74,7 +74,7 @@ class ReportApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('报告不存在', -1000);
+            return $this->fail('报备不存在', -1000);
         }
 
         return $this->success($model);
@@ -84,7 +84,7 @@ class ReportApi extends ApiAction
         $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
 
         if (empty($reportId)) {
-            return $this->fail('需要指定报告ID', -1000);
+            return $this->fail('需要指定报备ID', -1000);
         }
 
         $model = Report::find()
@@ -92,7 +92,7 @@ class ReportApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('报告不存在', -1000);
+            return $this->fail('报备不存在', -1000);
         }
 
         try {

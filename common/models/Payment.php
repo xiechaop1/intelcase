@@ -28,6 +28,16 @@ class Payment extends \common\models\gii\Payment
         self::PAYMENT_TYPE_REFUND       => '退款',
     ];
 
+    const PAMENT_WAY_WECHAT = 1; // 微信支付
+    const PAMENT_WAY_ALIPAY = 2; // 支付宝支付
+    const PAMENT_WAY_BANK = 3; // 银行转账
+
+    public static $paymentWay2Name = [
+        self::PAMENT_WAY_WECHAT         => '微信支付',
+        self::PAMENT_WAY_ALIPAY         => '支付宝支付',
+        self::PAMENT_WAY_BANK           => '银行转账',
+    ];
+
 
     public function behaviors()
     {
