@@ -110,6 +110,7 @@ class PaymentApi extends ApiAction
 
             $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
             $payer = !empty($this->_get['payer']) ? $this->_get['payer'] : '';
+            $payType = !empty($this->_get['pay_type']) ? $this->_get['pay_type'] : Payment::PAYMENT_TYPE_PAY;
             $payTime = !empty($this->_get['pay_time']) ? $this->_get['pay_time'] : 0;
             $payWay = !empty($this->_get['pay_way']) ? $this->_get['pay_way'] : 0;
             $payStatus = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : 0;
@@ -144,7 +145,11 @@ class PaymentApi extends ApiAction
 
             $recvAmountRet = 0;
             foreach ($paymentRet as $payment) {
-                $recvAmountRet += $payment->recv_amount;
+                if ($payment->pay_type == Payment::PAYMENT_TYPE_REFUND) {
+                    $recvAmountRet -= $payment->recv_amount;
+                } else {
+                    $recvAmountRet += $payment->recv_amount;
+                }
             }
             if ($recvAmountRet + $amount >= $subTotalPrice) {
                 // Todo: 认购总额超了，应该进入下一个流程了
@@ -157,6 +162,7 @@ class PaymentApi extends ApiAction
             $model->report_id = $this->_reportId;
             $model->pay_time = $payTime;
             $model->pay_way = $payWay;
+            $model->pay_type = $payType;
             $model->pay_status = $payStatus;
             $model->amount = $amount;
             $model->amount_type = $amountType;

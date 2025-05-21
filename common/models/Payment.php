@@ -20,6 +20,14 @@ class Payment extends \common\models\gii\Payment
         self::PAYMENT_STATUS_COMPLETED    => '已支付',
     ];
 
+    const PAYMENT_TYPE_PAY          = 1; // 支付
+    const PAYMENT_TYPE_REFUND       = 2; // 退款
+
+    public static $paymentType2Name = [
+        self::PAYMENT_TYPE_PAY          => '支付',
+        self::PAYMENT_TYPE_REFUND       => '退款',
+    ];
+
 
     public function behaviors()
     {
