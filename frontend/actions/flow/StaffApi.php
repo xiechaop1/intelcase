@@ -167,7 +167,7 @@ class StaffApi extends ApiAction
 
     public function add() {
 
-        $model = new Project();
+        $model = new Staff();
 
         $transaction = Yii::$app->db->beginTransaction();
 
