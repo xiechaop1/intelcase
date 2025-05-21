@@ -71,6 +71,9 @@ class SubscribedApi extends ApiAction
                 case 'get_by_project_id':
                     $ret = $this->getByProjectId();
                     break;
+                case 'get_by_id':
+                    $ret = $this->getById();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -101,6 +104,24 @@ class SubscribedApi extends ApiAction
         $model->save();
 
         return $this->success();
+    }
+
+    public function getById() {
+        $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
+
+        if (empty($subId)) {
+            return $this->fail('需要指定订阅ID', -1000);
+        }
+
+        $model = Subscribed::find()
+            ->where(['id' => $subId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('订阅不存在', -1000);
+        }
+
+        return $this->success(['sub' => $model]);
     }
 
     public function getByProjectId() {
