@@ -14,7 +14,10 @@ class Staff extends \common\models\gii\Staff
 
     const STAFF_ROLE_SALES          = 1;      // 销售
     const STAFF_ROLE_PM             = 2;      // 项目经理
-    const STAFF_ROLE_FINANCE        = 3;      // 财务
+
+    const STAFF_ROLE_CONSULTANT     = 3;      // 招商顾问
+    const STAFF_ROLE_ADVISOR        = 4;      // 投资顾问
+    const STAFF_ROLE_FINANCE        = 10;      // 财务
 
     const STAFF_STATUS_NORMAL       = 1;      // 正常
     const STAFF_STATUS_DISABLE      = 2;      // 禁用
@@ -22,6 +25,8 @@ class Staff extends \common\models\gii\Staff
     public static $staffRole2Name = [
         self::STAFF_ROLE_SALES         => '销售',
         self::STAFF_ROLE_PM            => '项目经理',
+        self::STAFF_ROLE_CONSULTANT    => '招商顾问',
+        self::STAFF_ROLE_ADVISOR       => '投资顾问',
         self::STAFF_ROLE_FINANCE       => '财务',
     ];
 

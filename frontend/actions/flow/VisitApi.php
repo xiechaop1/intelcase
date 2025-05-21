@@ -67,6 +67,9 @@ class VisitApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'update':
+                    $ret = $this->update();
+                    break;
                 case 'get_by_project_id':
                     $ret = $this->getByProjectId();
                     break;
@@ -101,6 +104,34 @@ class VisitApi extends ApiAction
         }
 
         return $this->success($model);
+    }
+
+    public function update() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+
+        if (empty($visitId)) {
+            return $this->fail('需要指定到访ID', -1000);
+        }
+
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+
+        if (!empty($this->_get['visit_status'])) {
+            $model->visit_status = $this->_get['visit_status'];
+        }
+
+        if (!empty($this->_get['visit_status_comment'])) {
+            $model->visit_status_comment = $this->_get['visit_status_comment'];
+        }
+
+        $model->save();
+
+        return $this->success();
     }
 
     public function add() {

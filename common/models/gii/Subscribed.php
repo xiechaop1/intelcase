@@ -31,7 +31,7 @@ class Subscribed extends \yii\db\ActiveRecord
             [['project_id', 'report_id', 'visit_id', 'pay_method', 'id_type', 'sub_type', 'increase_rate', ], 'integer'],
             [['balance_price', 'sub_total_price', 'daily_amount', 'monthly_amount', 'yearly_amount', 'deposit', 'rent_amount',
                 'pro_rent_amount', 'al_daily_amount', 'al_amount', 'al_other', 'al_total_amount'], 'number'],
-            [['rent_date_begin', 'rent_date_end', 'al_date_begin', 'al_date_end', ], 'string'],
+            [['rent_date_begin', 'rent_date_end', 'al_date_begin', 'al_date_end', 'sub_status', ], 'string'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }

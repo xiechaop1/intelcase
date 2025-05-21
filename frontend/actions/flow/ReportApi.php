@@ -47,6 +47,9 @@ class ReportApi extends ApiAction
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
+                case 'update':
+                    $ret = $this->update();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -75,6 +78,34 @@ class ReportApi extends ApiAction
         }
 
         return $this->success($model);
+    }
+
+    public function update() {
+        $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+
+        if (empty($reportId)) {
+            return $this->fail('需要指定报告ID', -1000);
+        }
+
+        $model = Report::find()
+            ->where(['id' => $reportId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('报告不存在', -1000);
+        }
+
+        try {
+            if (!empty($this->_get['report_status'])) {
+                $model->report_status = $this->_get['report_status'];
+            }
+
+            $model->save();
+        } catch (\Exception $e) {
+            return $this->fail('操作失败', -1000);
+        }
+
+        return $this->success(['report' => $model]);
     }
 
     public function add() {
