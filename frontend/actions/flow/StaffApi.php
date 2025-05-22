@@ -91,7 +91,7 @@ class StaffApi extends ApiAction
             ->where([
                 'like', 'staff_name', $staffName,
             ])
-            ->one();
+            ->all();
 
         if (empty($model)) {
             return $this->fail('用户不存在', -1000);
@@ -197,7 +197,12 @@ class StaffApi extends ApiAction
 
             $transaction->commit();
 
-            return $this->success('操作成功');
+            $staffId = Yii::$db->getLastInsertID();
+
+            return $this->success([
+                'staff_id' => $staffId,
+                'staff' => $model,
+            ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
