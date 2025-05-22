@@ -171,7 +171,7 @@ class ReportApi extends ApiAction
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
                 $content = [
-                    'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', $visitTime) . '，请及时处理。',
+                    'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,
                 ];
