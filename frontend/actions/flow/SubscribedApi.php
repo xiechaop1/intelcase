@@ -101,6 +101,15 @@ class SubscribedApi extends ApiAction
             return $this->fail('订阅不存在', -1000);
         }
 
+        foreach ($this->_get as $key => $value) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id'])) {
+                continue;
+            }
+            if (!empty($value) && isset($this->_get[$key])) {
+                $model->$key = $value;
+            }
+        }
+
         $model->save();
 
         return $this->success();
@@ -182,6 +191,11 @@ class SubscribedApi extends ApiAction
             $alTotalAmount = !empty($this->_get['al_total_amount']) ? $this->_get['al_total_amount'] : 0;
             $alDateBegin = !empty($this->_get['al_date_begin']) ? $this->_get['al_date_begin'] : '';
             $alDateEnd = !empty($this->_get['al_date_end']) ? $this->_get['al_date_end'] : '';
+            $supplySubGuest = !empty($this->_get['supply_sub_guest']) ? $this->_get['supply_sub_guest'] : '';
+            $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : 0;
+            $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
+            $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
+            $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
 
             if (!empty($dailyAmount) && !empty($buildingArea)) {
                 $monthlyAmount = $dailyAmount * $buildingArea * 30;
@@ -250,6 +264,11 @@ class SubscribedApi extends ApiAction
             $model->al_total_amount = $alTotalAmount;
             $model->al_date_begin = $alDateBegin;
             $model->al_date_end = $alDateEnd;
+            $model->supply_sub_guest = $supplySubGuest;
+            $model->supply_guest_id_type = $supplyGuestIdType;
+            $model->supply_guest_id_no = $supplyGuestIdNo;
+            $model->supply_guest_mobile = $supplyGuestMobile;
+            $model->supply_total_price = $supplyTotalPrice;
 
 
             $model->save();
