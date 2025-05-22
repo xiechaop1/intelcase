@@ -62,6 +62,9 @@ class PaymentApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'update':
+                    $ret = $this->update();
+                    break;
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
@@ -122,6 +125,46 @@ class PaymentApi extends ApiAction
         return $this->success($model);
     }
 
+    public function update() {
+        $paymentId = !empty($this->_get['payment_id']) ? $this->_get['payment_id'] : 0;
+
+        if (empty($paymentId)) {
+            return $this->fail('需要指定支付ID', -1000);
+        }
+
+        $model = Payment::find()
+            ->where([
+                'id' => $paymentId,
+            ])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('支付不存在', -1000);
+        }
+
+//        $model->attributes = $this->_get;
+        if (!empty($this->_get)) {
+            foreach ($this->_get as $key => $value) {
+                if ($key == 'payment_id') {
+                    continue;
+                }
+                if (empty($value)) {
+                    continue;
+                }
+                if (isset($model->$key)) {
+                    $model->$key = $value;
+                }
+            }
+            if ($model->save()) {
+                return $this->success($model);
+            } else {
+                return $this->fail('操作失败', -1000);
+            }
+        }
+        return $this->fail('没有需要更新的字段', -1000);
+
+
+    }
 
     public function add() {
 
@@ -156,8 +199,9 @@ class PaymentApi extends ApiAction
 
             $subscribed = Subscribed::find()
                 ->where([
-                    'project_id' => $this->_projectId,
+                    'id' => $subId,
                 ])
+                ->orderBy('id DESC')
                 ->one();
 
             $subTotalPrice = !empty($subscribed->sub_total_price) ? $subscribed->sub_total_price : 0;

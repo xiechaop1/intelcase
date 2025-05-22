@@ -219,7 +219,7 @@ class SubscribedApi extends ApiAction
                 ->one();
 
             $model->project_id = $this->_projectId;
-            $model->report_id = $this->_reportId;
+//            $model->report_id = $this->_reportId;
             $model->sub_type = $subType;
             $model->sub_guest = $subGuest;
             $model->room_no = $roomNo;
