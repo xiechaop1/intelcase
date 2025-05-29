@@ -33,11 +33,11 @@ class MsgApi extends ApiAction
 
             $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : 0;
 
-            $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
-
-            if (empty($this->_projectId)) {
-                return $this->fail('需要指定项目', -1000);
-            }
+//            $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+//
+//            if (empty($this->_projectId)) {
+//                return $this->fail('需要指定项目', -1000);
+//            }
 
             $this->valToken();
             switch ($this->action) {
