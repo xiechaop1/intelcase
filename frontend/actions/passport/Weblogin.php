@@ -13,6 +13,7 @@ use common\helpers\Cookie;
 use common\models\Member;
 use common\models\MemberInvite;
 use common\models\MemberInviteCode;
+use common\models\Staff;
 use common\services\HewaApi;
 use frontend\models\MemberIdentity;
 use liyifei\base\actions\ApiAction;
@@ -46,26 +47,39 @@ class Weblogin extends Action
 
         $inviteCode = Yii::$app->request->get('invite_code');
 
-        $memberInviteCode = null;
-        if (!empty($inviteCode)) {
-            $memberInviteCode = MemberInviteCode::find()
-                ->where([
-                    'invite_code' => $inviteCode
-                ])
-                ->orderBy(['id' => SORT_DESC])
-                ->one();
-        }
+        $mobile = Yii::$app->request->get('mobile', '');
 
-        $isPass = 0;
-        if (!empty($memberInviteCode)) {
-            $isPass = 0;
-            if ($memberInviteCode->created_at < time() - MemberInvite::MAX_TIME
-                || $memberInviteCode->invite_ct >= MemberInvite::MAX_INVITE
-            ) {
-                $memberInviteCode = null;
-                $isPass = 1;
-            }
-        }
+//        $memberInviteCode = null;
+//        if (!empty($inviteCode)) {
+//            $memberInviteCode = MemberInviteCode::find()
+//                ->where([
+//                    'invite_code' => $inviteCode
+//                ])
+//                ->orderBy(['id' => SORT_DESC])
+//                ->one();
+//        }
+//
+//        $isPass = 0;
+//        if (!empty($memberInviteCode)) {
+//            $isPass = 0;
+//            if ($memberInviteCode->created_at < time() - MemberInvite::MAX_TIME
+//                || $memberInviteCode->invite_ct >= MemberInvite::MAX_INVITE
+//            ) {
+//                $memberInviteCode = null;
+//                $isPass = 1;
+//            }
+//        }
+
+        $staff = Staff::find()
+            ->where([
+                'mobile' => $mobile,
+            ])
+//            ->andWhere(['status' => Staff::STATUS_ACTIVE])
+            ->one();
+
+
+
+
 
 //var_dump($banners);
         return $this->controller->render('login', [
@@ -73,8 +87,9 @@ class Weblogin extends Action
             'keep_login'    => $keepLoginJson,
             'ref_url'       => $refUrl,
             'source'        => Yii::$app->request->get('source', ''),
-            'member_invite_code' => $memberInviteCode,
-            'invite_code_timeout'       => $isPass,
+            'staff'         => $staff,
+//            'member_invite_code' => $memberInviteCode,
+//            'invite_code_timeout'       => $isPass,
         ]);
 
     }

@@ -169,6 +169,7 @@ class ReportApi extends ApiAction
             $reportId = Yii::$app->db->getLastInsertID();
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            $content = [];
             if (!empty($recvId)) {
                 $content = [
                     'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
@@ -181,6 +182,7 @@ class ReportApi extends ApiAction
 
             return $this->success([
                 'report_id' => $reportId,
+                'content' => $content,
             ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
