@@ -29,7 +29,11 @@ class ProjectApi extends ApiAction
     public function run()
     {
         try {
-            $this->_get = Yii::$app->request->get();
+            if (Yii::$app->request->method == 'POST') {
+                $this->_get = Yii::$app->request->post();
+            } else {
+                $this->_get = Yii::$app->request->get();
+            }
 
             $this->valToken();
             switch ($this->action) {

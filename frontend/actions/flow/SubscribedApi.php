@@ -27,7 +27,11 @@ class SubscribedApi extends ApiAction
     public function run()
     {
         try {
-            $this->_get = Yii::$app->request->get();
+            if (Yii::$app->request->method == 'POST') {
+                $this->_get = Yii::$app->request->post();
+            } else {
+                $this->_get = Yii::$app->request->get();
+            }
 
             $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
             $this->_reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
