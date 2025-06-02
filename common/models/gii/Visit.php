@@ -18,7 +18,7 @@ class Visit extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%report}}';
+        return '{{%visit}}';
     }
 
     /**
