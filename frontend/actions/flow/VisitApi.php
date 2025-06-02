@@ -206,14 +206,14 @@ class VisitApi extends ApiAction
 
             $visitType = empty($reportCount) ? 0 : $reportCount + 1;
 
-            $model->project_id = $this->_projectId;
-            $model->report_id = $reportId;
+            $model->project_id = intval($this->_projectId);
+            $model->report_id = intval($reportId);
             $model->guest_name = $guestName;
             $model->guest_mobile = $guestMobile;
             $model->guest_appeal = $guestAppeal;
             $model->budget = $budget;
             $model->staff_mobile = $staffMobile;
-            $model->staff_id = $staffId;
+            $model->staff_id = intval($staffId);
             $model->visit_time = $visitTime;
             $model->visit_type = $visitType;
             $model->visit_status = $visitStatus;
