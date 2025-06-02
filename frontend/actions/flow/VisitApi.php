@@ -54,9 +54,9 @@ class VisitApi extends ApiAction
                 ->where([
                     'id' => $this->_reportId,
                 ])
-                ->andFilterWhere([
-                    'between', 'visit_time', strtotime(date('Y-m-d 00:00:00')), strtotime(date('Y-m-d 23:59:59'))
-                ])
+//                ->andFilterWhere([
+//                    'between', 'visit_time', strtotime(date('Y-m-d 00:00:00')), strtotime(date('Y-m-d 23:59:59'))
+//                ])
                 ->orderBy([
                     'id' => SORT_DESC
                 ])
