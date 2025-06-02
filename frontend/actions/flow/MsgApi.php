@@ -51,6 +51,9 @@ class MsgApi extends ApiAction
                 case 'read':
                     $ret = $this->read();
                     break;
+                case 'add':
+                    $ret = $this->add();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -61,6 +64,13 @@ class MsgApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function add() {
+        $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : '';
+        $content = !empty($this->_get['content']) ? $this->_get['content'] : '';
+
+        return Yii::$app->msg->add($recvId, $content);
     }
 
     public function read() {

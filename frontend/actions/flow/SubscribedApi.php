@@ -280,7 +280,8 @@ class SubscribedApi extends ApiAction
             $transaction->commit();
 
             // 获取最新一条数据ID
-            $subId = Yii::$app->db->getLastInsertID();
+            $subId = $model->getPrimaryKey();
+//            $subId = Yii::$app->db->getLastInsertID();
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {

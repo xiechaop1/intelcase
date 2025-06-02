@@ -227,7 +227,8 @@ class VisitApi extends ApiAction
             $transaction->commit();
 
             // 获取最新一条数据ID
-            $visitId = Yii::$app->db->getLastInsertID();
+            $visitId = $model->getPrimaryKey();
+//            $visitId = Yii::$app->db->getLastInsertID();
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {

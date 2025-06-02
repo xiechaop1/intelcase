@@ -179,7 +179,8 @@ class ProjectApi extends ApiAction
             $transaction->commit();
 
             // 获取刚存储的最新的ID
-            $projectId = $subId = Yii::$app->db->getLastInsertID();
+            $projectId = $subId = $model->getPrimaryKey();
+//            $projectId = $subId = Yii::$app->db->getLastInsertID();
 
             // $url 获取当前的域名
             // Todo: 这里的域名和前端确认以后给

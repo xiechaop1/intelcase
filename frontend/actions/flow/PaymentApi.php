@@ -249,7 +249,8 @@ class PaymentApi extends ApiAction
 
             $transaction->commit();
 
-            $paymentId = Yii::$app->db->getLastInsertID();
+            $paymentId = $model->getPrimaryKey();
+//            $paymentId = Yii::$app->db->getLastInsertID();
 
             return $this->success([
                 'payment_id' => $paymentId,

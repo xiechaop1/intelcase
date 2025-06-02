@@ -201,7 +201,8 @@ class StaffApi extends ApiAction
 
             $transaction->commit();
 
-            $staffId = Yii::$db->getLastInsertID();
+            $staffId = $model->getPrimaryKey();
+//            $staffId = Yii::$db->getLastInsertID();
 
             return $this->success([
                 'staff_id' => $staffId,
