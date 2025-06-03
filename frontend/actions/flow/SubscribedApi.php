@@ -151,6 +151,7 @@ class SubscribedApi extends ApiAction
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
         }
 
         return $this->success();
