@@ -18,8 +18,8 @@ class ReportController extends Controller
 {
     public $layout = '@frontend/views/layouts/main_n.php';
 
-    public function behaviors()
-    {
+//    public function behaviors()
+//    {
 //        return ArrayHelper::merge(parent::behaviors(), [
 //            'access' => [
 //                'class' => AccessControl::className(),
@@ -42,7 +42,7 @@ class ReportController extends Controller
 //                ],
 //            ],
 //        ]);
-    }
+//    }
 
     public function actions()
     {
