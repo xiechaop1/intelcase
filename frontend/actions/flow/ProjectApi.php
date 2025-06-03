@@ -97,6 +97,9 @@ class ProjectApi extends ApiAction
         if (empty($projectId)) {
             return $this->fail('需要指定项目', -1000);
         }
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::PROJECT_ADD);
+
         $model = Project::find()
             ->where([
                 'id' => $projectId,
@@ -161,11 +164,11 @@ class ProjectApi extends ApiAction
 
     public function add() {
 
-        $role = '';
-        if (!empty($this->_user)) {
-            $role = $this->_user->role;
-        }
-        Yii::$app->privilege->check($role, Privilege::PROJECT_ADD);
+//        $role = '';
+//        if (!empty($this->_user)) {
+//            $role = $this->_user->role;
+//        }
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::PROJECT_ADD);
 
         $model = new Project();
 

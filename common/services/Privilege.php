@@ -32,4 +32,10 @@ class Privilege extends Component
         return $r;
     }
 
+    public function checkByUser($user, $tag) {
+        $role = !empty($user->role) ? $user->role : '';
+
+        return $this->check($role, $tag);
+    }
+
 }
