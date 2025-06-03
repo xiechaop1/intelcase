@@ -69,8 +69,16 @@ class MsgApi extends ApiAction
     public function add() {
         $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : '';
         $content = !empty($this->_get['content']) ? $this->_get['content'] : '';
+        $title = !empty($this->_get['title']) ? $this->_get['title'] : '';
+        $btn = !empty($this->_get['btn']) ? $this->_get['btn'] : [];
 
-        return Yii::$app->msg->add($recvId, $content);
+        $cont = [
+            'title' => $title,
+            'content' => $content,
+            'btn'   => $btn
+        ];
+
+        return Yii::$app->msg->add($recvId, $cont);
     }
 
     public function read() {

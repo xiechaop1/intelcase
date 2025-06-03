@@ -180,6 +180,10 @@ class ReportApi extends ApiAction
             if (!empty($recvId)) {
                 $content = [
                     'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                    'title' => '新报备',
+                    'btn' => [
+                        'label' => '确认',
+                    ],
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,
                 ];
