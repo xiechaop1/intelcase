@@ -130,8 +130,14 @@ class SubscribedApi extends ApiAction
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
-                        'label' => '确认',
-                        'type' => 'confirm_btn',
+                        [
+                            'label' => '确认',
+                            'type' => 'confirm_btn',
+                        ],
+                        [
+                            'label' => '取消',
+                            'type' => 'cancel_btn',
+                        ]
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);

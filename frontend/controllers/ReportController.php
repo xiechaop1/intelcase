@@ -20,28 +20,28 @@ class ReportController extends Controller
 
     public function behaviors()
     {
-        return ArrayHelper::merge(parent::behaviors(), [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => [
-                            'add', 'get_by_id', 'update'
-                        ],
-                        'allow' => true,
-                        'roles' => ['?']
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'login' => ['POST'],
-                    'verification-code' => ['POST', 'GET'],
-                    'register' => ['POST'],
-                ],
-            ],
-        ]);
+//        return ArrayHelper::merge(parent::behaviors(), [
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+//                    [
+//                        'actions' => [
+//                            'add', 'get_by_id', 'update'
+//                        ],
+//                        'allow' => true,
+//                        'roles' => ['?']
+//                    ],
+//                ],
+//            ],
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'login' => ['POST'],
+//                    'verification-code' => ['POST', 'GET'],
+//                    'register' => ['POST'],
+//                ],
+//            ],
+//        ]);
     }
 
     public function actions()

@@ -168,8 +168,14 @@ class VisitApi extends ApiAction
                     'content' => '有一条新认购/签约，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
                     'title' => '新认购/签约',
                     'btn' => [
-                        'label' => '确认',
-                        'type'  => 'input_page',
+                        [
+                            'label' => '确认',
+                            'type'  => 'input_page',
+                        ],
+                        [
+                            'label' => '取消',
+                            'type'  => 'visit_page',
+                        ],
                     ],
                     'visit_id' => $visitId,
                     'project_id' => $this->_projectId,
