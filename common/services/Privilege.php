@@ -10,12 +10,10 @@ namespace common\services;
 
 
 use common\models\Staff;
-use common\services\Curl;
-use common\models\User;
 use yii\base\Component;
 use yii;
 
-class Priviledge extends Component
+class Privilege extends Component
 {
 
     public function check($role, $tag) {
@@ -23,10 +21,12 @@ class Priviledge extends Component
         $r = "";
 
         $tagMap = [
-            'add_project' => [
+            \common\definitions\Privilege::PROJECT_ADD => [
                 Staff::STAFF_ROLE_ADMIN,
             ],
         ];
+
+        $r = in_array($role, $tagMap[$tag]);
 
 
         return $r;

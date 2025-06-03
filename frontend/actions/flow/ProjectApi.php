@@ -10,9 +10,11 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\definitions\Privilege;
 use common\models\Project;
 use common\models\Payment;
 use common\models\Report;
+use common\models\Staff;
 use common\models\Subscribed;
 use common\models\Visit;
 //use common\services\Log;
@@ -27,6 +29,7 @@ class ProjectApi extends ApiAction
     private $_reportId;
 
     private $_userId;
+    private $_user;
 
     public function run()
     {
@@ -38,8 +41,11 @@ class ProjectApi extends ApiAction
             }
 
             $this->_userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
-
-
+            if (!empty($this->_userId)) {
+                $this->_user = Staff::find()
+                    ->where(['id' => $this->_userId])
+                    ->one();
+            }
 
             $this->valToken();
             switch ($this->action) {
@@ -154,6 +160,12 @@ class ProjectApi extends ApiAction
     }
 
     public function add() {
+
+        $role = '';
+        if (!empty($this->_user)) {
+            $role = $this->_user->role;
+        }
+        Yii::$app->privilege->check($role, Privilege::PROJECT_ADD);
 
         $model = new Project();
 
