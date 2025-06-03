@@ -352,6 +352,7 @@ class PaymentApi extends ApiAction
                         'title' => '完成支付',
                         'btn' => [
                             'label' => '最终确认',
+                            'type' => 'confirm_btn',
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
@@ -363,6 +364,7 @@ class PaymentApi extends ApiAction
                         'title' => '完成部分支付',
                         'btn' => [
                             'label' => '确认',
+                            'type' => 'confirm_btn',
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
