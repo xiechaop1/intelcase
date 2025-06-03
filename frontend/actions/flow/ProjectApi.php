@@ -26,6 +26,8 @@ class ProjectApi extends ApiAction
     private $_projectId;
     private $_reportId;
 
+    private $_userId;
+
     public function run()
     {
         try {
@@ -34,6 +36,10 @@ class ProjectApi extends ApiAction
             } else {
                 $this->_get = Yii::$app->request->get();
             }
+
+            $this->_userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
+
+
 
             $this->valToken();
             switch ($this->action) {
