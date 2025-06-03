@@ -34,6 +34,10 @@ class PaymentController extends Controller
                 'class'     => 'frontend\actions\flow\PaymentApi',
                 'action'    => 'update',
             ],
+            'confirm' => [
+                'class'     => 'frontend\actions\flow\PaymentApi',
+                'action'    => 'confirm',
+            ],
         ];
     }
 }

@@ -56,6 +56,9 @@ class ReportApi extends ApiAction
                 case 'update':
                     $ret = $this->update();
                     break;
+                case 'confirm':
+                    $ret = $this->confirm();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -84,6 +87,32 @@ class ReportApi extends ApiAction
         }
 
         return $this->success($model);
+    }
+
+    public function confirm() {
+        $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+        $reportStatus = !empty($this->_get['report_status']) ? $this->_get['report_status'] : Report::REPORT_STATUS_INVALID;
+
+        if (empty($reportId)) {
+            return $this->fail('需要指定报备ID', -1000);
+        }
+
+        $model = Report::find()
+            ->where(['id' => $reportId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('报备不存在', -1000);
+        }
+
+        $model->report_status = $reportStatus;
+        try {
+            $model->save();
+        } catch (\Exception $e) {
+            return $this->fail('操作失败', -1000);
+        }
+
+        return $this->success(['report' => $model]);
     }
 
     public function update() {

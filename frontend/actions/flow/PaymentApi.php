@@ -10,7 +10,9 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\models\Msg;
 use common\models\Payment;
+use common\models\Project;
 use common\models\Report;
 use common\models\Subscribed;
 use common\models\Visit;
@@ -23,6 +25,7 @@ class PaymentApi extends ApiAction
     public $action;
     private $_get;
     private $_projectId;
+    private $_project;
     private $_reportId;
 
     public function run()
@@ -40,6 +43,12 @@ class PaymentApi extends ApiAction
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
             }
+
+            $this->_project = Project::find()
+                ->where([
+                    'id' => $this->_projectId,
+                ])
+                ->one();
 
             if (empty($this->_reportId)) {
                 return $this->fail('需要指定报备', -1000);
@@ -68,6 +77,9 @@ class PaymentApi extends ApiAction
                     break;
                 case 'update':
                     $ret = $this->update();
+                    break;
+                case 'confirm':
+                    $ret = $this->confirm();
                     break;
                 case 'get_by_id':
                     $ret = $this->getById();
@@ -129,6 +141,38 @@ class PaymentApi extends ApiAction
         return $this->success($model);
     }
 
+    public function confirm() {
+
+        $paymentId = !empty($this->_get['payment_id']) ? $this->_get['payment_id'] : 0;
+
+        $recv_amount = !empty($this->_get['recv_amount']) ? $this->_get['recv_amount'] : 0;
+        $recv_time = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : time();
+        $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
+        $pay_status = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : Payment::PAYMENT_STATUS_COMPLETED;
+
+        if (empty($paymentId)) {
+            return $this->fail('需要指定支付ID', -1000);
+        }
+
+        $model = Payment::find()
+            ->where([
+                'id' => $paymentId,
+            ])
+            ->one();
+
+        if (!empty($model)) {
+            $model->recv_amount = $recv_amount;
+            $model->recv_time = $recv_time;
+            $model->fee = $fee;
+            $model->pay_status = $pay_status;
+            if ($model->save()) {
+                return $this->success($model);
+            } else {
+                return $this->fail('操作失败', -1000);
+            }
+        }
+    }
+
     public function update() {
         $paymentId = !empty($this->_get['payment_id']) ? $this->_get['payment_id'] : 0;
 
@@ -160,6 +204,44 @@ class PaymentApi extends ApiAction
                 }
             }
             if ($model->save()) {
+
+//                $payments = Payment::find()
+//                    ->where(['project_id' => $model->project_id])
+//                    ->andFilterWhere(['sub_id' => $model->sub_id])
+//                    ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
+//                    ->all();
+//
+//                $sub = Subscribed::find()
+//                    ->where(['id' => $model->sub_id])
+//                    ->one();
+//
+//                $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
+//
+//                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+//                if ($payStatus == Subscribed::SUB_PAY_FULLY) {
+//                    $content = [
+//                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付，请最终确认',
+//                        'project_id' => $this->_projectId,
+//                        'title' => '完成支付',
+//                        'btn' => [
+//                            'label' => '最终确认',
+//                        ],
+//                    ];
+//                    $recvId = $this->_project->financial_staff_id;
+//                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//                } elseif ($payStatus == Subscribed::SUB_PAY_PARTLY) {
+//                    $content = [
+//                        'content' => '项目 ' . $this->_project->project_name . ' 完成不分支付，请确认',
+//                        'project_id' => $this->_projectId,
+//                        'title' => '完成股份支付',
+//                        'btn' => [
+//                            'label' => '确认',
+//                        ],
+//                    ];
+//                    $recvId = $this->_project->financial_staff_id;
+//                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//                }
+
                 return $this->success($model);
             } else {
                 return $this->fail('操作失败', -1000);
@@ -248,6 +330,45 @@ class PaymentApi extends ApiAction
             $model->save();
 
             $transaction->commit();
+
+            if ($payType == Payment::PAYMENT_TYPE_PAY) {
+                $payments = Payment::find()
+                    ->where(['project_id' => $this->_project_id])
+                    ->andFilterWhere(['sub_id' => $subId])
+                    ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
+                    ->all();
+
+//            $sub = Subscribed::find()
+//                ->where(['id' => $subId])
+//                ->one();
+//
+//            $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
+
+                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+                if ($payStatus == Subscribed::SUB_PAY_FULLY) {
+                    $content = [
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付，请最终确认',
+                        'project_id' => $this->_projectId,
+                        'title' => '完成支付',
+                        'btn' => [
+                            'label' => '最终确认',
+                        ],
+                    ];
+                    $recvId = $this->_project->financial_staff_id;
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                } elseif ($payStatus == Subscribed::SUB_PAY_PARTLY) {
+                    $content = [
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成不分支付，请确认',
+                        'project_id' => $this->_projectId,
+                        'title' => '完成股份支付',
+                        'btn' => [
+                            'label' => '确认',
+                        ],
+                    ];
+                    $recvId = $this->_project->financial_staff_id;
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+            }
 
             $paymentId = $model->getPrimaryKey();
 //            $paymentId = Yii::$app->db->getLastInsertID();

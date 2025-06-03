@@ -59,6 +59,10 @@ class ReportController extends Controller
                 'class'     => 'frontend\actions\flow\ReportApi',
                 'action'    => 'update',
             ],
+            'confirm' => [
+                'class'     => 'frontend\actions\flow\ReportApi',
+                'action'    => 'confirm',
+            ],
         ];
     }
 }

@@ -159,20 +159,21 @@ class SubscribedApi extends ApiAction
             ->all();
 
         $payTotal = 0;
-        if (!empty($payments)) {
-            foreach ($payments as $pay) {
-                if ($pay->pay_type == Payment::PAYMENT_TYPE_PAY) {
-                    $payTotal += $pay->recv_amount;
-                } else {
-                    $payTotal -= $pay->recv_amount;
-                }
-            }
-            if ($payTotal > $model->sub_total_price) {
-                $payStatus = Subscribed::SUB_PAY_FULLY;
-            } else {
-                $payStatus = Subscribed::SUB_PAY_PARTLY;
-            }
-        }
+//        if (!empty($payments)) {
+//            foreach ($payments as $pay) {
+//                if ($pay->pay_type == Payment::PAYMENT_TYPE_PAY) {
+//                    $payTotal += $pay->recv_amount;
+//                } else {
+//                    $payTotal -= $pay->recv_amount;
+//                }
+//            }
+//            if ($payTotal > $model->sub_total_price) {
+//                $payStatus = Subscribed::SUB_PAY_FULLY;
+//            } else {
+//                $payStatus = Subscribed::SUB_PAY_PARTLY;
+//            }
+//        }
+        $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
 
         if (empty($model)) {
             return $this->fail('订阅不存在', -1000);

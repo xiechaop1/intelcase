@@ -74,6 +74,9 @@ class VisitApi extends ApiAction
                 case 'update':
                     $ret = $this->update();
                     break;
+                case 'confirm':
+                    $ret = $this->confirm();
+                    break;
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
@@ -129,6 +132,28 @@ class VisitApi extends ApiAction
         }
 
         return $this->success($model);
+    }
+
+    public function confirm() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+        $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : Visit::VISIT_CONFIRM_STATUS_CONFIRM;
+        $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+
+        if (empty($visitId)) {
+            return $this->fail('需要指定到访ID', -1000);
+        }
+
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+
+        $model->visit_confirm_status = $visitConfirmStatus;
+        $model->visit_status_comment = $visitStatusComment;
+        $model->save();
     }
 
     public function update() {
