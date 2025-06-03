@@ -16,6 +16,7 @@ use common\models\Report;
 //use common\services\Log;
 use common\models\Subscribed;
 use frontend\actions\ApiAction;
+use Mpdf\Tag\Sub;
 use Yii;
 
 class SubscribedApi extends ApiAction
@@ -75,6 +76,9 @@ class SubscribedApi extends ApiAction
                 case 'update':
                     $ret = $this->update();
                     break;
+                case 'confirm_sign':
+                    $ret = $this->confirmSign();
+                    break;
                 case 'confirm_deal':
                     $ret = $this->confirmDeal();
                     break;
@@ -100,6 +104,58 @@ class SubscribedApi extends ApiAction
     }
 
     public function confirmDeal() {
+        $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
+        $subStatus = !empty($this->_get['sub_status']) ? $this->_get['sub_status'] : Subscribed::SUBSCRIBED_STATUS_CONFIRM;
+
+        if (empty($subId)) {
+            return $this->fail('需要指定订阅ID', -1000);
+        }
+
+        $model = Subscribed::find()
+            ->where(['id' => $subId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('订阅不存在', -1000);
+        }
+
+        $model->sub_status = $subStatus;
+        $model->save();
+
+        if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
+            $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'sub_id' => $subId,
+                    'title' => '新认购',
+                    'btn' => [
+                        'label' => '确认',
+                        'type' => 'confirm_btn',
+                    ],
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
+        } else if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN) {
+            $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+            $sub = Subscribed::find()
+                ->where(['id' => $subId])
+                ->one();
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '新认购 ' . $sub->room_no . ' 出纳已经确认！',
+                    'sub_id' => $subId,
+                    'title' => '新认购',
+                    'btn' => [
+
+                    ],
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+        }
+
+        return $this->success();
+    }
+    public function confirmSign() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 //        $supplySubGuest = !empty($this->_get['supply_sub_guest']) ? $this->_get['supply_sub_guest'] : '';
 //        $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : 0;
