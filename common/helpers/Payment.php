@@ -13,7 +13,7 @@ use yii;
 
 class Payment
 {
-    public static function checkTotalAmount($payments, $subTotalPrice)
+    public static function checkTotalAmount($payments, $subTotalPrice, $nowPayment = [])
     {
         $payTotal = 0;
         $payStatus = Subscribed::SUB_PAY_WAIT;
@@ -26,6 +26,15 @@ class Payment
                     $payTotal -= $pay->recv_amount;
                 }
             }
+
+            if (!empty($nowPayment)) {
+                if ($nowPayment->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
+                    $payTotal += $nowPayment->amount;
+                } else {
+                    $payTotal -= $nowPayment->amount;
+                }
+            }
+
             if ($payTotal > $subTotalPrice) {
                 $payStatus = Subscribed::SUB_PAY_FULLY;
             } else {

@@ -166,6 +166,33 @@ class PaymentApi extends ApiAction
             $model->fee = $fee;
             $model->pay_status = $pay_status;
             if ($model->save()) {
+                $payments = Payment::find()
+                    ->where(['project_id' => $this->_project_id])
+                    ->andFilterWhere(['sub_id' => $model->sub_id])
+                    ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
+                    ->all();
+
+                $sub = Subscribed::find()
+                    ->where(['id' => $model->sub_id])
+                    ->one();
+
+                $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
+
+                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+                if ($payStatus == Subscribed::SUB_PAY_FULLY) {
+                    $content = [
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付',
+                        'project_id' => $this->_projectId,
+                        'title' => '完成支付',
+                        'btn' => [
+                            'label' => '签约',
+                            'type' => 'sub_confirm_deal_page',
+                        ],
+                    ];
+                    $recvId = $this->_project->advisor_staff_id;
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+
                 return $this->success($model);
             } else {
                 return $this->fail('操作失败', -1000);
@@ -344,7 +371,7 @@ class PaymentApi extends ApiAction
 //
 //            $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
 
-                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice, $model);
                 if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                     $content = [
                         'content' => '项目 ' . $this->_project->project_name . ' 完成支付，请最终确认',
@@ -352,7 +379,7 @@ class PaymentApi extends ApiAction
                         'title' => '完成支付',
                         'btn' => [
                             'label' => '最终确认',
-                            'type' => 'confirm_btn',
+                            'type' => 'payment_confirm_page',
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
@@ -364,7 +391,7 @@ class PaymentApi extends ApiAction
                         'title' => '完成部分支付',
                         'btn' => [
                             'label' => '确认',
-                            'type' => 'confirm_btn',
+                            'type' => 'payment_confirm_page',
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;

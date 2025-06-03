@@ -163,6 +163,14 @@ class VisitApi extends ApiAction
          || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
             $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
             $content = [];
+
+            if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+            || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                $jumpType = 'sub_buy_page';
+            } else {
+                $jumpType = 'sub_rent_page';
+            }
+
             if (!empty($recvId)) {
                 $content = [
                     'content' => '有一条新认购/签约，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
@@ -170,11 +178,13 @@ class VisitApi extends ApiAction
                     'btn' => [
                         [
                             'label' => '确认',
-                            'type'  => 'input_page',
+                            'type'  => $jumpType,
+                            'visit_id' => $visitId,
                         ],
                         [
                             'label' => '取消',
                             'type'  => 'visit_page',
+                            'visit_id' => $visitId,
                         ],
                     ],
                     'visit_id' => $visitId,
@@ -296,6 +306,8 @@ class VisitApi extends ApiAction
                     'title' => '新到访',
                     'btn' => [
                         'label' => '确认',
+                        'type'  => 'visit_confirm_page',
+                        'visit_id'  => $visitId
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
