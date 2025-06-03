@@ -153,7 +153,32 @@ class VisitApi extends ApiAction
 
         $model->visit_confirm_status = $visitConfirmStatus;
         $model->visit_status_comment = $visitStatusComment;
-        $model->save();
+        try {
+            $model->save();
+        } catch (\Exception $e) {
+            return $this->fail('操作失败', -1000);
+        }
+
+        if ($visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
+         || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
+            $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+            $content = [];
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新认购/签约，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'title' => '新认购/签约',
+                    'btn' => [
+                        'label' => '确认',
+                        'type'  => 'input_page',
+                    ],
+                    'visit_id' => $visitId,
+                    'project_id' => $this->_projectId,
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
+        }
+
+        return $this->success(['visit' => $model]);
     }
 
     public function update() {

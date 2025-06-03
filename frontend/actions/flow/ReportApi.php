@@ -204,19 +204,39 @@ class ReportApi extends ApiAction
             $reportId = $model->getPrimaryKey();
 //            $reportId = Yii::$app->db->getLastInsertID();
 
-            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
-            $content = [];
-            if (!empty($recvId)) {
-                $content = [
-                    'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
-                    'title' => '新报备',
-                    'btn' => [
-                        'label' => '确认',
-                    ],
-                    'report_id' => $reportId,
-                    'project_id' => $this->_projectId,
-                ];
-                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+            if ($reportStatus == Report::REPORT_STATUS_INVALID) {
+                $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+                $content = [];
+                if (!empty($recvId)) {
+                    $content = [
+                        'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'title' => '新报备',
+                        'btn' => [
+                            'label' => '确认',
+                            'type'  => 'confirm_page',
+                        ],
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+            } else {
+                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                $content = [];
+                if (!empty($recvId)) {
+                    $content = [
+                        'content' => '有客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'title' => '新到访',
+                        'btn' => [
+                            'label' => '查看',
+                            'type' => 'input_page',
+                        ],
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
             }
 
 

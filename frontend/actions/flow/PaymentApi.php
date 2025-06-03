@@ -304,9 +304,9 @@ class PaymentApi extends ApiAction
                     $recvAmountRet += $payment->recv_amount;
                 }
             }
-            if ($recvAmountRet + $amount >= $subTotalPrice) {
-                // Todo: 认购总额超了，应该进入下一个流程了
-            }
+//            if ($recvAmountRet + $amount >= $subTotalPrice) {
+//                // Todo: 认购总额超了，应该进入下一个流程了
+//            }
 
 
             $model->payer = $payer;
@@ -358,9 +358,9 @@ class PaymentApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 } elseif ($payStatus == Subscribed::SUB_PAY_PARTLY) {
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成不分支付，请确认',
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，请确认',
                         'project_id' => $this->_projectId,
-                        'title' => '完成股份支付',
+                        'title' => '完成部分支付',
                         'btn' => [
                             'label' => '确认',
                         ],

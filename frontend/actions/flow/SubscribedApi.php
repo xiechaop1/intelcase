@@ -75,6 +75,9 @@ class SubscribedApi extends ApiAction
                 case 'update':
                     $ret = $this->update();
                     break;
+                case 'confirm_deal':
+                    $ret = $this->confirmDeal();
+                    break;
                 case 'get_by_project_id':
                     $ret = $this->getByProjectId();
                     break;
@@ -94,6 +97,62 @@ class SubscribedApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function confirmDeal() {
+        $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
+//        $supplySubGuest = !empty($this->_get['supply_sub_guest']) ? $this->_get['supply_sub_guest'] : '';
+//        $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : 0;
+//        $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
+//        $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
+//        $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
+
+        if (empty($subId)) {
+            return $this->fail('需要指定订阅ID', -1000);
+        }
+
+        $model = Subscribed::find()
+            ->where(['id' => $subId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('订阅不存在', -1000);
+        }
+
+        foreach ($this->_get as $key => $value) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id'])) {
+                continue;
+            }
+            if (in_array($key, ['supply_sub_guest', 'supply_guest_id_type', 'supply_guest_id_no', 'supply_guest_mobile', 'supply_total_price'])) {
+
+                if (!empty($value) && isset($this->_get[$key])) {
+                    $model->$key = $value;
+                }
+            }
+        }
+
+        try {
+            $model->save();
+
+            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            if (!empty($recvId)) {
+                $content = [
+                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'project_id' => $this->_projectId,
+                    'title' => '新认购',
+                    'btn' => [
+                        'label' => '确认',
+                        'type' => 'confirm_btn',
+                    ],
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
+
+        } catch (\Exception $e) {
+            return $this->fail('操作失败', -1000);
+        }
+
+        return $this->success();
     }
 
     public function update() {
@@ -337,6 +396,7 @@ class SubscribedApi extends ApiAction
                     'title' => '新认购',
                     'btn' => [
                         'label' => '确认',
+                        'type' => 'input_page',
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
