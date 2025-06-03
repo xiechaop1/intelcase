@@ -81,6 +81,9 @@ class SubscribedApi extends ApiAction
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
+                case 'get_with_payments_by_id':
+                    $ret = $this->getWithPaymentsById();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -140,7 +143,7 @@ class SubscribedApi extends ApiAction
         return $this->success(['sub' => $model]);
     }
 
-    public function getWithPaymentById() {
+    public function getWithPaymentsById() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
         if (empty($subId)) {
