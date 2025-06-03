@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\models\Msg;
+use common\models\Payment;
 use common\models\Project;
 use common\models\Report;
 //use common\services\Log;
@@ -138,6 +139,45 @@ class SubscribedApi extends ApiAction
 
         return $this->success(['sub' => $model]);
     }
+
+    public function getWithPaymentById() {
+        $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
+
+        if (empty($subId)) {
+            return $this->fail('需要指定订阅ID', -1000);
+        }
+
+        $model = Subscribed::find()
+            ->where(['id' => $subId])
+            ->one();
+
+        $payments = Payment::find()
+            ->where(['sub_id' => $subId])
+            ->all();
+
+        $payTotal = 0;
+        if (!empty($payments)) {
+            foreach ($payments as $pay) {
+                if ($pay->pay_type == Payment::PAYMENT_TYPE_PAY) {
+                    $payTotal += $pay->recv_amount;
+                } else {
+                    $payTotal -= $pay->recv_amount;
+                }
+            }
+            if ($payTotal > $model->sub_total_price) {
+                $payStatus = Subscribed::SUB_PAY_FULLY;
+            } else {
+                $payStatus = Subscribed::SUB_PAY_PARTLY;
+            }
+        }
+
+        if (empty($model)) {
+            return $this->fail('订阅不存在', -1000);
+        }
+
+        return $this->success(['sub' => $model, 'payments' => $payments, 'pay_status' => $payStatus]);
+    }
+
 
     public function getByProjectId() {
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;

@@ -21,6 +21,10 @@ class Subscribed extends \common\models\gii\Subscribed
         self::SUBSCRIBED_STATUS_REJECT     => '拒绝',
     ];
 
+    const SUB_PAY_FULLY                 = 1;    // 全款
+    const SUB_PAY_PARTLY                = 2;    // 部分
+    const SUB_PAY_WAIT                  = 0;    // 待支付
+
     public function behaviors()
     {
 
