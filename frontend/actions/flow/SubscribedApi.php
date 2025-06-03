@@ -88,6 +88,9 @@ class SubscribedApi extends ApiAction
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
+                case 'get_with_payments_by_room_no':
+                    $ret = $this->getWithPaymentsByRoomNo();
+                    break;
                 case 'get_with_payments_by_id':
                     $ret = $this->getWithPaymentsById();
                     break;
@@ -265,6 +268,36 @@ class SubscribedApi extends ApiAction
         return $this->success(['sub' => $model]);
     }
 
+    public function getWithPaymentsByRoomNo() {
+        $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
+        $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
+
+        if (empty($roomNo) && empty($mobile)) {
+            return $this->fail('需要指定房间号和手机号', -1000);
+        }
+
+        $model = Subscribed::find()
+            ->where([
+                'room_no' => $roomNo,
+                'mobile' => $mobile
+            ])
+            ->one();
+
+        $payments = [];
+        if (!empty($model)) {
+            $subId = $model->id;
+
+            $payments = Payment::find()
+                ->where(['sub_id' => $subId])
+                ->all();
+        }
+
+        $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
+
+        return $this->success(['sub' => $model, 'payments' => $payments, 'pay_status' => $payStatus]);
+
+    }
+
     public function getWithPaymentsById() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
@@ -298,7 +331,7 @@ class SubscribedApi extends ApiAction
         $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
 
         if (empty($model)) {
-            return $this->fail('订阅不存在', -1000);
+            return $this->fail('订购不存在', -1000);
         }
 
         return $this->success(['sub' => $model, 'payments' => $payments, 'pay_status' => $payStatus]);

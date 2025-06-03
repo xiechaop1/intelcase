@@ -34,6 +34,10 @@ class SubscribedController extends Controller
                 'class'     => 'frontend\actions\flow\SubscribedApi',
                 'action'    => 'get_with_payments_by_id',
             ],
+            'get_with_payments_by_room_no' => [
+                'class'     => 'frontend\actions\flow\SubscribedApi',
+                'action'    => 'get_with_payments_by_room_no',
+            ],
             'update' => [
                 'class'     => 'frontend\actions\flow\SubscribedApi',
                 'action'    => 'update',
