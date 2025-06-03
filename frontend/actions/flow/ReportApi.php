@@ -214,7 +214,8 @@ class ReportApi extends ApiAction
                         'title' => '新报备',
                         'btn' => [
                             'label' => '确认',
-                            'type'  => 'confirm_page',
+                            'type'  => 'report_confirm_page',
+                            'report_id' => $reportId,
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
@@ -227,10 +228,11 @@ class ReportApi extends ApiAction
                 if (!empty($recvId)) {
                     $content = [
                         'content' => '有客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
-                        'title' => '新到访',
+                        'title' => '新报备',
                         'btn' => [
                             'label' => '查看',
-                            'type' => 'input_page',
+                            'type' => 'visit_page',
+                            'report_id' => $reportId,
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
