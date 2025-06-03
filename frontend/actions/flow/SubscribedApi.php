@@ -24,6 +24,8 @@ class SubscribedApi extends ApiAction
     private $_projectId;
     private $_reportId;
 
+    private $_project;
+
     public function run()
     {
         try {
