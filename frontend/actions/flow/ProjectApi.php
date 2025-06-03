@@ -55,6 +55,9 @@ class ProjectApi extends ApiAction
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
+                case 'get_list':
+                    $ret = $this->getList();
+                    break;
                 case 'update':
                     $ret = $this->update();
                     break;
@@ -68,6 +71,33 @@ class ProjectApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getList() {
+        $query = Project::find()
+//            ->where(['status' => Common::STATUS_ACTIVE])
+            ->orderBy(['id' => SORT_DESC]);
+
+        $projectName = !empty($this->_get['project_name']) ? $this->_get['project_name'] : '';
+        if (!empty($projectName)) {
+            $query->andWhere(['like', 'project_name', $projectName]);
+        }
+
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+
+        $offset = ($page - 1) * $pageSize;
+
+        $models = $query->offset($offset)
+            ->limit($pageSize)
+            ->all();
+
+        return $this->success([
+            'projects' => $models,
+            'total' => $query->count(),
+            'page_size' => $pageSize,
+            'page' => $page,
+        ]);
     }
 
     public function getById()
