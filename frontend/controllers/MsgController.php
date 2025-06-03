@@ -18,10 +18,10 @@ class MsgController extends Controller
     public function actions()
     {
         return [
-//            'add' => [
-//                'class'     => 'frontend\actions\flow\MsgApi',
-//                'action'    => 'add',
-//            ],
+            'add' => [
+                'class'     => 'frontend\actions\flow\MsgApi',
+                'action'    => 'add',
+            ],
             'get_by_recv_id' => [
                 'class'     => 'frontend\actions\flow\MsgApi',
                 'action'    => 'get_by_recv_id',
