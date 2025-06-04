@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
@@ -23,6 +24,9 @@ class ReportApi extends ApiAction
     private $_get;
     private $_projectId;
     private $_project;
+
+    private $_staffId;
+    private $_user;
 
     public function run()
     {
@@ -44,6 +48,14 @@ class ReportApi extends ApiAction
             $this->_project = Project::find()
                 ->where(['id' => $this->_projectId])
                 ->one();
+
+            $this->_staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+
+            if (!empty($this->_staffId)) {
+                $this->_user = \common\models\Staff::find()
+                    ->where(['id' => $this->_staffId])
+                    ->one();
+            }
 
             $this->valToken();
             switch ($this->action) {
@@ -92,6 +104,8 @@ class ReportApi extends ApiAction
     public function confirm() {
         $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
         $reportStatus = !empty($this->_get['report_status']) ? $this->_get['report_status'] : Report::REPORT_STATUS_INVALID;
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::REPORT_CONFIRM);
 
         if (empty($reportId)) {
             return $this->fail('需要指定报备ID', -1000);

@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Report;
 use common\models\Visit;
@@ -26,6 +27,9 @@ class VisitApi extends ApiAction
 
     private $_project;
 
+    private $_staffId;
+    private $_user;
+
     public function run()
     {
         try {
@@ -37,6 +41,14 @@ class VisitApi extends ApiAction
 
             $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
             $this->_reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+
+            $this->_staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+
+            if (!empty($this->_staffId)) {
+                $this->_user = \common\models\Staff::find()
+                    ->where(['id' => $this->_staffId])
+                    ->one();
+            }
 
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
@@ -138,6 +150,8 @@ class VisitApi extends ApiAction
         $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
         $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : Visit::VISIT_CONFIRM_STATUS_CONFIRM;
         $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::VISIT_CONFIRM);
 
         if (empty($visitId)) {
             return $this->fail('需要指定到访ID', -1000);

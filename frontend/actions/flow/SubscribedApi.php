@@ -9,6 +9,7 @@
 namespace frontend\actions\flow;
 
 
+use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Payment;
 use common\models\Project;
@@ -28,6 +29,9 @@ class SubscribedApi extends ApiAction
 
     private $_project;
 
+    private $_staffId;
+    private $_user;
+
     public function run()
     {
         try {
@@ -39,6 +43,13 @@ class SubscribedApi extends ApiAction
 
             $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
             $this->_reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+
+            $this->_staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+            if (!empty($this->_staffId)) {
+                $this->_user = \common\models\Staff::find()
+                    ->where(['id' => $this->_staffId])
+                    ->one();
+            }
 
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
@@ -111,15 +122,17 @@ class SubscribedApi extends ApiAction
         $subStatus = !empty($this->_get['sub_status']) ? $this->_get['sub_status'] : Subscribed::SUBSCRIBED_STATUS_CONFIRM;
 
         if (empty($subId)) {
-            return $this->fail('需要指定订阅ID', -1000);
+            return $this->fail('需要指定认购ID', -1000);
         }
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::SUB_CONFIRM_DEAL);
 
         $model = Subscribed::find()
             ->where(['id' => $subId])
             ->one();
 
         if (empty($model)) {
-            return $this->fail('订阅不存在', -1000);
+            return $this->fail('认购不存在', -1000);
         }
 
         $model->sub_status = $subStatus;
@@ -174,6 +187,8 @@ class SubscribedApi extends ApiAction
 //        $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
 //        $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
 //        $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::SUB_CONFIRM_SIGN);
 
         if (empty($subId)) {
             return $this->fail('需要指定订阅ID', -1000);

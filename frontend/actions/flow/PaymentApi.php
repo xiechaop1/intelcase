@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Common;
+use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Payment;
 use common\models\Project;
@@ -28,6 +29,9 @@ class PaymentApi extends ApiAction
     private $_project;
     private $_reportId;
 
+    private $_staffId;
+    private $_user;
+
     public function run()
     {
         try {
@@ -39,6 +43,13 @@ class PaymentApi extends ApiAction
 
             $this->_projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
             $this->_reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
+
+            $this->_staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+            if (!empty($this->_staffId)) {
+                $this->_user = \common\models\Staff::find()
+                    ->where(['id' => $this->_staffId])
+                    ->one();
+            }
 
             if (empty($this->_projectId)) {
                 return $this->fail('需要指定项目', -1000);
@@ -149,6 +160,8 @@ class PaymentApi extends ApiAction
         $recv_time = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : time();
         $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
         $pay_status = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : Payment::PAYMENT_STATUS_COMPLETED;
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::PAYMENT_CONFIRM);
 
         if (empty($paymentId)) {
             return $this->fail('需要指定支付ID', -1000);
