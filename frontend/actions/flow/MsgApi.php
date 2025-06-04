@@ -119,6 +119,14 @@ class MsgApi extends ApiAction
             ->asArray()
             ->all();
 
+        if (!empty($msgList)) {
+            foreach ($msgList as $msg) {
+                if (!empty($msg['content'])) {
+                    $msg['content'] = json_decode($msg['content'], true);
+                }
+            }
+        }
+
         return $this->success($msgList);
 
     }
