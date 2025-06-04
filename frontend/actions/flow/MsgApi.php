@@ -120,7 +120,7 @@ class MsgApi extends ApiAction
             ->all();
 
         if (!empty($msgList)) {
-            foreach ($msgList as $msg) {
+            foreach ($msgList as &$msg) {
                 if (!empty($msg['content'])) {
                     $msg['content'] = json_decode($msg['content'], true);
                 }
