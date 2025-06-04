@@ -104,40 +104,49 @@ class DataApi extends ApiAction
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
         }
 
+        $reportTemp = [];
+        $visitTemp = [];
+        $visitRate = [];
+
         if ($inter == 'daily') {
             $reportCount->groupBy('DATE(visit_time)');
             $visitCount->groupBy('DATE(visit_time)');
-        }
 
-        $reportRet = $reportCount->asArray()->all();
-        $visitRet = $visitCount->asArray()->all();
 
-//        $reportCt = $reportRet['ct'];
-//        $visitCt = $visitRet['ct'];
+            $reportRet = $reportCount->asArray()->all();
+            $visitRet = $visitCount->asArray()->all();
 
-        $reportTemp = [];
-        if (!empty($reportRet)) {
-            foreach ($reportRet as $reportOne) {
-                $reportTemp[$reportOne['dt']] = $reportOne['ct'];
-            }
-        }
+            //        $reportCt = $reportRet['ct'];
+            //        $visitCt = $visitRet['ct'];
 
-        $visitTemp = [];
-        if (!empty($visitRet)) {
-            foreach ($visitRet as $visitOne) {
-                $visitTemp[$visitOne['dt']] = $visitOne['ct'];
-            }
-        }
-
-        $visitRate = [];
-        if (!empty($reportTemp)) {
-            foreach ($reportTemp as $rdt => $rct) {
-                if (isset($visitTemp[$rdt])) {
-                    $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
-                } else {
-                    $visitRate[$rdt] = 0;
+            if (!empty($reportRet)) {
+                foreach ($reportRet as $reportOne) {
+                    $reportTemp[$reportOne['dt']] = $reportOne['ct'];
                 }
             }
+
+            if (!empty($visitRet)) {
+                foreach ($visitRet as $visitOne) {
+                    $visitTemp[$visitOne['dt']] = $visitOne['ct'];
+                }
+            }
+
+            if (!empty($reportTemp)) {
+                foreach ($reportTemp as $rdt => $rct) {
+                    if (isset($visitTemp[$rdt])) {
+                        $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
+                    } else {
+                        $visitRate[$rdt] = 0;
+                    }
+                }
+            }
+        } else {
+            $reportRet = $reportCount->asArray()->all();
+            $visitRet = $visitCount->asArray()->all();
+
+            $reportTemp['all'] = $reportRet['ct'];
+            $visitTemp['all'] = $visitRet['ct'];
+            $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
         }
 
 //        $reportCt = $reportCount->count();
