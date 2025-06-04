@@ -175,10 +175,10 @@ class DataApi extends ApiAction
         // 使用 join 查询获取所有需要的数据
         $query = Visit::find()
             ->select([
-                'visit.*',
-                'project.name as project_name',
-                'staff.name as staff_name',
-                'subscribed.*'
+                'o_visit.*',
+                'o_project.name as project_name',
+                'o_staff.name as staff_name',
+                'o_subscribed.*'
             ])
             ->joinWith('project')
             ->joinWith('subscribed');
