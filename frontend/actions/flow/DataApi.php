@@ -65,7 +65,7 @@ class DataApi extends ApiAction
 
     public function getData()
     {
-        
+
     }
 
     public function guestList()

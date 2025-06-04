@@ -26,6 +26,10 @@ class ProjectController extends Controller
                 'class'     => 'frontend\actions\flow\ProjectApi',
                 'action'    => 'get_by_id',
             ],
+            'get_list' => [
+                'class'     => 'frontend\actions\flow\ProjectApi',
+                'action'    => 'get_list',
+            ],
             'update' => [
                 'class'     => 'frontend\actions\flow\ProjectApi',
                 'action'    => 'update',
