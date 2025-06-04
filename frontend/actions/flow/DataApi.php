@@ -181,8 +181,8 @@ class DataApi extends ApiAction
                 'subscribed.*'
             ])
             ->joinWith('project')
-            ->joinWith('subscribed')
-            ->joinWith('staff');
+            ->joinWith('subscribed');
+//            ->joinWith('staff');
             // ->leftJoin('o_project', 'visit.project_id = o_project.id')
             // ->leftJoin('o_staff', 'visit.adv_staff_id = o_staff.id')
             // ->leftJoin('o_subscribed', 'visit.guest_mobile = o_subscribed.mobile AND o_subscribed.project_id = o_project.id');
