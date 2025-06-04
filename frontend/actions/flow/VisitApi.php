@@ -298,6 +298,11 @@ class VisitApi extends ApiAction
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
+                if ($visitType > 1) {
+                    $type = 'visit_repeat_page';
+                } else {
+                    $type = 'visit_confirm_page';
+                }
                 $content = [
                     'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                     'report_id' => $reportId,
@@ -306,7 +311,7 @@ class VisitApi extends ApiAction
                     'title' => '新到访',
                     'btn' => [
                         'label' => '确认',
-                        'type'  => 'visit_confirm_page',
+                        'type'  => $type,
                         'visit_id'  => $visitId
                     ],
                 ];
