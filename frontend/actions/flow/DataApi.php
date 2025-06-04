@@ -172,14 +172,16 @@ class DataApi extends ApiAction
     {
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
         
-        if (empty($projectId)) {
-            return $this->fail('需要指定项目ID', -1000);
-        }
+//        if (empty($projectId)) {
+//            return $this->fail('需要指定项目ID', -1000);
+//        }
 
         // 获取所有访客记录
-        $visits = Visit::find()
-            ->where(['project_id' => $projectId])
-            ->orderBy(['id' => SORT_DESC])
+        $visits = Visit::find();
+        if (!empty($projectId)) {
+            $visits->andWhere(['project_id' => $projectId]);
+        }
+        $visits = $visits->orderBy(['id' => SORT_DESC])
             ->all();
 
         // 准备Excel数据
