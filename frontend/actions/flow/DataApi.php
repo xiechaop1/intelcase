@@ -73,8 +73,13 @@ class DataApi extends ApiAction
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
 
-        $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
-        $visitCount = Visit::find()->select('DATE(visit_time) as dt, count(*) as ct');
+        if ($inter == 'daily') {
+            $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
+            $visitCount = Visit::find()->select('DATE(visit_time) as dt, count(*) as ct');
+        } else {
+            $reportCount = Report::find()->select('count(*) as ct');
+            $visitCount = Visit::find()->select('count(*) as ct');
+        }
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
             $visitCount->andFilterWhere(['guest_mobile' => $guestMobile]);
