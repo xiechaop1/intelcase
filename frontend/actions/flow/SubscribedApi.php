@@ -492,7 +492,7 @@ class SubscribedApi extends ApiAction
                     'title' => '新认购',
                     'btn' => [
                         'label' => '确认',
-                        'type' => 'input_page',
+                        'type' => 'payment_page',
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);

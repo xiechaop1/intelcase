@@ -17,7 +17,7 @@ use yii;
 class Msg extends Component
 {
 
-    public function add($revId = 0, $content, $senderId = 0, $msgType = \common\models\Msg::MSG_TYPE_SYSTEM, $msgStatus = \common\models\Msg::MSG_STATUS_UNREAD) {
+    public function add($recvId = 0, $content, $senderId = 0, $msgType = \common\models\Msg::MSG_TYPE_SYSTEM, $msgStatus = \common\models\Msg::MSG_STATUS_UNREAD) {
 
 
         if (is_array($content)) {
@@ -25,7 +25,7 @@ class Msg extends Component
         }
 
         $model = new \common\models\Msg();
-        $model->rev_id = $revId;
+        $model->recv_id = $recvId;
         $model->content = $content;
         $model->sender_id = $senderId;
         $model->msg_type = $msgType;
