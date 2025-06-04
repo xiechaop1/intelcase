@@ -130,7 +130,7 @@ class DataApi extends ApiAction
                 if (isset($visitTemp[$rdt])) {
                     $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
                 } else {
-                    $visitTemp[$rdt] = 0;
+                    $visitRate[$rdt] = 0;
                 }
             }
         }
