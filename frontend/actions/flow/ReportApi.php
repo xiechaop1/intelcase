@@ -230,9 +230,11 @@ class ReportApi extends ApiAction
                         'content' => '有客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                         'title' => '新报备',
                         'btn' => [
-                            'label' => '查看',
-                            'type' => 'visit_page',
-                            'report_id' => $reportId,
+                            [
+                                'label' => '查看',
+                                'type' => 'visit_page',
+                                'report_id' => $reportId,
+                            ],
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
