@@ -73,8 +73,8 @@ class DataApi extends ApiAction
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
 
-        $reportCount = Report::find()->select('visit_time');
-        $visitCount = Visit::find();
+        $reportCount = Report::find()->select('visit_time, count(*) as ct');
+        $visitCount = Visit::find()->select('visit_time, count(*) as ct');
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
             $visitCount->andFilterWhere(['guest_mobile' => $guestMobile]);
@@ -104,8 +104,14 @@ class DataApi extends ApiAction
             $visitCount->groupBy('DATE(visit_time)');
         }
 
-        $reportCt = $reportCount->count();
-        $visitCt = $visitCount->count();
+        $reportRet = $reportCount->asArray()->all();
+        $visitRet = $visitCount->asArray()->all();
+
+        $reportCt = $reportRet['ct'];
+        $visitCt = $visitRet['ct'];
+
+//        $reportCt = $reportCount->count();
+//        $visitCt = $visitCount->count();
 
         $visitRate = $visitCt / $reportCt * 100;
         $visitRate = round($visitRate, 2);
