@@ -11,7 +11,6 @@ namespace frontend\actions\user;
 
 use common\definitions\Common;
 use common\models\Staff;
-use common\models\User;
 //use liyifei\base\actions\ApiAction;
 use frontend\actions\ApiAction;
 use yii;
@@ -235,7 +234,7 @@ class UserApi extends ApiAction
     public function updateUser() {
         $userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
 
-        $user = \common\models\User::findOne($userId);
+        $user = \common\models\Staff::findOne($userId);
 
         if (empty($user)) {
             return $this->fail('用户不存在', -100);
