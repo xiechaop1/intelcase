@@ -73,8 +73,8 @@ class DataApi extends ApiAction
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
 
-        $reportCount = Report::find()->select('visit_time, count(*) as ct');
-        $visitCount = Visit::find()->select('visit_time, count(*) as ct');
+        $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
+        $visitCount = Visit::find()->select('DATE(visit_time) as dt, count(*) as ct');
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
             $visitCount->andFilterWhere(['guest_mobile' => $guestMobile]);
@@ -107,18 +107,43 @@ class DataApi extends ApiAction
         $reportRet = $reportCount->asArray()->all();
         $visitRet = $visitCount->asArray()->all();
 
-        $reportCt = $reportRet['ct'];
-        $visitCt = $visitRet['ct'];
+//        $reportCt = $reportRet['ct'];
+//        $visitCt = $visitRet['ct'];
+
+        $reportTemp = [];
+        if (!empty($reportRet)) {
+            foreach ($reportRet as $reportOne) {
+                $reportTemp[$reportOne['dt']] = $reportOne['ct'];
+            }
+        }
+
+        $visitTemp = [];
+        if (!empty($visitRet)) {
+            foreach ($visitRet as $visitOne) {
+                $visitTemp[$visitOne['dt']] = $visitOne['ct'];
+            }
+        }
+
+        $visitRate = [];
+        if (!empty($reportTemp)) {
+            foreach ($reportTemp as $rdt => $rct) {
+                if (isset($visitTemp[$rdt])) {
+                    $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
+                } else {
+                    $visitTemp[$rdt] = 0;
+                }
+            }
+        }
 
 //        $reportCt = $reportCount->count();
 //        $visitCt = $visitCount->count();
 
-        $visitRate = $visitCt / $reportCt * 100;
-        $visitRate = round($visitRate, 2);
+//        $visitRate = $visitCt / $reportCt * 100;
+//        $visitRate = round($visitRate, 2);
 
         return $this->success([
-            'report_count' => $reportCt,
-            'visit_count' => $visitCt,
+            'report_count' => $reportTemp,
+            'visit_count' => $visitTemp,
             'visit_rate' => $visitRate,
         ]);
 
