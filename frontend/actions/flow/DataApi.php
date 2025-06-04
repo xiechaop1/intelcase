@@ -49,6 +49,9 @@ class DataApi extends ApiAction
                 case 'guest_list':
                     $ret = $this->guestList();
                     break;
+                case 'export_guest_list':
+                    $ret = $this->exportGuestList();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -162,6 +165,162 @@ class DataApi extends ApiAction
         ]);
 
 
+    }
+
+
+    public function exportGuestList()
+    {
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        
+        if (empty($projectId)) {
+            return $this->fail('需要指定项目ID', -1000);
+        }
+
+        // 获取所有访客记录
+        $visits = Visit::find()
+            ->where(['project_id' => $projectId])
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+
+        // 准备Excel数据
+        $data = [];
+        $headers = [
+            // 访客基本信息
+            '访客姓名',
+            '访客手机号',
+            '访客诉求',
+            '预算',
+            '到访时间',
+            '到访状态',
+            '确认状态',
+            '到访人数',
+            // 认购基本信息
+            '是否认购',
+            '认购类型',
+            '认购人',
+            '房间号',
+            '建筑面积',
+            '认购总价',
+            '支付方式',
+            '认购状态',
+            '支付状态',
+            // 身份证信息
+            '证件类型',
+            '证件号码',
+            // 业主信息
+            '业主',
+            '出租方',
+            '出租方详情',
+            // 租赁信息
+            '租赁开始日期',
+            '租赁结束日期',
+            '免租期',
+            '递增日期',
+            '递增比例',
+            '押金',
+            // 租金信息
+            '日租金',
+            '月租金',
+            '年租金',
+            '租金总额',
+            '优惠租金',
+            '实际日租金',
+            '实际租金总额',
+            '其他费用',
+            '总费用',
+            // 补充信息
+            '补充认购人',
+            '补充证件类型',
+            '补充证件号码',
+            '补充手机号',
+            '补充总价'
+        ];
+
+        foreach ($visits as $visit) {
+            // 获取对应的认购记录
+            $subscribed = Subscribed::find()
+                ->where(['visit_id' => $visit->id])
+                ->one();
+
+            $row = [
+                // 访客基本信息
+                $visit->guest_name,
+                $visit->guest_mobile,
+                Visit::$visitGuestAppeal2Name[$visit->guest_appeal] ?? '',
+                $visit->budget,
+                $visit->visit_time,
+                $visit->visitStatus2Name[$visit->visit_status] ?? '',
+                Visit::$visitConfirm2Name[$visit->visit_confirm_status] ?? '',
+                $visit->person_ct,
+                // 认购基本信息
+                $subscribed ? '是' : '否',
+                $subscribed ? ($subscribed->sub_type == 1 ? '全款' : '部分') : '',
+                $subscribed ? $subscribed->sub_guest : '',
+                $subscribed ? $subscribed->room_no : '',
+                $subscribed ? $subscribed->building_area : '',
+                $subscribed ? $subscribed->sub_total_price : '',
+                $subscribed ? $subscribed->pay_method : '',
+                $subscribed ? Subscribed::$subscribedStatus2Name[$subscribed->sub_status] ?? '' : '',
+                $subscribed ? Subscribed::$subscribedStatus2Name[$subscribed->pay_status] ?? '' : '',
+                // 身份证信息
+                $subscribed ? $subscribed->id_type : '',
+                $subscribed ? $subscribed->id_no : '',
+                // 业主信息
+                $subscribed ? $subscribed->owner : '',
+                $subscribed ? $subscribed->lessor : '',
+                $subscribed ? $subscribed->lessor_detail : '',
+                // 租赁信息
+                $subscribed ? $subscribed->rent_date_begin : '',
+                $subscribed ? $subscribed->rent_date_end : '',
+                $subscribed ? $subscribed->free_rent_date : '',
+                $subscribed ? $subscribed->increase_date : '',
+                $subscribed ? $subscribed->increase_rate : '',
+                $subscribed ? $subscribed->deposit : '',
+                // 租金信息
+                $subscribed ? $subscribed->daily_amount : '',
+                $subscribed ? $subscribed->monthly_amount : '',
+                $subscribed ? $subscribed->yearly_amount : '',
+                $subscribed ? $subscribed->rent_amount : '',
+                $subscribed ? $subscribed->pro_rent_amount : '',
+                $subscribed ? $subscribed->al_daily_amount : '',
+                $subscribed ? $subscribed->al_amount : '',
+                $subscribed ? $subscribed->al_other : '',
+                $subscribed ? $subscribed->al_total_amount : '',
+                // 补充信息
+                $subscribed ? $subscribed->supply_sub_guest : '',
+                $subscribed ? $subscribed->supply_guest_id_type : '',
+                $subscribed ? $subscribed->supply_guest_id_no : '',
+                $subscribed ? $subscribed->supply_guest_mobile : '',
+                $subscribed ? $subscribed->supply_total_price : ''
+            ];
+            $data[] = $row;
+        }
+
+        // 生成Excel文件
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // 写入表头
+        foreach ($headers as $key => $header) {
+            $sheet->setCellValue(chr(65 + $key) . '1', $header);
+        }
+
+        // 写入数据
+        foreach ($data as $row => $rowData) {
+            foreach ($rowData as $col => $value) {
+                $sheet->setCellValue(chr(65 + $col) . ($row + 2), $value);
+            }
+        }
+
+        // 设置响应头
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="访客列表_' . date('YmdHis') . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        // 输出Excel文件
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 
     public function guestList()
