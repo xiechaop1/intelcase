@@ -23,7 +23,7 @@ class DataApi extends ApiAction
 {
     public $action;
     private $_get;
-    
+
     public function run()
     {
         try {
@@ -70,9 +70,10 @@ class DataApi extends ApiAction
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
         $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
         $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
+        $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
 
-        $reportCount = Report::find();
+        $reportCount = Report::find()->select('visit_time');
         $visitCount = Visit::find();
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
@@ -87,15 +88,20 @@ class DataApi extends ApiAction
             $visitCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
         }
         if (!empty($beginTime)) {
-            $reportCount->andFilterWhere(['>=', 'report_time', $beginTime]);
+            $reportCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
             $visitCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
         }
         if (!empty($endTime)) {
-            $reportCount->andFilterWhere(['<=', 'report_time', $endTime]);
+            $reportCount->andFilterWhere(['<=', 'visit_time', $endTime]);
             $visitCount->andFilterWhere(['<=', 'visit_time', $endTime]);
         }
         if (!empty($visitStatus)) {
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
+        }
+
+        if ($inter == 'daily') {
+            $reportCount->groupBy('DATE(visit_time)');
+            $visitCount->groupBy('DATE(visit_time)');
         }
 
         $reportCt = $reportCount->count();
