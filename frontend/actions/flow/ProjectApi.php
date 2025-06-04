@@ -149,6 +149,7 @@ class ProjectApi extends ApiAction
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
+            $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
 
             if (!empty($projectName)) {
                 $model->project_name = $projectName;
@@ -176,6 +177,10 @@ class ProjectApi extends ApiAction
             }
             if (!empty($financialStaffId)) {
                 $model->financial_staff_id = $financialStaffId;
+            }
+
+            if (!empty($qrFile)) {
+                $model->qr_file = $qrFile;
             }
 
 
@@ -215,6 +220,7 @@ class ProjectApi extends ApiAction
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
+            $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
 
             $model->project_name = $projectName;
             $model->opts = $opts;
@@ -239,6 +245,7 @@ class ProjectApi extends ApiAction
             $qrCode = Yii::$app->common->generateQrCode($url);
 
             $model->qr_code = $qrCode;
+            $model->qr_file = $qrFile;
             $model->save();
 
 
