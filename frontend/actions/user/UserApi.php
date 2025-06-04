@@ -133,7 +133,7 @@ class UserApi extends ApiAction
 //                , 'staff_status' => Staff::STAFF_STATUS_NORMAL
             ]);
             if (!empty($user)
-                && $user->user_status == User::USER_STATUS_FORBIDDEN
+                && $user->staff_status == Staff::STAFF_STATUS_DISABLE
             ) {
                 throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
             }
@@ -162,11 +162,11 @@ class UserApi extends ApiAction
             $mobile = Yii::$app->wechat->getMobile($code);
             $user = null;
             if (!empty($mobile)) {
-                $user = User::findOne(['mobile' => $mobile, 'is_delete' => Common::STATUS_NORMAL]);
+                $user = Staff::findOne(['mobile' => $mobile]);
 
                 // 判断用户状态（是不是在白名单里，也就是状态是"被邀请"）
                 if (empty($user)
-                    || $user->user_status == User::USER_STATUS_FORBIDDEN
+                    && $user->staff_status == Staff::STAFF_STATUS_DISABLE
                 ) {
                     throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
 //                    return [];
@@ -177,14 +177,14 @@ class UserApi extends ApiAction
 
                     $user->wx_openid = $openId;
                     $user->wx_unionid = $unionId;
-                    $user->user_status = User::USER_STATUS_NORMAL;
+                    $user->staff_status = Staff::STAFF_STATUS_NORMAL;
 
                 }
                 $tokenRet = Yii::$app->wechat->getToken();
                 $user->wx_token = !empty($tokenRet['access_token']) ? $tokenRet['access_token'] : '';
                 $user->wx_token_expire_time = !empty($tokenRet['expires_in']) ? time() + $tokenRet['expires_in'] : '';
                 $user->save();
-                Yii::$app->oplog->write(\common\models\Log::OP_CODE_REGISTER, 1, $user->id, 0, '获取用户手机号和微信信息');
+//                Yii::$app->oplog->write(\common\models\Log::OP_CODE_REGISTER, 1, $user->id, 0, '获取用户手机号和微信信息');
 
             }
             return $user;
@@ -199,28 +199,13 @@ class UserApi extends ApiAction
 
         $userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
 
-        $retModel = User::find()->where(['id' => $userId]);
+        $retModel = Staff::find()->where(['id' => $userId]);
 
         $ret = $retModel->one();
 
         if ($ret) {
 //
             $r = $ret->toArray();
-
-
-            $r['ct'] = [
-                'lock' => $ret->getUserLockCount(),
-                'fav' => $ret->getUserFavCount(),
-                'view' => $ret->getUserViewCount(),
-                'order_completed' => $ret->getUserOrderPaiedCount(),
-            ];
-
-            $r['music_last'] = [
-                'fav' => $ret->getUserLastFavMusic(),
-                'view' => $ret->getUserLastViewMusic(),
-                'lock' => $ret->getUserLastLockMusic(),
-                'order_completed' => $ret->getUserLastOrderCompletedMusic(),
-            ];
 
         } else {
             $r = [];
