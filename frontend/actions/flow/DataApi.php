@@ -89,7 +89,7 @@ class DataApi extends ApiAction
             $visitCount->andFilterWhere(['project_id' => $projectId]);
         }
         if (!empty($advStaffId)) {
-            $reportCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
+//            $reportCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
             $visitCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
         }
         if (!empty($beginTime)) {
