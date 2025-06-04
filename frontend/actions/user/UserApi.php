@@ -10,6 +10,7 @@ namespace frontend\actions\user;
 
 
 use common\definitions\Common;
+use common\models\Staff;
 use common\models\User;
 //use liyifei\base\actions\ApiAction;
 use frontend\actions\ApiAction;
@@ -97,7 +98,7 @@ class UserApi extends ApiAction
             $userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
             $ret = null;
             if (!empty($userId)) {
-                $userInfo = User::findOne($userId);
+                $userInfo = Staff::findOne($userId);
 
                 if (!empty($userInfo['wx_token'])
                     && !empty($userInfo['wx_token_expire_time'])
@@ -129,7 +130,9 @@ class UserApi extends ApiAction
             $ret = Yii::$app->wechat->getSession($code);
 
             $openId = $ret['openid'];
-            $user = User::findOne(['wx_openid' => $openId, 'is_delete' => Common::STATUS_NORMAL]);
+            $user = Staff::findOne(['wx_openid' => $openId
+//                , 'staff_status' => Staff::STAFF_STATUS_NORMAL
+            ]);
             if (!empty($user)
                 && $user->user_status == User::USER_STATUS_FORBIDDEN
             ) {
@@ -141,7 +144,7 @@ class UserApi extends ApiAction
                 $user['wx_token'] = $tokenRet['token'];
                 $user['wx_token_expire_time'] = $tokenRet['expire_time'];
 
-                Yii::$app->oplog->write(\common\models\Log::OP_CODE_LOGIN, 1, $user['id'], 0, '用户登录');
+//                Yii::$app->oplog->write(\common\models\Log::OP_CODE_LOGIN, 1, $user['id'], 0, '用户登录');
             }
             $ret['user'] = $user;
 
