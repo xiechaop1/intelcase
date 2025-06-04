@@ -23,9 +23,7 @@ class DataApi extends ApiAction
 {
     public $action;
     private $_get;
-    private $_projectId;
-    private $_reportId;
-
+    
     public function run()
     {
         try {
@@ -65,16 +63,95 @@ class DataApi extends ApiAction
 
     public function getData()
     {
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
+
+        $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
+        $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
+
+
+        $reportCount = Report::find();
+        $visitCount = Visit::find();
+        if (!empty($guestMobile)) {
+            $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $visitCount->andFilterWhere(['guest_mobile' => $guestMobile]);
+        }
+        if (!empty($projectId)) {
+            $reportCount->andFilterWhere(['project_id' => $projectId]);
+            $visitCount->andFilterWhere(['project_id' => $projectId]);
+        }
+        if (!empty($advStaffId)) {
+            $reportCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
+            $visitCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
+        }
+        if (!empty($beginTime)) {
+            $reportCount->andFilterWhere(['>=', 'report_time', $beginTime]);
+            $visitCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
+        }
+        if (!empty($endTime)) {
+            $reportCount->andFilterWhere(['<=', 'report_time', $endTime]);
+            $visitCount->andFilterWhere(['<=', 'visit_time', $endTime]);
+        }
+        if (!empty($visitStatus)) {
+            $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
+        }
+
+        $reportCt = $reportCount->count();
+        $visitCt = $visitCount->count();
+
+        $visitRate = $visitCt / $reportCt * 100;
+        $visitRate = round($visitRate, 2);
+
+        return $this->success([
+            'report_count' => $reportCt,
+            'visit_count' => $visitCt,
+            'visit_rate' => $visitRate,
+        ]);
+
 
     }
 
     public function guestList()
     {
-        $visitList = Visit::find()
-            ->orderBy(['id' => SORT_DESC])
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
+
+        $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
+
+        $visitList = Visit::find();
+        if (!empty($guestMobile)) {
+            $visitList->andFilterWhere(['guest_mobile' => $guestMobile]);
+        }
+        if (!empty($projectId)) {
+            $visitList->andFilterWhere(['project_id' => $projectId]);
+        }
+        if (!empty($advStaffId)) {
+            $visitList->andFilterWhere(['adv_staff_id' => $advStaffId]);
+        }
+        if (!empty($beginTime)) {
+            $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+        }
+        if (!empty($endTime)) {
+            $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
+        }
+        $visitList = $visitList->orderBy(['id' => SORT_DESC]);
+
+        $count = $visitList->count();
+        $data = $visitList->offset(($page - 1) * $pageSize)
             ->all();
 
-        return $this->success($visitList);
+        return $this->success([
+            'visit' => $data,
+            'total_count' => $count,
+            'page' => $page,
+            'page_size' => $pageSize,
+        ]);
 
     }
 
