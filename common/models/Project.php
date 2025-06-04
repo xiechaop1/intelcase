@@ -26,5 +26,27 @@ class Project extends \common\models\gii\Project
         ];
     }
 
+    public function getPmStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'pm_staff_id']);
+    }
+
+    public function getConsultantStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'consultant_staff_id']);
+    }
+
+    public function getAdvisorStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'advisor_staff_id']);
+    }
+
+    public function getFinancialStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'financial_staff_id']);
+    }
+
+
+
 
 }
