@@ -180,9 +180,12 @@ class DataApi extends ApiAction
                 'staff.name as staff_name',
                 'subscribed.*'
             ])
-            ->leftJoin('project', 'visit.project_id = project.id')
-            ->leftJoin('staff', 'visit.adv_staff_id = staff.id')
-            ->leftJoin('subscribed', 'visit.guest_mobile = subscribed.mobile AND subscribed.project_id = project.id');
+            ->joinWith('project')
+            ->joinWith('subscribed')
+            ->joinWith('staff');
+            // ->leftJoin('o_project', 'visit.project_id = o_project.id')
+            // ->leftJoin('o_staff', 'visit.adv_staff_id = o_staff.id')
+            // ->leftJoin('o_subscribed', 'visit.guest_mobile = o_subscribed.mobile AND o_subscribed.project_id = o_project.id');
 
         if (!empty($projectId)) {
             $query->andWhere(['visit.project_id' => $projectId]);
