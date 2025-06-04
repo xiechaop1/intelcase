@@ -176,8 +176,7 @@ class DataApi extends ApiAction
         $query = Visit::find()
             ->select([
                 'o_visit.*',
-                'o_project.name as project_name',
-                'o_staff.name as staff_name',
+                'o_project.project_name as project_name',
                 'o_subscribed.*'
             ])
             ->joinWith('project')
