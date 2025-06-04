@@ -306,7 +306,7 @@ class DataApi extends ApiAction
                 $visit->supply_guest_mobile ?? '',
                 $visit->supply_total_price ?? '',
                 // 项目信息
-                $visit->project_name,
+                $visit->project_name ?? '',
                 // 员工信息
                 $visit->project->pm_staff->staff_name ?? '',
                 $visit->project->consultant_staff->staff_name ?? '',
