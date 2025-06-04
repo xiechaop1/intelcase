@@ -135,11 +135,13 @@ class SubscribedApi extends ApiAction
                     'btn' => [
                         [
                             'label' => '确认',
-                            'type' => 'confirm_btn',
+                            'type' => 'sub_confirm_deal_btn',
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN
                         ],
                         [
-                            'label' => '取消',
-                            'type' => 'cancel_btn',
+                            'label' => '拒绝',
+                            'type' => 'sub_confirm_deal_btn',
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT
                         ]
                     ],
                 ];
@@ -207,8 +209,16 @@ class SubscribedApi extends ApiAction
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
-                        'label' => '确认',
-                        'type' => 'confirm_btn',
+                        [
+                            'label' => '确认',
+                            'type' => 'sub_confirm_deal_btn',
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM
+                        ],
+                        [
+                            'label' => '拒绝',
+                            'type' => 'sub_confirm_deal_btn',
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT
+                        ],
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
