@@ -323,13 +323,13 @@ class DataApi extends ApiAction
 
         // 写入表头
         foreach ($headers as $key => $header) {
-            $sheet->setCellValue(chr(65 + $key) . '1', $header);
+            $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
         }
 
         // 写入数据
         foreach ($data as $row => $rowData) {
             foreach ($rowData as $col => $value) {
-                $sheet->setCellValue(chr(65 + $col) . ($row + 2), $value);
+                $sheet->setCellValueByColumnAndRow($col + 1, $row + 2, $value);
             }
         }
 
