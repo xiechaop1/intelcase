@@ -190,7 +190,7 @@ class DataApi extends ApiAction
             $query->andWhere(['visit.project_id' => $projectId]);
         }
 
-        $visits = $query->orderBy(['visit.id' => SORT_DESC])->all();
+        $visits = $query->orderBy(['visit.created_at' => SORT_DESC])->all();
 
         // 准备Excel数据
         $data = [];
