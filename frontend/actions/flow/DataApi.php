@@ -187,10 +187,10 @@ class DataApi extends ApiAction
             // ->leftJoin('o_subscribed', 'visit.guest_mobile = o_subscribed.mobile AND o_subscribed.project_id = o_project.id');
 
         if (!empty($projectId)) {
-            $query->andWhere(['visit.project_id' => $projectId]);
+            $query->andWhere(['o_visit.project_id' => $projectId]);
         }
 
-        $visits = $query->orderBy(['visit.created_at' => SORT_DESC])->all();
+        $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->all();
 
         // 准备Excel数据
         $data = [];
