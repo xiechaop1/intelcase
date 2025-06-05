@@ -231,178 +231,187 @@ class DataApi extends ApiAction
 
     public function exportGuestList()
     {
-        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        try {
+            $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
 
-        // 使用 join 查询获取所有需要的数据
-        $query = Visit::find()
-            ->select([
-                'o_visit.*',
-                'o_project.project_name as project_name',
-                'o_subscribed.*'
-            ])
-            ->joinWith('project')
-            ->joinWith('subscribed');
-//            ->joinWith('staff');
-            // ->leftJoin('o_project', 'visit.project_id = o_project.id')
-            // ->leftJoin('o_staff', 'visit.adv_staff_id = o_staff.id')
-            // ->leftJoin('o_subscribed', 'visit.guest_mobile = o_subscribed.mobile AND o_subscribed.project_id = o_project.id');
+            // 使用 join 查询获取所有需要的数据
+            $query = Visit::find()
+                ->select([
+                    'o_visit.*',
+                    'o_project.project_name as project_name',
+                    'o_subscribed.*'
+                ])
+                ->joinWith('project')
+                ->joinWith('subscribed');
 
-        if (!empty($projectId)) {
-            $query->andWhere(['o_visit.project_id' => $projectId]);
-        }
+            if (!empty($projectId)) {
+                $query->andWhere(['o_visit.project_id' => $projectId]);
+            }
 
-        $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->all();
+            $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->all();
 
-        // 准备Excel数据
-        $data = [];
-        $headers = [
-            // 访客基本信息
-            '访客姓名',
-            '访客手机号',
-            '访客诉求',
-            '预算',
-            '到访时间',
-            '到访状态',
-            '确认状态',
-            '到访人数',
-            // 认购基本信息
-            '是否认购',
-            '认购类型',
-            '认购人',
-            '房间号',
-            '建筑面积',
-            '认购总价',
-            '支付方式',
-            '认购状态',
-            '支付状态',
-            // 身份证信息
-            '证件类型',
-            '证件号码',
-            // 业主信息
-            '业主',
-            '出租方',
-            '出租方详情',
-            // 租赁信息
-            '租赁开始日期',
-            '租赁结束日期',
-            '免租期',
-            '递增日期',
-            '递增比例',
-            '押金',
-            // 租金信息
-            '日租金',
-            '月租金',
-            '年租金',
-            '租金总额',
-            '优惠租金',
-            '实际日租金',
-            '实际租金总额',
-            '其他费用',
-            '总费用',
-            // 补充信息
-            '补充认购人',
-            '补充证件类型',
-            '补充证件号码',
-            '补充手机号',
-            '补充总价',
-            // 项目信息
-            '项目名称',
-            // 员工信息
-            '项目经理',
-            '招商顾问',
-            '投资顾问',
-            '财务',
-            
-        ];
-
-        foreach ($visits as $visit) {
-            $row = [
+            // 准备Excel数据
+            $data = [];
+            $headers = [
                 // 访客基本信息
-                $visit->guest_name,
-                $visit->guest_mobile,
-                Visit::$visitGuestAppeal2Name[$visit->guest_appeal] ?? '',
-                $visit->budget,
-                $visit->visit_time,
-                $visit->visitStatus2Name[$visit->visit_status] ?? '',
-                Visit::$visitConfirm2Name[$visit->visit_confirm_status] ?? '',
-                $visit->person_ct,
+                '访客姓名',
+                '访客手机号',
+                '访客诉求',
+                '预算',
+                '到访时间',
+                '到访状态',
+                '确认状态',
+                '到访人数',
                 // 认购基本信息
-                !empty($visit->sub_guest) ? '是' : '否',
-                !empty($visit->sub_type) ? ($visit->sub_type == 1 ? '全款' : '部分') : '',
-                $visit->sub_guest ?? '',
-                $visit->room_no ?? '',
-                $visit->building_area ?? '',
-                $visit->sub_total_price ?? '',
-                $visit->pay_method ?? '',
-                !empty($visit->sub_status) ? Subscribed::$subscribedStatus2Name[$visit->sub_status] ?? '' : '',
-                !empty($visit->pay_status) ? Subscribed::$subscribedStatus2Name[$visit->pay_status] ?? '' : '',
+                '是否认购',
+                '认购类型',
+                '认购人',
+                '房间号',
+                '建筑面积',
+                '认购总价',
+                '支付方式',
+                '认购状态',
+                '支付状态',
                 // 身份证信息
-                $visit->id_type ?? '',
-                $visit->id_no ?? '',
+                '证件类型',
+                '证件号码',
                 // 业主信息
-                $visit->owner ?? '',
-                $visit->lessor ?? '',
-                $visit->lessor_detail ?? '',
+                '业主',
+                '出租方',
+                '出租方详情',
                 // 租赁信息
-                $visit->rent_date_begin ?? '',
-                $visit->rent_date_end ?? '',
-                $visit->free_rent_date ?? '',
-                $visit->increase_date ?? '',
-                $visit->increase_rate ?? '',
-                $visit->deposit ?? '',
+                '租赁开始日期',
+                '租赁结束日期',
+                '免租期',
+                '递增日期',
+                '递增比例',
+                '押金',
                 // 租金信息
-                $visit->daily_amount ?? '',
-                $visit->monthly_amount ?? '',
-                $visit->yearly_amount ?? '',
-                $visit->rent_amount ?? '',
-                $visit->pro_rent_amount ?? '',
-                $visit->al_daily_amount ?? '',
-                $visit->al_amount ?? '',
-                $visit->al_other ?? '',
-                $visit->al_total_amount ?? '',
+                '日租金',
+                '月租金',
+                '年租金',
+                '租金总额',
+                '优惠租金',
+                '实际日租金',
+                '实际租金总额',
+                '其他费用',
+                '总费用',
                 // 补充信息
-                $visit->supply_sub_guest ?? '',
-                $visit->supply_guest_id_type ?? '',
-                $visit->supply_guest_id_no ?? '',
-                $visit->supply_guest_mobile ?? '',
-                $visit->supply_total_price ?? '',
+                '补充认购人',
+                '补充证件类型',
+                '补充证件号码',
+                '补充手机号',
+                '补充总价',
                 // 项目信息
-                $visit->project_name ?? '',
+                '项目名称',
                 // 员工信息
-                $visit->project->pm_staff->staff_name ?? '',
-                $visit->project->consultant_staff->staff_name ?? '',
-                $visit->project->advisor_staff->staff_name ?? '',
-                $visit->project->financial_staff->staff_name ?? '',
+                '项目经理',
+                '招商顾问',
+                '投资顾问',
+                '财务',
                 
             ];
-            $data[] = $row;
-        }
 
-        // 生成Excel文件
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // 写入表头
-        foreach ($headers as $key => $header) {
-            $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
-        }
-
-        // 写入数据
-        foreach ($data as $row => $rowData) {
-            foreach ($rowData as $col => $value) {
-                $sheet->setCellValueByColumnAndRow($col + 1, $row + 2, $value);
+            foreach ($visits as $visit) {
+                $row = [
+                    // 访客基本信息
+                    $visit->guest_name,
+                    $visit->guest_mobile,
+                    Visit::$visitGuestAppeal2Name[$visit->guest_appeal] ?? '',
+                    $visit->budget,
+                    $visit->visit_time,
+                    $visit->visitStatus2Name[$visit->visit_status] ?? '',
+                    Visit::$visitConfirm2Name[$visit->visit_confirm_status] ?? '',
+                    $visit->person_ct,
+                    // 认购基本信息
+                    !empty($visit->sub_guest) ? '是' : '否',
+                    !empty($visit->sub_type) ? ($visit->sub_type == 1 ? '全款' : '部分') : '',
+                    $visit->sub_guest ?? '',
+                    $visit->room_no ?? '',
+                    $visit->building_area ?? '',
+                    $visit->sub_total_price ?? '',
+                    $visit->pay_method ?? '',
+                    !empty($visit->sub_status) ? Subscribed::$subscribedStatus2Name[$visit->sub_status] ?? '' : '',
+                    !empty($visit->pay_status) ? Subscribed::$subscribedStatus2Name[$visit->pay_status] ?? '' : '',
+                    // 身份证信息
+                    $visit->id_type ?? '',
+                    $visit->id_no ?? '',
+                    // 业主信息
+                    $visit->owner ?? '',
+                    $visit->lessor ?? '',
+                    $visit->lessor_detail ?? '',
+                    // 租赁信息
+                    $visit->rent_date_begin ?? '',
+                    $visit->rent_date_end ?? '',
+                    $visit->free_rent_date ?? '',
+                    $visit->increase_date ?? '',
+                    $visit->increase_rate ?? '',
+                    $visit->deposit ?? '',
+                    // 租金信息
+                    $visit->daily_amount ?? '',
+                    $visit->monthly_amount ?? '',
+                    $visit->yearly_amount ?? '',
+                    $visit->rent_amount ?? '',
+                    $visit->pro_rent_amount ?? '',
+                    $visit->al_daily_amount ?? '',
+                    $visit->al_amount ?? '',
+                    $visit->al_other ?? '',
+                    $visit->al_total_amount ?? '',
+                    // 补充信息
+                    $visit->supply_sub_guest ?? '',
+                    $visit->supply_guest_id_type ?? '',
+                    $visit->supply_guest_id_no ?? '',
+                    $visit->supply_guest_mobile ?? '',
+                    $visit->supply_total_price ?? '',
+                    // 项目信息
+                    $visit->project_name ?? '',
+                    // 员工信息
+                    $visit->project->pm_staff->staff_name ?? '',
+                    $visit->project->consultant_staff->staff_name ?? '',
+                    $visit->project->advisor_staff->staff_name ?? '',
+                    $visit->project->financial_staff->staff_name ?? '',
+                    
+                ];
+                $data[] = $row;
             }
+
+            // 生成Excel文件
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            // 写入表头
+            foreach ($headers as $key => $header) {
+                $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
+            }
+
+            // 写入数据
+            foreach ($data as $row => $rowData) {
+                foreach ($rowData as $col => $value) {
+                    $sheet->setCellValueByColumnAndRow($col + 1, $row + 2, $value);
+                }
+            }
+
+            // 设置响应头
+            Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+            Yii::$app->response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            Yii::$app->response->headers->set('Content-Disposition', 'attachment;filename="访客列表_' . date('YmdHis') . '.xlsx"');
+            Yii::$app->response->headers->set('Cache-Control', 'max-age=0');
+            Yii::$app->response->headers->set('Pragma', 'public');
+
+            // 使用临时文件输出
+            $tempFile = tempnam(sys_get_temp_dir(), 'excel_');
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save($tempFile);
+
+            // 读取文件内容并输出
+            $content = file_get_contents($tempFile);
+            unlink($tempFile); // 删除临时文件
+
+            return $content;
+        } catch (\Exception $e) {
+            Yii::error('导出Excel失败: ' . $e->getMessage());
+            return $this->fail('导出失败：' . $e->getMessage());
         }
-
-        // 设置响应头
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="访客列表_' . date('YmdHis') . '.xlsx"');
-        header('Cache-Control: max-age=0');
-
-        // 输出Excel文件
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save('php://output');
-        exit;
     }
 
     public function getReportList() {

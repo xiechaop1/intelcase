@@ -25,19 +25,24 @@ class Privilege extends Component
                 Staff::STAFF_ROLE_ADMIN,
             ],
             \common\definitions\Privilege::REPORT_CONFIRM => [
+                Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM,
             ],
             \common\definitions\Privilege::VISIT_CONFIRM => [
+                Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM
             ],
             \common\definitions\Privilege::SUB_CONFIRM_SIGN => [
+                Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM
             ],
             \common\definitions\Privilege::SUB_CONFIRM_DEAL => [
+                Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM,
                 Staff::STAFF_ROLE_FINANCE
             ],
             \common\definitions\Privilege::PAYMENT_CONFIRM => [
+                Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM,
                 Staff::STAFF_ROLE_FINANCE
             ],
