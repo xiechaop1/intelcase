@@ -399,15 +399,16 @@ class DataApi extends ApiAction
             Yii::$app->response->headers->set('Pragma', 'public');
 
             // 使用临时文件输出
-            $tempFile = tempnam(sys_get_temp_dir(), 'excel_');
+            // $tempFile = tempnam(sys_get_temp_dir(), 'excel_');
+            $tempFile = '/xls/访客列表_' . date('YmdHis') . '.xlsx';
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save($tempFile);
 
             // 读取文件内容并输出
-            $content = file_get_contents($tempFile);
-            unlink($tempFile); // 删除临时文件
+            // $content = file_get_contents($tempFile);
+            // unlink($tempFile); // 删除临时文件
 
-            return $content;
+            return $tempFile;
         } catch (\Exception $e) {
             Yii::error('导出Excel失败: ' . $e->getMessage());
             return $this->fail('导出失败：' . $e->getMessage());
