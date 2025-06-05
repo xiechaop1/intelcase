@@ -238,6 +238,11 @@ class ReportApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
             } else {
+                if ($visitType > 1) {
+                    $type = 'visit_repeat_page';
+                } else {
+                    $type = 'visit_page';
+                }
                 $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
                 $content = [];
                 if (!empty($recvId)) {
@@ -247,7 +252,7 @@ class ReportApi extends ApiAction
                         'btn' => [
                             [
                                 'label' => '查看',
-                                'type' => 'visit_page',
+                                'type' => $type,
                                 'report_id' => $reportId,
                                 'project_id' => $this->_projectId,
                             ],

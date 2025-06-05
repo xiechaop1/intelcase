@@ -316,7 +316,7 @@ class VisitApi extends ApiAction
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
                 if ($visitType > 1) {
-                    $type = 'visit_repeat_page';
+                    $type = 'visit_repeat_confirm_page';
                 } else {
                     $type = 'visit_confirm_page';
                 }
