@@ -421,7 +421,7 @@ class SubscribedApi extends ApiAction
             $dailyAmount = !empty($this->_get['daily_amount']) ? $this->_get['daily_amount'] : 0;
 //            $monthlyAmount = !empty($this->_get['monthly_amount']) ? $this->_get['monthly_amount'] : 0;
 //            $yearlyAmount = !empty($this->_get['yearly_amount']) ? $this->_get['yearly_amount'] : 0;
-//            $rentAmount = !empty($this->_get['rent_amount']) ? $this->_get['rent_amount'] : 0;
+            $rentAmount = !empty($this->_get['rent_amount']) ? $this->_get['rent_amount'] : 0;
             $proRentAmount = !empty($this->_get['pro_rent_amount']) ? $this->_get['pro_rent_amount'] : 0;
             $alDailyAmount = !empty($this->_get['al_daily_amount']) ? $this->_get['al_daily_amount'] : 0;
             $alAmount = !empty($this->_get['al_amount']) ? $this->_get['al_amount'] : 0;
