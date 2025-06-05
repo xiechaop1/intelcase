@@ -200,6 +200,8 @@ class PaymentApi extends ApiAction
                         'btn' => [
                             'label' => '签约',
                             'type' => 'sub_confirm_deal_page',
+                            'project_id' => $this->_projectId,
+                            'sub_id' => $model->sub_id,
                         ],
                     ];
                     $recvId = $this->_project->advisor_staff_id;
@@ -371,6 +373,8 @@ class PaymentApi extends ApiAction
 
             $transaction->commit();
 
+            $paymentId = $model->getPrimaryKey();
+
             if ($payType == Payment::PAYMENT_TYPE_PAY) {
                 $payments = Payment::find()
                     ->where(['project_id' => $this->_project_id])
@@ -393,6 +397,8 @@ class PaymentApi extends ApiAction
                         'btn' => [
                             'label' => '最终确认',
                             'type' => 'payment_confirm_page',
+                            'project_id' => $this->_projectId,
+                            'payment_id' => $paymentId,
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
@@ -405,6 +411,8 @@ class PaymentApi extends ApiAction
                         'btn' => [
                             'label' => '确认',
                             'type' => 'payment_confirm_page',
+                            'project_id' => $this->_projectId,
+                            'payment_id' => $paymentId,
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
@@ -412,7 +420,6 @@ class PaymentApi extends ApiAction
                 }
             }
 
-            $paymentId = $model->getPrimaryKey();
 //            $paymentId = Yii::$app->db->getLastInsertID();
 
             return $this->success([

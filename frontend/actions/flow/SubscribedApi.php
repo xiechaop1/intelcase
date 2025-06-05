@@ -149,12 +149,16 @@ class SubscribedApi extends ApiAction
                         [
                             'label' => '确认',
                             'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN,
+                            'sub_id' => $subId,
+                            'project_id' => $this->_projectId,
                         ],
                         [
                             'label' => '拒绝',
                             'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
+                            'sub_id' => $subId,
+                            'project_id' => $this->_projectId,
                         ]
                     ],
                 ];
@@ -227,12 +231,16 @@ class SubscribedApi extends ApiAction
                         [
                             'label' => '确认',
                             'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM,
+                            'sub_id' => $subId,
+                            'project_id' => $this->_projectId,
                         ],
                         [
                             'label' => '拒绝',
                             'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT
+                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
+                            'sub_id' => $subId,
+                            'project_id' => $this->_projectId,
                         ],
                     ],
                 ];
@@ -518,6 +526,8 @@ class SubscribedApi extends ApiAction
                     'btn' => [
                         'label' => '确认',
                         'type' => 'payment_page',
+                        'sub_id' => $subId,
+                        'project_id' => $this->_projectId,
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);

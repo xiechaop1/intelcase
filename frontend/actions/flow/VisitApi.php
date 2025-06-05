@@ -326,7 +326,8 @@ class VisitApi extends ApiAction
                     'btn' => [
                         'label' => '确认',
                         'type'  => $type,
-                        'visit_id'  => $visitId
+                        'visit_id'  => $visitId,
+                        'project_id' => $this->_projectId,
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
