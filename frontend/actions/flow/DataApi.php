@@ -117,7 +117,8 @@ class DataApi extends ApiAction
         if ($inter == 'daily') {
             $reportCount->groupBy('DATE(visit_time)');
             $visitCount->groupBy('DATE(visit_time)');
-
+            $reportCount->orderBy('DATE(visit_time) ASC');
+            $visitCount->orderBy('DATE(visit_time) ASC');
 
             $reportRet = $reportCount->asArray()->all();
             $visitRet = $visitCount->asArray()->all();
@@ -125,17 +126,35 @@ class DataApi extends ApiAction
             //        $reportCt = $reportRet['ct'];
             //        $visitCt = $visitRet['ct'];
 
+            $reportDrift = [];
+            $visitDrift = [];
+
+            $reportAll = 0;
             if (!empty($reportRet)) {
+                $lastReport = 0;
                 foreach ($reportRet as $reportOne) {
                     $reportTemp[$reportOne['dt']] = $reportOne['ct'];
+                    $reportAll += $reportOne['ct'];
+                    if ($lastReport > 0) {
+                        $reportDrift[$reportOne['dt']] = round(($reportOne['ct'] - $lastReport) / $lastReport, 2);
+                    }
+                    $lastReport  = $reportOne['ct'];
                 }
             }
 
+            $visitAll = 0;
             if (!empty($visitRet)) {
+                $lastVisit = 0;
                 foreach ($visitRet as $visitOne) {
                     $visitTemp[$visitOne['dt']] = $visitOne['ct'];
+                    $visitAll += $visitOne['ct'];
+                    if ($lastVisit > 0) {
+                        $reportDrift[$visitOne['dt']] = round(($visitOne['ct'] - $lastVisit) / $lastVisit, 2);
+                    }
+                    $lastVisit  = $visitOne['ct'];
                 }
             }
+            $visitRateAll = round($visitAll / $reportAll, 2);
 
             if (!empty($reportTemp)) {
                 foreach ($reportTemp as $rdt => $rct) {
@@ -150,9 +169,11 @@ class DataApi extends ApiAction
             $reportRet = $reportCount->asArray()->all();
             $visitRet = $visitCount->asArray()->all();
 
-            $reportTemp['all'] = $reportRet['ct'];
-            $visitTemp['all'] = $visitRet['ct'];
-            $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
+            $reportDrift = [];
+            $visitDrift = [];
+            $reportAll = $reportTemp['all'] = $reportRet['ct'];
+            $visitAll = $visitTemp['all'] = $visitRet['ct'];
+            $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
         }
 
 //        $reportCt = $reportCount->count();
@@ -165,6 +186,11 @@ class DataApi extends ApiAction
             'report_count' => $reportTemp,
             'visit_count' => $visitTemp,
             'visit_rate' => $visitRate,
+            'report_all' => $reportAll,
+            'visit_all' => $visitAll,
+            'visit_rate_all' => $visitRateAll,
+            'report_drift' => $reportDrift,
+            'visit_drift' => $visitDrift,
         ]);
 
 
