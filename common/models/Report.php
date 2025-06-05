@@ -31,5 +31,10 @@ class Report extends \common\models\gii\Report
         ];
     }
 
+    public function getLastReports()
+    {
+        return $this->hasMany(Report::className(), ['guest_mobile' => 'guest_mobile']);
+    }
+
 
 }

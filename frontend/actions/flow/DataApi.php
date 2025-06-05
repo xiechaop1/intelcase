@@ -46,6 +46,9 @@ class DataApi extends ApiAction
                 case 'get_data':
                     $ret = $this->getData();
                     break;
+                case 'report_list':
+                    $ret = $this->getReportList();
+                    break;
                 case 'guest_list':
                     $ret = $this->guestList();
                     break;
@@ -344,6 +347,67 @@ class DataApi extends ApiAction
         exit;
     }
 
+    public function getReportList() {
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
+
+        $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
+
+        $reportList = Report::find();
+        if (!empty($guestMobile)) {
+            $reportList->andFilterWhere(['guest_mobile' => $guestMobile]);
+        }
+        if (!empty($projectId)) {
+            $reportList->andFilterWhere(['project_id' => $projectId]);
+        }
+        if (!empty($advStaffId)) {
+            $reportList->andFilterWhere(['adv_staff_id' => $advStaffId]);
+        }
+        if (!empty($beginTime)) {
+            $reportList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+        }
+        if (!empty($endTime)) {
+            $reportList->andFilterWhere(['<=', 'visit_time', $endTime]);
+        }
+        $reportList = $reportList->orderBy(['id' => SORT_DESC]);
+
+        $count = $reportList->count();
+        $data = $reportList->offset(($page - 1) * $pageSize)
+            ->all();
+
+        $ret = [];
+        if (empty($data)) {
+            foreach ($data as $row) {
+                $one = $row->toArray();
+                $lastReports = $row->lastReports;
+                if (!empty($lastReports)) {
+                    foreach ($lastReports as $lastReport) {
+                        if ($lastReport->guest_mobile != $row->guest_mobile) {
+                            $one['guest_mobile_tag'] = 1;
+                            break;
+                        } else {
+                            $one['guest_mobile_tag'] = 0;
+                        }
+                    }
+                }
+
+                $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
+                $ret[] = $one;
+            }
+        }
+
+        return $this->success([
+            'list' => $ret,
+            'total_count' => $count,
+            'page' => $page,
+            'page_size' => $pageSize,
+        ]);
+    }
+
     public function guestList()
     {
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
@@ -377,8 +441,23 @@ class DataApi extends ApiAction
         $data = $visitList->offset(($page - 1) * $pageSize)
             ->all();
 
+        $ret = [];
+        if (empty($data)) {
+            foreach ($data as $row) {
+                $one = $row->toArray();
+                $report = $row->report;
+                if ($report->guest_mobile != $row->guest_mobile) {
+                    $one['guest_mobile_tag'] = 1;
+                } else {
+                    $one['guest_mobile_tag'] = 0;
+                }
+                $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
+                $ret[] = $one;
+            }
+        }
+
         return $this->success([
-            'visit' => $data,
+            'visit' => $ret,
             'total_count' => $count,
             'page' => $page,
             'page_size' => $pageSize,
