@@ -330,6 +330,7 @@ class VisitApi extends ApiAction
                             'type'  => $type,
                             'visit_id'  => $visitId,
                             'project_id' => $this->_projectId,
+                            'report_id' => $reportId,
                         ]
                     ],
                 ];
