@@ -529,6 +529,7 @@ class SubscribedApi extends ApiAction
                             'type' => 'payment_page',
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,
+                            'report_id' => $this->_reportId,
                         ]
                     ],
                 ];
