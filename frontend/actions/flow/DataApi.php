@@ -128,6 +128,7 @@ class DataApi extends ApiAction
 
             $reportDrift = [];
             $visitDrift = [];
+            $visitRateDrift = [];
 
             $reportAll = 0;
             if (!empty($reportRet)) {
@@ -157,12 +158,19 @@ class DataApi extends ApiAction
             $visitRateAll = round($visitAll / $reportAll, 2);
 
             if (!empty($reportTemp)) {
+                $lastVisitRate = 0;
                 foreach ($reportTemp as $rdt => $rct) {
                     if (isset($visitTemp[$rdt])) {
                         $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
                     } else {
                         $visitRate[$rdt] = 0;
                     }
+                    if ($lastVisitRate > 0) {
+                        $visitRateDrift[$rdt] = round(($visitRate[$rdt] - $lastVisitRate) / $lastVisitRate, 2);
+                    } else {
+                        $visitRateDrift[$rdt] = 0;
+                    }
+                    $lastVisitRate = $visitRate[$rdt];
                 }
             }
         } else {
@@ -171,6 +179,7 @@ class DataApi extends ApiAction
 
             $reportDrift = [];
             $visitDrift = [];
+            $visitRateDrift = [];
             $reportAll = $reportTemp['all'] = $reportRet['ct'];
             $visitAll = $visitTemp['all'] = $visitRet['ct'];
             $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
@@ -191,6 +200,7 @@ class DataApi extends ApiAction
             'visit_rate_all' => $visitRateAll,
             'report_drift' => $reportDrift,
             'visit_drift' => $visitDrift,
+            'visit_rate_drift' => $visitRateDrift,
         ]);
 
 
