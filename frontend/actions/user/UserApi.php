@@ -166,7 +166,7 @@ class UserApi extends ApiAction
 
                 // 判断用户状态（是不是在白名单里，也就是状态是"被邀请"）
                 if (empty($user)
-                    && $user->staff_status == Staff::STAFF_STATUS_DISABLE
+                    || $user->staff_status == Staff::STAFF_STATUS_DISABLE
                 ) {
                     throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
 //                    return [];
