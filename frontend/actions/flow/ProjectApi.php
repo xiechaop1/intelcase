@@ -40,7 +40,7 @@ class ProjectApi extends ApiAction
                 $this->_get = Yii::$app->request->get();
             }
 
-            $this->_userId = !empty($this->_get['user_id']) ? $this->_get['user_id'] : 0;
+            $this->_userId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             if (!empty($this->_userId)) {
                 $this->_user = Staff::find()
                     ->where(['id' => $this->_userId])
