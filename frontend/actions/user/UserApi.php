@@ -172,7 +172,7 @@ class UserApi extends ApiAction
 //                    return [];
                 } else {
                     $userInfo = !empty($this->_get['user_info']) ? json_decode($this->_get['user_info'], true) : [];
-                    $user->user_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
+                    $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
                     $user->avatar = !empty($userInfo['avatarUrl']) ? $userInfo['avatarUrl'] : '';
 
                     $user->wx_openid = $openId;
