@@ -188,13 +188,13 @@ class StaffApi extends ApiAction
             $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
             $role = !empty($this->_get['role']) ? $this->_get['role'] : Staff::STAFF_ROLE_SALES;
             $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
-            $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
+//            $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
             $staffStatus = !empty($this->_get['staff_status']) ? $this->_get['staff_status'] : Staff::STAFF_STATUS_NORMAL;
 
             $model->staff_name = $staffName;
             $model->role = $role;
             $model->mobile = $mobile;
-            $model->wx_id = $wx_id;
+//            $model->wx_openid = $wx_id;
             $model->staff_status = $staffStatus;
 
             $model->save();
