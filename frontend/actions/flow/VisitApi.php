@@ -12,6 +12,7 @@ namespace frontend\actions\flow;
 use common\definitions\Common;
 use common\definitions\Privilege;
 use common\models\Msg;
+use common\models\Project;
 use common\models\Report;
 use common\models\Visit;
 //use common\services\Log;
@@ -54,7 +55,7 @@ class VisitApi extends ApiAction
                 return $this->fail('需要指定项目', -1000);
             }
 
-            $this->_project = Report::find()
+            $this->_project = Project::find()
                 ->where(['id' => $this->_projectId])
                 ->one();
 
