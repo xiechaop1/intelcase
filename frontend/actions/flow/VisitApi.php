@@ -195,11 +195,13 @@ class VisitApi extends ApiAction
                             'label' => '确认',
                             'type'  => $jumpType,
                             'visit_id' => $visitId,
+                            'project_id' => $this->_projectId,
                         ],
                         [
                             'label' => '取消',
                             'type'  => 'visit_page',
                             'visit_id' => $visitId,
+                            'project_id' => $this->_projectId,
                         ],
                     ],
                     'visit_id' => $visitId,
