@@ -500,7 +500,7 @@ class DataApi extends ApiAction
             ->all();
 
         $ret = [];
-        if (empty($data)) {
+        if (!empty($data)) {
             foreach ($data as $row) {
                 $one = $row->toArray();
                 $report = $row->report;
