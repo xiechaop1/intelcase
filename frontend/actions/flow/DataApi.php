@@ -391,24 +391,28 @@ class DataApi extends ApiAction
                 }
             }
 
-            // 设置响应头
-            Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-            Yii::$app->response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            Yii::$app->response->headers->set('Content-Disposition', 'attachment;filename="访客列表_' . date('YmdHis') . '.xlsx"');
-            Yii::$app->response->headers->set('Cache-Control', 'max-age=0');
-            Yii::$app->response->headers->set('Pragma', 'public');
+            // 创建保存目录
+            $saveDir = Yii::getAlias('@frontend/web/xls');
+            if (!file_exists($saveDir)) {
+                mkdir($saveDir, 0777, true);
+            }
 
-            // 使用临时文件输出
-            // $tempFile = tempnam(sys_get_temp_dir(), 'excel_');
-            $tempFile = '/xls/访客列表_' . date('YmdHis') . '.xlsx';
+            // 生成文件名
+            $fileName = '访客列表_' . date('YmdHis') . '.xlsx';
+            $filePath = $saveDir . '/' . $fileName;
+
+            // 保存Excel文件
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $writer->save($tempFile);
+            $writer->save($filePath);
 
-            // 读取文件内容并输出
-            // $content = file_get_contents($tempFile);
-            // unlink($tempFile); // 删除临时文件
+            // 返回文件URL
+            $fileUrl = Yii::$app->request->baseUrl . '/xls/' . $fileName;
+            
+            return $this->success([
+                'file_url' => $fileUrl,
+                'file_name' => $fileName
+            ]);
 
-            return $tempFile;
         } catch (\Exception $e) {
             Yii::error('导出Excel失败: ' . $e->getMessage());
             return $this->fail('导出失败：' . $e->getMessage());
