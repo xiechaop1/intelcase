@@ -133,44 +133,66 @@ class DataApi extends ApiAction
             $reportAll = 0;
             if (!empty($reportRet)) {
                 $lastReport = 0;
+                $idx = 0;
                 foreach ($reportRet as $reportOne) {
                     $reportTemp[$reportOne['dt']] = $reportOne['ct'];
                     $reportAll += $reportOne['ct'];
-                    if ($lastReport > 0) {
-                        $reportDrift[$reportOne['dt']] = round(($reportOne['ct'] - $lastReport) / $lastReport, 2);
+                    if ($idx > 0) {
+                        if ($lastReport > 0) {
+                            $reportDrift[$reportOne['dt']] = round(($reportOne['ct'] - $lastReport) / $lastReport, 2);
+                        } else {
+                            $reportDrift[$reportOne['dt']] = 1;
+                        }
+                    } else {
+                        $reportDrift[$reportOne['dt']] = 0;
                     }
                     $lastReport  = $reportOne['ct'];
+                    $idx++;
                 }
             }
 
             $visitAll = 0;
             if (!empty($visitRet)) {
                 $lastVisit = 0;
+                $idx = 0;
                 foreach ($visitRet as $visitOne) {
                     $visitTemp[$visitOne['dt']] = $visitOne['ct'];
                     $visitAll += $visitOne['ct'];
-                    if ($lastVisit > 0) {
-                        $reportDrift[$visitOne['dt']] = round(($visitOne['ct'] - $lastVisit) / $lastVisit, 2);
+                    if ($idx > 0) {
+                        if ($lastVisit > 0) {
+                            $visitDrift[$visitOne['dt']] = round(($visitOne['ct'] - $lastVisit) / $lastVisit, 2);
+                        } else {
+                            $visitDrift[$visitOne['dt']] = 1;
+                        }
+                    } else {
+                        $visitDrift[$visitOne['dt']] = 0;
                     }
                     $lastVisit  = $visitOne['ct'];
+                    $idx++;
                 }
             }
-            $visitRateAll = round($visitAll / $reportAll, 2);
 
+            $visitRateAll = round($visitAll / $reportAll, 2);
             if (!empty($reportTemp)) {
                 $lastVisitRate = 0;
+                $idx = 0;
                 foreach ($reportTemp as $rdt => $rct) {
                     if (isset($visitTemp[$rdt])) {
                         $visitRate[$rdt] = round($visitTemp[$rdt] / $rct, 2);
                     } else {
                         $visitRate[$rdt] = 0;
                     }
-                    if ($lastVisitRate > 0) {
-                        $visitRateDrift[$rdt] = round(($visitRate[$rdt] - $lastVisitRate) / $lastVisitRate, 2);
+                    if ($idx > 0) {
+                        if ($lastVisitRate > 0) {
+                            $visitRateDrift[$rdt] = round(($visitRate[$rdt] - $lastVisitRate) / $lastVisitRate, 2);
+                        } else {
+                            $visitRateDrift[$rdt] = 1;
+                        }
                     } else {
                         $visitRateDrift[$rdt] = 0;
                     }
                     $lastVisitRate = $visitRate[$rdt];
+                    $idx++;
                 }
             }
         } else {
