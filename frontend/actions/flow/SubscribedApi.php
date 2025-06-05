@@ -449,13 +449,13 @@ class SubscribedApi extends ApiAction
                 $yearlyAmount = $monthlyAmount * 12;
 
                 if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
-                    $rentAmount = $monthlyAmount * (int((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
+                    $rentAmount = $monthlyAmount * (intval((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
                 }
             }
 
             $alDailyAmount = $dailyAmount - $proRentAmount;
             if (!empty($rentAmount) && !empty($alDateBegin) && !empty($alDateEnd) && !empty($buildingArea)) {
-                $alTotalAmount = $alDailyAmount * (int((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
+                $alTotalAmount = $alDailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
             }
 
             $alAmount = $alTotalAmount + $alOther;
