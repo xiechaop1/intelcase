@@ -244,6 +244,9 @@ class ProjectApi extends ApiAction
             $url = Yii::$app->request->hostInfo . '/project/' . $projectId;
             $qrCode = Yii::$app->common->generateQrCode($url);
 
+            $qrFile = '/img/' . md5($qrCode) . '.png';
+            file_put_contents(Yii::getAlias('@webroot') . $qrFile, $qrCode);
+
             $model->qr_code = $qrCode;
             $model->qr_file = $qrFile;
             $model->save();
