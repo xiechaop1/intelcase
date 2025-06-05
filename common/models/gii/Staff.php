@@ -27,7 +27,7 @@ class Staff extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['staff_name', 'avatar', 'mobile', 'wx_openid', 'wx_token', 'wx_union',  ], 'string'],
+            [['staff_name', 'avatar', 'mobile', 'wx_openid', 'wx_token', 'wx_unionid',  ], 'string'],
             [['staff_status', 'role', 'wx_token_expire_time' ], 'integer'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
