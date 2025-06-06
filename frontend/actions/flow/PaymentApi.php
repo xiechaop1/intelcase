@@ -305,7 +305,7 @@ class PaymentApi extends ApiAction
             $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
             $payer = !empty($this->_get['payer']) ? $this->_get['payer'] : '';
             $payType = !empty($this->_get['pay_type']) ? $this->_get['pay_type'] : Payment::PAYMENT_TYPE_PAY;
-            $payTime = !empty($this->_get['pay_time']) ? $this->_get['pay_time'] : 0;
+            $payTime = !empty($this->_get['pay_time']) ? $this->_get['pay_time'] : time();
             $payWay = !empty($this->_get['pay_way']) ? $this->_get['pay_way'] : 0;
             $payStatus = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : 0;
             $amount = !empty($this->_get['amount']) ? $this->_get['amount'] : 0;
@@ -316,6 +316,10 @@ class PaymentApi extends ApiAction
             $recvAmount = !empty($this->_get['recv_amount']) ? $this->_get['recv_amount'] : 0;
             $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
             $recvTime = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : 0;
+
+            if (!empty($payTime) && is_string($payTime)) {
+                $payTime = strtotime($payTime);
+            }
 
             $paymentRet = Payment::find()
                 ->where(['project_id' => $this->_projectId])
