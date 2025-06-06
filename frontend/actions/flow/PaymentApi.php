@@ -207,6 +207,7 @@ class PaymentApi extends ApiAction
                                 'type' => 'sub_confirm_deal_page',
                                 'project_id' => $this->_projectId,
                                 'sub_id' => $model->sub_id,
+                                'report_id' => $this->_reportId,
                             ],
                         ],
                     ];
