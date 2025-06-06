@@ -373,7 +373,10 @@ class PaymentApi extends ApiAction
             $model->recv_time = $recvTime;
 
 
-            $model->save();
+            $ret = $model->save();
+            if ($ret === false) {
+                Yii::error($model->getErrors());
+            }
 
             $transaction->commit();
 
