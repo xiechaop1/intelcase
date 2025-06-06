@@ -249,7 +249,10 @@ class ProjectApi extends ApiAction
 
             $model->qr_code = $qrCode;
             $model->qr_file = $qrFile;
-            $model->save();
+            $ret = $model->save();
+            if ($ret === false) {
+                Yii::error($ret->getErrors());
+            }
 
 
             return $this->success([
