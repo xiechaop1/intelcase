@@ -169,7 +169,10 @@ class VisitApi extends ApiAction
         $model->visit_confirm_status = $visitConfirmStatus;
         $model->visit_status_comment = $visitStatusComment;
         try {
-            $model->save();
+            $ret = $model->save();
+            if ($ret === false) {
+                Yii::error($model->getErrors());
+            }
         } catch (\Exception $e) {
             return $this->fail('操作失败', -1000);
         }

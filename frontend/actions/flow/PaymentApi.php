@@ -173,6 +173,10 @@ class PaymentApi extends ApiAction
             ])
             ->one();
 
+        if (!empty($recv_time) && is_string($recv_time)) {
+            $recv_time = strtotime($recv_time);
+        }
+
         if (!empty($model)) {
             $model->recv_amount = $recv_amount;
             $model->recv_time = $recv_time;
@@ -210,6 +214,7 @@ class PaymentApi extends ApiAction
 
                 return $this->success($model);
             } else {
+                Yii::error($model->getErrors());
                 return $this->fail('操作失败', -1000);
             }
         }
