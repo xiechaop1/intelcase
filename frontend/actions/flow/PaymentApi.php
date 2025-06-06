@@ -346,7 +346,7 @@ class PaymentApi extends ApiAction
 
 
             if (empty($subscribed)) {
-                return $this->fail('订购不存在', -1000);
+                return $this->fail('认购不存在', -1000);
             }
             $subTotalPrice = !empty($subscribed->sub_total_price) ? $subscribed->sub_total_price : 0;
 

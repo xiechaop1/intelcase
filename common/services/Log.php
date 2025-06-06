@@ -17,11 +17,10 @@ use yii;
 class Log extends Component
 {
 
-    public function write($code, $opStatus = 1, $userId = 0, $musicId = 0, $opdesc = '', $ret = '') {
+    public function write($code, $opStatus = 1, $userId = 0, $opdesc = '', $ret = '') {
         $model = new \common\models\Log();
         $model->op_code     = $code;
         $model->user_id     = $userId;
-        $model->music_id    = $musicId;
         $model->op_desc     = $opdesc;
         $model->op_status   = $opStatus;
         $model->ret         = (string)$ret;
@@ -34,6 +33,21 @@ class Log extends Component
         }
 
         return $r;
+    }
+
+    public function load($code = 0, $page = 1, $pageSize = 20) {
+        $model = \common\models\Log::find();
+
+        if (!empty($code)) {
+            $model->andWhere(['op_code' => $code]);
+        }
+        $model = $model->orderBy(['id' => SORT_DESC])
+            ->offset(($page - 1) * $pageSize)
+            ->limit($pageSize)
+            ->all();
+
+        return $model;
+
     }
 
 }

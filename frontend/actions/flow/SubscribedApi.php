@@ -195,7 +195,7 @@ class SubscribedApi extends ApiAction
         Yii::$app->privilege->checkByUser($this->_user, Privilege::SUB_CONFIRM_SIGN);
 
         if (empty($subId)) {
-            return $this->fail('需要指定订购ID', -1000);
+            return $this->fail('需要指定认购ID', -1000);
         }
 
         $model = Subscribed::find()
@@ -203,7 +203,7 @@ class SubscribedApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('订购不存在', -1000);
+            return $this->fail('认购不存在', -1000);
         }
 
         foreach ($this->_get as $key => $value) {
@@ -258,7 +258,7 @@ class SubscribedApi extends ApiAction
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
         if (empty($subId)) {
-            return $this->fail('需要指定订购ID', -1000);
+            return $this->fail('需要指定认购ID', -1000);
         }
 
         $model = Subscribed::find()
@@ -266,7 +266,7 @@ class SubscribedApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('订购不存在', -1000);
+            return $this->fail('认购不存在', -1000);
         }
 
         foreach ($this->_get as $key => $value) {
@@ -287,7 +287,7 @@ class SubscribedApi extends ApiAction
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
         if (empty($subId)) {
-            return $this->fail('需要指定订购ID', -1000);
+            return $this->fail('需要指定认购ID', -1000);
         }
 
         $model = Subscribed::find()
@@ -295,7 +295,7 @@ class SubscribedApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('订购不存在', -1000);
+            return $this->fail('认购不存在', -1000);
         }
 
         return $this->success(['sub' => $model]);
@@ -335,7 +335,7 @@ class SubscribedApi extends ApiAction
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
         if (empty($subId)) {
-            return $this->fail('需要指定订购ID', -1000);
+            return $this->fail('需要指定认购ID', -1000);
         }
 
         $model = Subscribed::find()
@@ -364,7 +364,7 @@ class SubscribedApi extends ApiAction
         $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
 
         if (empty($model)) {
-            return $this->fail('订购不存在', -1000);
+            return $this->fail('认购不存在', -1000);
         }
 
         return $this->success(['sub' => $model, 'payments' => $payments, 'pay_status' => $payStatus]);

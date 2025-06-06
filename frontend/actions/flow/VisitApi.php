@@ -249,6 +249,16 @@ class VisitApi extends ApiAction
 
     public function add() {
 
+//        $visit = Visit::find()
+//            ->where([
+//                'report_id' => $this->_reportId
+//            ])
+//            ->one();
+//
+//        if (!empty($visit)) {
+//            return $this->fail('该报备已存在到访记录', -1000);
+//        }
+
         $model = new Visit();
 
         $transaction = Yii::$app->db->beginTransaction();
