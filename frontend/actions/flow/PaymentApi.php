@@ -377,7 +377,7 @@ class PaymentApi extends ApiAction
 
             if ($payType == Payment::PAYMENT_TYPE_PAY) {
                 $payments = Payment::find()
-                    ->where(['project_id' => $this->_project_id])
+                    ->where(['project_id' => $this->_projectId])
                     ->andFilterWhere(['sub_id' => $subId])
                     ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
                     ->all();
@@ -430,6 +430,7 @@ class PaymentApi extends ApiAction
                 'sub_total_price' => $subTotalPrice,
             ]);
         } catch (\Exception $e) {
+            Yii::error($e);
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
             return $this->fail('操作失败', -1000);
