@@ -331,9 +331,9 @@ class SubscribedApi extends ApiAction
             $payments = Payment::find()
                 ->where(['sub_id' => $subId])
                 ->all();
-        }
 
-        $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
+            $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
+        }
 
         return $this->success(['sub' => $model, 'payments' => $payments, 'pay_status' => $payStatus]);
 
