@@ -202,10 +202,12 @@ class PaymentApi extends ApiAction
                         'project_id' => $this->_projectId,
                         'title' => '完成支付',
                         'btn' => [
-                            'label' => '签约',
-                            'type' => 'sub_confirm_deal_page',
-                            'project_id' => $this->_projectId,
-                            'sub_id' => $model->sub_id,
+                            [
+                                'label' => '签约',
+                                'type' => 'sub_confirm_deal_page',
+                                'project_id' => $this->_projectId,
+                                'sub_id' => $model->sub_id,
+                            ],
                         ],
                     ];
                     $recvId = $this->_project->advisor_staff_id;
