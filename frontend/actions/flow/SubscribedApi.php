@@ -51,16 +51,17 @@ class SubscribedApi extends ApiAction
                     ->one();
             }
 
+
+
+            if (empty($this->_projectId)) {
+                return $this->fail('需要指定项目', -1000);
+            }
+
+            $this->_project = Project::find()
+                ->where(['id' => $this->_projectId])
+                ->one();
+            
             if ($this->action != "confirm_deal") {
-
-
-                if (empty($this->_projectId)) {
-                    return $this->fail('需要指定项目', -1000);
-                }
-
-                $this->_project = Project::find()
-                    ->where(['id' => $this->_projectId])
-                    ->one();
 
                 if (empty($this->_reportId)) {
                     return $this->fail('需要指定报备', -1000);
