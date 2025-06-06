@@ -26,20 +26,20 @@ class Payment
                     $payTotal -= $pay->recv_amount;
                 }
             }
+        }
 
-            if (!empty($nowPayment)) {
-                if ($nowPayment->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
-                    $payTotal += $nowPayment->amount;
-                } else {
-                    $payTotal -= $nowPayment->amount;
-                }
-            }
-
-            if ($payTotal > $subTotalPrice) {
-                $payStatus = Subscribed::SUB_PAY_FULLY;
+        if (!empty($nowPayment)) {
+            if ($nowPayment->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
+                $payTotal += $nowPayment->amount;
             } else {
-                $payStatus = Subscribed::SUB_PAY_PARTLY;
+                $payTotal -= $nowPayment->amount;
             }
+        }
+
+        if ($payTotal > $subTotalPrice) {
+            $payStatus = Subscribed::SUB_PAY_FULLY;
+        } else {
+            $payStatus = Subscribed::SUB_PAY_PARTLY;
         }
 
         return $payStatus;
