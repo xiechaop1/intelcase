@@ -51,32 +51,36 @@ class SubscribedApi extends ApiAction
                     ->one();
             }
 
-            if (empty($this->_projectId)) {
-                return $this->fail('需要指定项目', -1000);
-            }
+            if ($this->action != "confirm_deal") {
 
-            $this->_project = Project::find()
-                ->where(['id' => $this->_projectId])
-                ->one();
 
-            if (empty($this->_reportId)) {
-                return $this->fail('需要指定报备', -1000);
-            }
+                if (empty($this->_projectId)) {
+                    return $this->fail('需要指定项目', -1000);
+                }
 
-            $report = Report::find()
-                ->where([
-                    'id' => $this->_reportId,
-                ])
+                $this->_project = Project::find()
+                    ->where(['id' => $this->_projectId])
+                    ->one();
+
+                if (empty($this->_reportId)) {
+                    return $this->fail('需要指定报备', -1000);
+                }
+
+                $report = Report::find()
+                    ->where([
+                        'id' => $this->_reportId,
+                    ])
 //                ->andFilterWhere([
 //                    'between', 'visit_time', strtotime(date('Y-m-d 00:00:00')), strtotime(date('Y-m-d 23:59:59'))
 //                ])
-                ->orderBy([
-                    'id' => SORT_DESC
-                ])
-                ->one();
+                    ->orderBy([
+                        'id' => SORT_DESC
+                    ])
+                    ->one();
 
-            if (empty($report)) {
-                return $this->fail('报备不存在', -1000);
+                if (empty($report)) {
+                    return $this->fail('报备不存在', -1000);
+                }
             }
 
             $this->valToken();
@@ -136,7 +140,11 @@ class SubscribedApi extends ApiAction
         }
 
         $model->sub_status = $subStatus;
-        $model->save();
+        $ret = $model->save();
+        if ($ret === false) {
+            Yii::error($model->getErrors());
+            return $this->fail('操作失败', -1000);
+        }
 
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
             $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
