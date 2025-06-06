@@ -252,6 +252,7 @@ class ProjectApi extends ApiAction
             $ret = $model->save();
             if ($ret === false) {
                 Yii::error($ret->getErrors());
+                return $this->fail('保存失败', -1999);
             }
 
 
