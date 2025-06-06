@@ -435,6 +435,8 @@ class SubscribedApi extends ApiAction
             $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
             $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
 
+            $monthlyAmount = 0;
+            $yearlyAmount = 0;
             if (!empty($dailyAmount) && !empty($buildingArea)) {
                 $monthlyAmount = $dailyAmount * $buildingArea * 30;
                 $yearlyAmount = $dailyAmount * $buildingArea * 365;
@@ -543,6 +545,7 @@ class SubscribedApi extends ApiAction
                 'subscribed' => $model,
             ]);
         } catch (\Exception $e) {
+            
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
             return $this->fail('操作失败', -1000);
