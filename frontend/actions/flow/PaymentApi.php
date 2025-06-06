@@ -401,25 +401,30 @@ class PaymentApi extends ApiAction
                         'content' => '项目 ' . $this->_project->project_name . ' 完成支付，请最终确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成支付',
-                        'btn' => [
-                            'label' => '最终确认',
-                            'type' => 'payment_confirm_page',
-                            'project_id' => $this->_projectId,
-                            'payment_id' => $paymentId,
+                        'btn' =>
+                        [
+                            [
+                                'label' => '最终确认',
+                                'type' => 'payment_confirm_page',
+                                'project_id' => $this->_projectId,
+                                'payment_id' => $paymentId,
+                            ],
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                } elseif ($payStatus == Subscribed::SUB_PAY_PARTLY) {
+                } else {
                     $content = [
                         'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，请确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成部分支付',
                         'btn' => [
-                            'label' => '确认',
-                            'type' => 'payment_confirm_page',
-                            'project_id' => $this->_projectId,
-                            'payment_id' => $paymentId,
+                            [
+                                'label' => '确认',
+                                'type' => 'payment_confirm_page',
+                                'project_id' => $this->_projectId,
+                                'payment_id' => $paymentId,
+                            ],
                         ],
                     ];
                     $recvId = $this->_project->financial_staff_id;
