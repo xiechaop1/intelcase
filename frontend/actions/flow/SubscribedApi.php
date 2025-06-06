@@ -325,6 +325,7 @@ class SubscribedApi extends ApiAction
             ->one();
 
         $payments = [];
+        $payStatus = Subscribed::SUB_PAY_WAIT;
         if (!empty($model)) {
             $subId = $model->id;
 
