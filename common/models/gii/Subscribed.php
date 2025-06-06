@@ -11,8 +11,6 @@ use Yii;
 class Subscribed extends \yii\db\ActiveRecord
 {
 
-    public $lyricJson;
-
     /**
      * {@inheritdoc}
      */
@@ -27,8 +25,8 @@ class Subscribed extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['room_no', 'building_area', 'sub_guest', 'id_no', 'mobile', 'supply_sub_guest', 'supply_guest_id_no', 'supply_guest_mobile', 'owner', 'lessor', 'lessor_detail', 'free_rent_date', 'increase_date', ], 'string'],
-            [['project_id', 'report_id', 'visit_id', 'pay_method', 'id_type', 'supply_guest_id_type', 'sub_type', 'increase_rate', ], 'integer'],
+            [['room_no', 'building_area', 'sub_guest', 'id_no', 'id_type', 'pay_method', 'mobile', 'supply_guest_id_type', 'supply_sub_guest', 'supply_guest_id_no', 'supply_guest_mobile', 'owner', 'lessor', 'lessor_detail', 'free_rent_date', 'increase_date', ], 'string'],
+            [['project_id', 'report_id', 'visit_id', 'sub_type', 'increase_rate', ], 'integer'],
             [['balance_price', 'sub_total_price', 'supply_total_price', 'daily_amount', 'monthly_amount', 'yearly_amount', 'deposit', 'rent_amount',
                 'pro_rent_amount', 'al_daily_amount', 'al_amount', 'al_other', 'al_total_amount'], 'number'],
             [['rent_date_begin', 'rent_date_end', 'al_date_begin', 'al_date_end', 'sub_status', ], 'string'],

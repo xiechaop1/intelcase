@@ -515,6 +515,9 @@ class SubscribedApi extends ApiAction
 
             $transaction->commit();
 
+            // 获取数据库操作错误
+
+
             // 获取最新一条数据ID
             $subId = $model->getPrimaryKey();
 //            $subId = Yii::$app->db->getLastInsertID();
@@ -545,7 +548,7 @@ class SubscribedApi extends ApiAction
                 'subscribed' => $model,
             ]);
         } catch (\Exception $e) {
-            
+
             $transaction->rollBack();
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
             return $this->fail('操作失败', -1000);
