@@ -354,7 +354,7 @@ class PaymentApi extends ApiAction
             $model->payer = $payer;
             $model->sub_id = $subId;
             $model->project_id = $this->_projectId;
-            $model->report_id = $this->_reportId;
+//            $model->report_id = $this->_reportId;
             $model->pay_time = $payTime;
             $model->pay_way = $payWay;
             $model->pay_type = $payType;
