@@ -511,7 +511,11 @@ class SubscribedApi extends ApiAction
             $model->supply_total_price = $supplyTotalPrice;
 
 
-            $model->save();
+            $ret = $model->save();
+
+            if ($ret === false) {
+                Yii::error($model->getErrors());
+            }
 
             $transaction->commit();
 
@@ -549,6 +553,7 @@ class SubscribedApi extends ApiAction
             ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
+            Yii::error($e);
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
             return $this->fail('操作失败', -1000);
         }
