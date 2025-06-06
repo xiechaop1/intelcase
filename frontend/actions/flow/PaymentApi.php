@@ -184,7 +184,7 @@ class PaymentApi extends ApiAction
             $model->pay_status = $pay_status;
             if ($model->save()) {
                 $payments = Payment::find()
-                    ->where(['project_id' => $this->_project_id])
+                    ->where(['project_id' => $this->_projectId])
                     ->andFilterWhere(['sub_id' => $model->sub_id])
                     ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
                     ->all();
