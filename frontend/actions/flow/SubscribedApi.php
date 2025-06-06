@@ -207,7 +207,7 @@ class SubscribedApi extends ApiAction
         }
 
         foreach ($this->_get as $key => $value) {
-            if (in_array($key, ['sub_id', 'project_id', 'report_id'])) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test'])) {
                 continue;
             }
             if (in_array($key, ['supply_sub_guest', 'supply_guest_id_type', 'supply_guest_id_no', 'supply_guest_mobile', 'supply_total_price'])) {
@@ -270,7 +270,7 @@ class SubscribedApi extends ApiAction
         }
 
         foreach ($this->_get as $key => $value) {
-            if (in_array($key, ['sub_id', 'project_id', 'report_id'])) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test'])) {
                 continue;
             }
             if (!empty($value) && isset($this->_get[$key])) {
