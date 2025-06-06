@@ -402,13 +402,13 @@ class SubscribedApi extends ApiAction
             $subType = !empty($this->_get['sub_type']) ? $this->_get['sub_type'] : 0;
             $subGuest = !empty($this->_get['sub_guest']) ? $this->_get['sub_guest'] : '';
             $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
-            $idType = !empty($this->_get['id_type']) ? $this->_get['id_type'] : 0;
+            $idType = !empty($this->_get['id_type']) ? $this->_get['id_type'] : "";
             $idNo = !empty($this->_get['id_no']) ? $this->_get['id_no'] : '';
             $guestMobile = $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
             $buildingArea = !empty($this->_get['building_area']) ? $this->_get['building_area'] : '';
             $balancePrice = !empty($this->_get['balance_price']) ? $this->_get['balance_price'] : 0;
             $subTotalPrice = !empty($this->_get['sub_total_price']) ? $this->_get['sub_total_price'] : 0;
-            $payMethod = !empty($this->_get['pay_method']) ? $this->_get['pay_method'] : 0;
+            $payMethod = !empty($this->_get['pay_method']) ? $this->_get['pay_method'] : "";
             $owner = !empty($this->_get['owner']) ? $this->_get['owner'] : '';
             $lessor = !empty($this->_get['lessor']) ? $this->_get['lessor'] : '';
             $lessorDetail = !empty($this->_get['lessor_detail']) ? $this->_get['lessor_detail'] : '';
@@ -430,7 +430,7 @@ class SubscribedApi extends ApiAction
             $alDateBegin = !empty($this->_get['al_date_begin']) ? $this->_get['al_date_begin'] : '';
             $alDateEnd = !empty($this->_get['al_date_end']) ? $this->_get['al_date_end'] : '';
             $supplySubGuest = !empty($this->_get['supply_sub_guest']) ? $this->_get['supply_sub_guest'] : '';
-            $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : 0;
+            $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : "";
             $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
             $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
             $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
