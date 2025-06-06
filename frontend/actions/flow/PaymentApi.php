@@ -408,6 +408,7 @@ class PaymentApi extends ApiAction
                                 'type' => 'payment_confirm_page',
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
+                                'report_id' => $this->_reportId,
                             ],
                         ],
                     ];
@@ -424,6 +425,7 @@ class PaymentApi extends ApiAction
                                 'type' => 'payment_confirm_page',
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
+                                'report_id' => $this->_reportId,
                             ],
                         ],
                     ];
