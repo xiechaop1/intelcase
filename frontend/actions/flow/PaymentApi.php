@@ -332,11 +332,11 @@ class PaymentApi extends ApiAction
                 ->orderBy('id DESC')
                 ->one();
 
-            $subTotalPrice = !empty($subscribed->sub_total_price) ? $subscribed->sub_total_price : 0;
 
             if (empty($subscribed)) {
-                return $this->fail('订阅不存在', -1000);
+                return $this->fail('订购不存在', -1000);
             }
+            $subTotalPrice = !empty($subscribed->sub_total_price) ? $subscribed->sub_total_price : 0;
 
             $recvAmountRet = 0;
             foreach ($paymentRet as $payment) {
