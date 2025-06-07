@@ -445,9 +445,9 @@ class DataApi extends ApiAction
         if (!empty($endTime)) {
             $reportList->andFilterWhere(['<=', 'visit_time', $endTime]);
         }
-        $reportList = $reportList->orderBy(['id' => SORT_DESC]);
+        $reportListCount = $reportList = $reportList->orderBy(['id' => SORT_DESC]);
 
-        $count = $reportList->count();
+        $count = $reportListCount->count();
         $data = $reportList->offset(($page - 1) * $pageSize)
             ->all();
 
