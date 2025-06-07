@@ -26,9 +26,9 @@ class DataController extends Controller
                 'class'     => 'frontend\actions\flow\DataApi',
                 'action'    => 'guest_list',
             ],
-            'get_report_list' => [
+            'report_list' => [
                 'class'     => 'frontend\actions\flow\DataApi',
-                'action'    => 'get_report_list',
+                'action'    => 'report_list',
             ],
             'export_guest_list' => [
                 'class'     => 'frontend\actions\flow\DataApi',
