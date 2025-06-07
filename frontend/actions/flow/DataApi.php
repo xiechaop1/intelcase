@@ -452,7 +452,7 @@ class DataApi extends ApiAction
             ->all();
 
         $ret = [];
-        if (empty($data)) {
+        if (!empty($data)) {
             foreach ($data as $row) {
                 $one = $row->toArray();
                 $lastReports = $row->lastReports;
