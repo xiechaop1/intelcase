@@ -100,7 +100,7 @@ class DataApi extends ApiAction
                 $one = $row->toArray();
                 $one['op_parameters'] = json_decode($one['op_parameters'], true);
                 $one['ret'] = json_decode($one['ret'], true);
-                $one['op_status_name'] = \common\models\Log::$opStatusMap[$one['op_status']];
+                $one['op_status_name'] = $row->statusName();
                 $one['op_code_name'] = $row->codeName();
                 $one['created_at'] = date('Y-m-d H:i:s', $one['created_at']);
                 if (!empty($one['staff_id'])) {

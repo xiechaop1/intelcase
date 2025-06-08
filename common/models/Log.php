@@ -66,7 +66,12 @@ class Log extends \common\models\gii\Log
 
     public function getCodeName()
     {
-        return self::$opCodeMap[$this->op_code];
+        return !empty(self::$opCodeMap[$this->op_code]) ? self::$opCodeMap[$this->op_code] : '未知';
+    }
+
+    public function getStatusName()
+    {
+        return !empty(self::$opStatusMap[$this->op_status]) ? self::$opStatusMap[$this->op_status] : '未知';
     }
 
 }
