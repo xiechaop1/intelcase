@@ -38,11 +38,17 @@ class Log extends Component
         return $r;
     }
 
-    public function read($code = 0, $page = 1, $pageSize = 20) {
+    public function read($code = 0, $beginTime = 0, $endTime = 0, $page = 1, $pageSize = 20) {
         $model = \common\models\Log::find();
 
         if (!empty($code)) {
             $model->andWhere(['op_code' => $code]);
+        }
+        if (!empty($beginTime)) {
+            $model->andWhere(['>=', 'created_at', $beginTime]);
+        }
+        if (!empty($endTime)) {
+            $model->andWhere(['<=', 'created_at', $endTime]);
         }
         $model = $model->orderBy(['id' => SORT_DESC])
             ->offset(($page - 1) * $pageSize)

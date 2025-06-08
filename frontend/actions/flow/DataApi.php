@@ -46,6 +46,9 @@ class DataApi extends ApiAction
                 case 'get_data':
                     $ret = $this->getData();
                     break;
+                case 'get_logs':
+                    $ret = $this->getLogs();
+                    break;
                 case 'report_list':
                     $ret = $this->getReportList();
                     break;
@@ -65,6 +68,55 @@ class DataApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getLogs()
+    {
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
+        $opCode = !empty($this->_get['op_code']) ? $this->_get['op_code'] : '';
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
+
+        $logList = \common\models\Log::find();
+        if (!empty($opCode)) {
+            $logList->andFilterWhere(['op_code' => $opCode]);
+        }
+        if (!empty($beginTime)) {
+            $logList->andFilterWhere(['>=', 'created_at', $beginTime]);
+        }
+        if (!empty($endTime)) {
+            $logList->andFilterWhere(['<=', 'created_at', $endTime]);
+        }
+        $logList = $logList->orderBy(['id' => SORT_DESC]);
+        $count = $logList->count();
+        $data = $logList->offset(($page - 1) * $pageSize)
+            ->limit($pageSize)
+            ->all();
+
+        $ret = [];
+        if (!empty($data)) {
+            foreach ($data as $row) {
+                $one = $row->toArray();
+                $one['op_parameters'] = json_decode($one['op_parameters'], true);
+                $one['ret'] = json_decode($one['ret'], true);
+                $one['created_at'] = date('Y-m-d H:i:s', $one['created_at']);
+                if (!empty($one['staff_id'])) {
+                    $one['staff'] = $row->staff;
+                    if (!empty($staff)) {
+                        $one['staff_name'] = $staff->staff_name;
+                    }
+                }
+                $ret[] = $one;
+            }
+        }
+
+        return $this->success([
+            'list' => $ret,
+            'total_count' => $count,
+            'page' => $page,
+            'page_size' => $pageSize,
+        ]);
     }
 
     public function getData()
