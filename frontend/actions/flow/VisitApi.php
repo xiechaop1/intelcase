@@ -173,6 +173,18 @@ class VisitApi extends ApiAction
             if ($ret === false) {
                 Yii::error($model->getErrors());
             }
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+                'visit_confirm_status' => $visitConfirmStatus,
+                'visit_status_comment' => $visitStatusComment,
+            ], '用户确认到访', [
+                'ret' => $ret,
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+            ]);
         } catch (\Exception $e) {
             Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $model->guest_mobile, [
                 'visit_id' => $visitId,

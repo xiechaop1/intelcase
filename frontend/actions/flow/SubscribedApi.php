@@ -199,7 +199,9 @@ class SubscribedApi extends ApiAction
             $model->mobile,
             $model->getAttributes(),
             '确认认购成交',
-            $model->getPrimaryKey()
+            [
+                'sub_id' => $model->getPrimaryKey()
+            ]
         );
 
         return $this->success();
@@ -278,7 +280,9 @@ class SubscribedApi extends ApiAction
                 $model->mobile,
                 $model->getAttributes(),
                 '确认认购签约',
-                $model->getPrimaryKey()
+                [
+                    'sub_id' => $model->getPrimaryKey()
+                ]
             );
 
         } catch (\Exception $e) {

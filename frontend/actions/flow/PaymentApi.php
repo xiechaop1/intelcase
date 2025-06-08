@@ -223,6 +223,7 @@ class PaymentApi extends ApiAction
                     'fee' => $fee,
                     'pay_status' => $pay_status,
                 ], '确认支付', [
+                    'payment_id' => $model->id,
                     'ret' => $ret,
                 ]);
                 return $this->success($model);
@@ -235,6 +236,7 @@ class PaymentApi extends ApiAction
                     'fee' => $fee,
                     'pay_status' => $pay_status,
                 ], '确认支付', [
+                    'payment_id' => $model->id,
                     'ret' => $ret,
                 ]);
                 return $this->fail('操作失败', -1000);
@@ -481,6 +483,7 @@ class PaymentApi extends ApiAction
                 'fee' => $fee,
                 'recv_time' => $recvTime,
             ], '新建支付', [
+                'payment_id' => $paymentId,
                 'ret' => $ret,
             ]);
 

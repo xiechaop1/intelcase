@@ -211,7 +211,7 @@ class ReportApi extends ApiAction
             $model->visit_time = $visitTime;
             $model->visit_type = $visitType;
             $model->report_status = $reportStatus;
-            $model->save();
+            $ret = $model->save();
 
             $transaction->commit();
             // 获取最新一条数据ID
@@ -272,6 +272,7 @@ class ReportApi extends ApiAction
                 'visit_time' => $visitTime,
                 'visit_type' => $visitType,
             ], '用户报备', [
+                'ret' => $ret,
                 'project_id' => $this->_projectId,
                 'report_id' => $reportId,
             ]);
