@@ -455,7 +455,7 @@ class SubscribedApi extends ApiAction
             $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
             $idType = !empty($this->_get['id_type']) ? $this->_get['id_type'] : "";
             $idNo = !empty($this->_get['id_no']) ? $this->_get['id_no'] : '';
-            $guestMobile = $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
+            $guestMobile = $mobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
             $buildingArea = !empty($this->_get['building_area']) ? $this->_get['building_area'] : '';
             $balancePrice = !empty($this->_get['balance_price']) ? $this->_get['balance_price'] : 0;
             $subTotalPrice = !empty($this->_get['sub_total_price']) ? $this->_get['sub_total_price'] : 0;
