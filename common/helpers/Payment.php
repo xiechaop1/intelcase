@@ -36,10 +36,14 @@ class Payment
             }
         }
 
-        if ($payTotal > $subTotalPrice) {
-            $payStatus = Subscribed::SUB_PAY_FULLY;
+        if (!empty($payments)) {
+            if ($payTotal > $subTotalPrice) {
+                $payStatus = Subscribed::SUB_PAY_FULLY;
+            } else {
+                $payStatus = Subscribed::SUB_PAY_PARTLY;
+            }
         } else {
-            $payStatus = Subscribed::SUB_PAY_PARTLY;
+            $payStatus = Subscribed::SUB_PAY_WAIT;
         }
 
         return $payStatus;
