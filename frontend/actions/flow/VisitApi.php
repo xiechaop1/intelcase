@@ -79,7 +79,7 @@ class VisitApi extends ApiAction
                 ->one();
 
             if (empty($report)) {
-                return $this->fail('报备不存在', -1000);
+                return $this->fail('请做一次有效报备', -1000);
             }
 
             $this->valToken();

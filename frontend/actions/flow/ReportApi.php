@@ -95,7 +95,7 @@ class ReportApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('报备不存在', -1000);
+            return $this->fail('请做一次有效报备', -1000);
         }
 
         return $this->success($model);
@@ -116,7 +116,7 @@ class ReportApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('报备不存在', -1000);
+            return $this->fail('请做一次有效报备', -1000);
         }
 
         $model->report_status = $reportStatus;
@@ -141,7 +141,7 @@ class ReportApi extends ApiAction
             ->one();
 
         if (empty($model)) {
-            return $this->fail('报备不存在', -1000);
+            return $this->fail('请做一次有效报备', -1000);
         }
 
         try {
