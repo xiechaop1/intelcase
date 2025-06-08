@@ -72,7 +72,7 @@ class SubscribedApi extends ApiAction
                         'id' => $this->_reportId,
                     ])
                     ->andFilterWhere([
-                        'between', 'visit_time', strtotime(date('Y-m-d 00:00:00')), strtotime(date('Y-m-d 23:59:59'))
+                        'between', 'visit_time', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')
                     ])
                     ->andFilterWhere([
                         'report_status' => Report::REPORT_STATUS_PASS,
