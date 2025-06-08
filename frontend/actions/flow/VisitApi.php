@@ -174,7 +174,7 @@ class VisitApi extends ApiAction
                 Yii::error($model->getErrors());
             }
         } catch (\Exception $e) {
-            Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $model->guest_mobile, [
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $model->guest_mobile, [
                 'visit_id' => $visitId,
                 'project_id' => $this->_projectId,
                 'report_id' => $this->_reportId,
@@ -226,7 +226,7 @@ class VisitApi extends ApiAction
             }
         }
 
-        Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
+        Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
             'visit_id' => $visitId,
             'project_id' => $this->_projectId,
             'report_id' => $this->_reportId,
@@ -376,7 +376,7 @@ class VisitApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
-            Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
                 'visit_id' => $visitId,
                 'project_id' => $this->_projectId,
                 'report_id' => $reportId,

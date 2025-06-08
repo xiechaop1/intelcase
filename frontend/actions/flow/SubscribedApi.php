@@ -192,7 +192,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
         }
-        Yii::$app->log->write(
+        Yii::$app->oplog->write(
             \common\models\Log::OP_CODE_SUB_CONFIRM_DEAL,
             \common\models\Log::OP_STATUS_SUCCESS,
             $this->_staffId,
@@ -271,7 +271,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
-            Yii::$app->log->write(
+            Yii::$app->oplog->write(
                 \common\models\Log::OP_CODE_SUB_CONFIRM_SIGN,
                 \common\models\Log::OP_STATUS_SUCCESS,
                 $this->_staffId,
@@ -282,7 +282,7 @@ class SubscribedApi extends ApiAction
             );
 
         } catch (\Exception $e) {
-            Yii::$app->log->write(
+            Yii::$app->oplog->write(
                 \common\models\Log::OP_CODE_SUB_CONFIRM_SIGN,
                 \common\models\Log::OP_STATUS_FAILED,
                 $this->_staffId,
@@ -586,7 +586,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
-            Yii::$app->log->write(
+            Yii::$app->oplog->write(
                 \common\models\Log::OP_CODE_SUB_ADD,
                 \common\models\Log::OP_STATUS_SUCCESS,
                 $this->_staffId,
@@ -610,7 +610,7 @@ class SubscribedApi extends ApiAction
         } catch (\Exception $e) {
             $transaction->rollBack();
 
-            Yii::$app->log->write(\common\models\Log::OP_CODE_SUB_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $mobile, [
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_SUB_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $mobile, [
                 'code' => $e->getCode(),
                 'msg' => $e->getMessage(),
             ]);

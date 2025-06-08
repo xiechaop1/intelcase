@@ -264,7 +264,7 @@ class ReportApi extends ApiAction
                 }
             }
 
-            Yii::$app->log->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
+            Yii::$app->oplog->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
                 'project_id' => $this->_projectId,
                 'report_id' => $reportId,
                 'guest_name' => $guestName,
@@ -283,7 +283,7 @@ class ReportApi extends ApiAction
             ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
-            Yii::$app->log->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_FAILED, $this->_staffId, $guestMobile, [
+            Yii::$app->oplog->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_FAILED, $this->_staffId, $guestMobile, [
                 'project_id' => $this->_projectId,
                 'report_id' => $reportId,
                 'guest_name' => $guestName,

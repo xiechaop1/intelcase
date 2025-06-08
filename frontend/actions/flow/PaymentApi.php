@@ -216,7 +216,7 @@ class PaymentApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
 
-                Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
+                Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
                     'payment_id' => $model->id,
                     'recv_amount' => $recv_amount,
                     'recv_time' => $recv_time,
@@ -228,7 +228,7 @@ class PaymentApi extends ApiAction
                 return $this->success($model);
             } else {
                 Yii::error($model->getErrors());
-                Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
+                Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
                     'payment_id' => $model->id,
                     'recv_amount' => $recv_amount,
                     'recv_time' => $recv_time,
@@ -463,7 +463,7 @@ class PaymentApi extends ApiAction
 
 //            $paymentId = Yii::$app->db->getLastInsertID();
 
-            Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
                 'payment_id' => $paymentId,
                 'payer' => $payer,
                 'sub_id' => $subId,
@@ -494,7 +494,7 @@ class PaymentApi extends ApiAction
         } catch (\Exception $e) {
             Yii::error($e);
             $transaction->rollBack();
-            Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
                 'payer' => $payer,
                 'sub_id' => $subId,
                 'project_id' => $this->_projectId,

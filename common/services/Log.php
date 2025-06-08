@@ -38,7 +38,7 @@ class Log extends Component
         return $r;
     }
 
-    public function load($code = 0, $page = 1, $pageSize = 20) {
+    public function read($code = 0, $page = 1, $pageSize = 20) {
         $model = \common\models\Log::find();
 
         if (!empty($code)) {
