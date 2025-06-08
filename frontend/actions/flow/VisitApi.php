@@ -174,6 +174,16 @@ class VisitApi extends ApiAction
                 Yii::error($model->getErrors());
             }
         } catch (\Exception $e) {
+            Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $model->guest_mobile, [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+                'visit_confirm_status' => $visitConfirmStatus,
+                'visit_status_comment' => $visitStatusComment,
+            ], '用户确认到访', [
+                'code' => $e->getCode(),
+                'msg' => $e->getMessage(),
+            ]);
             return $this->fail('操作失败', -1000);
         }
 
@@ -215,6 +225,18 @@ class VisitApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
         }
+
+        Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
+            'visit_id' => $visitId,
+            'project_id' => $this->_projectId,
+            'report_id' => $this->_reportId,
+            'visit_confirm_status' => $visitConfirmStatus,
+            'visit_status_comment' => $visitStatusComment,
+        ], '用户确认到访', [
+            'visit_id' => $visitId,
+            'project_id' => $this->_projectId,
+            'report_id' => $this->_reportId,
+        ]);
 
         return $this->success(['visit' => $model]);
     }
@@ -353,6 +375,19 @@ class VisitApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
+
+            Yii::$app->log->write(\common\models\Log::OP_CODE_VISIT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $reportId,
+                'guest_name' => $guestName,
+                'guest_mobile' => $guestMobile,
+                'visit_time' => $visitTime,
+            ], '用户添加到访', [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $reportId,
+            ]);
 
             return $this->success([
                 'visit_id' => $visitId,

@@ -182,7 +182,8 @@ class PaymentApi extends ApiAction
             $model->recv_time = $recv_time;
             $model->fee = $fee;
             $model->pay_status = $pay_status;
-            if ($model->save()) {
+            $ret = $model->save();
+            if ($ret) {
                 $payments = Payment::find()
                     ->where(['project_id' => $this->_projectId])
                     ->andFilterWhere(['sub_id' => $model->sub_id])
@@ -215,9 +216,27 @@ class PaymentApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
 
+                Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
+                    'payment_id' => $model->id,
+                    'recv_amount' => $recv_amount,
+                    'recv_time' => $recv_time,
+                    'fee' => $fee,
+                    'pay_status' => $pay_status,
+                ], '确认支付', [
+                    'ret' => $ret,
+                ]);
                 return $this->success($model);
             } else {
                 Yii::error($model->getErrors());
+                Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
+                    'payment_id' => $model->id,
+                    'recv_amount' => $recv_amount,
+                    'recv_time' => $recv_time,
+                    'fee' => $fee,
+                    'pay_status' => $pay_status,
+                ], '确认支付', [
+                    'ret' => $ret,
+                ]);
                 return $this->fail('操作失败', -1000);
             }
         }
@@ -444,6 +463,27 @@ class PaymentApi extends ApiAction
 
 //            $paymentId = Yii::$app->db->getLastInsertID();
 
+            Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
+                'payment_id' => $paymentId,
+                'payer' => $payer,
+                'sub_id' => $subId,
+                'project_id' => $this->_projectId,
+                'pay_time' => $payTime,
+                'pay_way' => $payWay,
+                'pay_type' => $payType,
+                'pay_status' => $payStatus,
+                'amount' => $amount,
+                'amount_type' => $amountType,
+                'pay_account' => $payAccount,
+                'recv_account' => $recvAccount,
+                'receipt_no' => $receiptNo,
+                'recv_amount' => $recvAmount,
+                'fee' => $fee,
+                'recv_time' => $recvTime,
+            ], '新建支付', [
+                'ret' => $ret,
+            ]);
+
             return $this->success([
                 'payment_id' => $paymentId,
                 'subscribed' => $subscribed,
@@ -454,7 +494,25 @@ class PaymentApi extends ApiAction
         } catch (\Exception $e) {
             Yii::error($e);
             $transaction->rollBack();
-//            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
+            Yii::$app->log->write(\common\models\Log::OP_CODE_PAYMENT_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, '', [
+                'payer' => $payer,
+                'sub_id' => $subId,
+                'project_id' => $this->_projectId,
+                'pay_time' => $payTime,
+                'pay_way' => $payWay,
+                'pay_type' => $payType,
+                'pay_status' => $payStatus,
+                'amount' => $amount,
+                'amount_type' => $amountType,
+                'pay_account' => $payAccount,
+                'recv_account' => $recvAccount,
+                'receipt_no' => $receiptNo,
+                'recv_amount' => $recvAmount,
+                'fee' => $fee,
+                'recv_time' => $recvTime,
+            ], '新建支付', [
+                'ret' => false,
+            ]);
             return $this->fail('操作失败', -1000);
         }
 

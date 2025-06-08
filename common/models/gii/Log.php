@@ -18,7 +18,7 @@ class Log extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%log}}';
+        return '{{%logs}}';
     }
 
     /**
@@ -27,9 +27,9 @@ class Log extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ret', 'op_desc' ], 'string'],
-            [['op_code', 'user_id', 'op_status', 'music_id'], 'integer'],
-            [[ 'created_at', 'updated_at',], 'integer'],
+            [['ret', 'op_desc', 'op_parameters', 'guest_mobile', 'op_code' ], 'string'],
+            [['staff_id', 'user_id', 'op_status',], 'integer'],
+            [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
 

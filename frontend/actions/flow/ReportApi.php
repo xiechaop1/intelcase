@@ -14,7 +14,7 @@ use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
-use common\services\Log;
+use common\models\Log;
 use frontend\actions\ApiAction;
 use Yii;
 
@@ -264,6 +264,18 @@ class ReportApi extends ApiAction
                 }
             }
 
+            Yii::$app->log->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
+                'project_id' => $this->_projectId,
+                'report_id' => $reportId,
+                'guest_name' => $guestName,
+                'guest_mobile' => $guestMobile,
+                'visit_time' => $visitTime,
+                'visit_type' => $visitType,
+            ], '用户报备', [
+                'project_id' => $this->_projectId,
+                'report_id' => $reportId,
+            ]);
+
 
             return $this->success([
                 'report_id' => $reportId,
@@ -271,7 +283,17 @@ class ReportApi extends ApiAction
             ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
-//            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
+            Yii::$app->log->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_FAILED, $this->_staffId, $guestMobile, [
+                'project_id' => $this->_projectId,
+                'report_id' => $reportId,
+                'guest_name' => $guestName,
+                'guest_mobile' => $guestMobile,
+                'visit_time' => $visitTime,
+                'visit_type' => $visitType,
+            ], '用户报备', [
+                'code' => $e->getCode(),
+                'msg' => $e->getMessage(),
+            ]);
             return $this->fail('操作失败', -1000);
         }
 

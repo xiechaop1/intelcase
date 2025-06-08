@@ -60,7 +60,7 @@ class SubscribedApi extends ApiAction
             $this->_project = Project::find()
                 ->where(['id' => $this->_projectId])
                 ->one();
-            
+
             if ($this->action != "confirm_deal") {
 
                 if (empty($this->_reportId)) {
@@ -172,7 +172,9 @@ class SubscribedApi extends ApiAction
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
             }
+
         } else if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN) {
             $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
             $sub = Subscribed::find()
@@ -190,6 +192,15 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
         }
+        Yii::$app->log->write(
+            \common\models\Log::OP_CODE_SUB_CONFIRM_DEAL,
+            \common\models\Log::OP_STATUS_SUCCESS,
+            $this->_staffId,
+            $model->mobile,
+            $model->getAttributes(),
+            '确认认购成交',
+            $model->getPrimaryKey()
+        );
 
         return $this->success();
     }
@@ -228,7 +239,11 @@ class SubscribedApi extends ApiAction
         }
 
         try {
-            $model->save();
+            $ret = $model->save();
+            if ($ret === false) {
+                Yii::error($model->getErrors());
+                return $this->fail('操作失败', -1000);
+            }
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
@@ -256,7 +271,26 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
+            Yii::$app->log->write(
+                \common\models\Log::OP_CODE_SUB_CONFIRM_SIGN,
+                \common\models\Log::OP_STATUS_SUCCESS,
+                $this->_staffId,
+                $model->mobile,
+                $model->getAttributes(),
+                '确认认购签约',
+                $model->getPrimaryKey()
+            );
+
         } catch (\Exception $e) {
+            Yii::$app->log->write(
+                \common\models\Log::OP_CODE_SUB_CONFIRM_SIGN,
+                \common\models\Log::OP_STATUS_FAILED,
+                $this->_staffId,
+                $model->mobile,
+                $model->getAttributes(),
+                '确认认购签约失败',
+                ['code' => $e->getCode(), 'msg' => $e->getMessage()]
+            );
             return $this->fail('操作失败', -1000);
         }
 
@@ -529,9 +563,6 @@ class SubscribedApi extends ApiAction
 
             $transaction->commit();
 
-            // 获取数据库操作错误
-
-
             // 获取最新一条数据ID
             $subId = $model->getPrimaryKey();
 //            $subId = Yii::$app->db->getLastInsertID();
@@ -555,6 +586,21 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
+            Yii::$app->log->write(
+                \common\models\Log::OP_CODE_SUB_ADD,
+                \common\models\Log::OP_STATUS_SUCCESS,
+                $this->_staffId,
+                $mobile,
+                $model->getAttributes(),
+                '添加认购',
+                [
+                    'sub_id' => $subId,
+                    'project_id' => $this->_projectId,
+                    'report_id' => $this->_reportId,
+                    'subscribed' => $model,
+                ]
+            );
+
             return $this->success([
                 'sub_id' => $subId,
                 'project_id' => $this->_projectId,
@@ -563,6 +609,12 @@ class SubscribedApi extends ApiAction
             ]);
         } catch (\Exception $e) {
             $transaction->rollBack();
+
+            Yii::$app->log->write(\common\models\Log::OP_CODE_SUB_ADD, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $mobile, [
+                'code' => $e->getCode(),
+                'msg' => $e->getMessage(),
+            ]);
+
             Yii::error($e);
 //            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VIEW, \common\models\Log::OP_STATUS_FAILED, $this->_userId, $this->_musicId, '用户浏览', json_encode(['code' => $e->getCode(), 'msg' => $e->getMessage()]));
             return $this->fail('操作失败', -1000);

@@ -17,13 +17,16 @@ use yii;
 class Log extends Component
 {
 
-    public function write($code, $opStatus = 1, $userId = 0, $opdesc = '', $ret = '') {
+    public function write($code, $opStatus = 1, $staffId, $guestMobile = '', $opPara = '', $opdesc = '', $ret = '') {
         $model = new \common\models\Log();
         $model->op_code     = $code;
-        $model->user_id     = $userId;
+        $model->staff_id    = $staffId;
+//        $model->user_id     = $userId;
+        $model->guest_mobile = $guestMobile;
+        $model->op_parameters = is_string($opPara) ? $opPara : json_encode($opPara, JSON_UNESCAPED_UNICODE);
         $model->op_desc     = $opdesc;
         $model->op_status   = $opStatus;
-        $model->ret         = (string)$ret;
+        $model->ret         = is_string($ret) ? $ret : json_encode($ret, JSON_UNESCAPED_UNICODE);
 
 
         try {
