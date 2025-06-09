@@ -132,11 +132,11 @@ class UserApi extends ApiAction
             $user = Staff::findOne(['wx_openid' => $openId
 //                , 'staff_status' => Staff::STAFF_STATUS_NORMAL
             ]);
-            if (!empty($user)
-                && $user->staff_status == Staff::STAFF_STATUS_DISABLE
-            ) {
-                throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
-            }
+//            if (!empty($user)
+//                && $user->staff_status == Staff::STAFF_STATUS_DISABLE
+//            ) {
+//                throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
+//            }
             if (!empty($user['id'])) {
                 $this->_get['user_id'] = $user['id'];
                 $tokenRet = $this->getToken();
