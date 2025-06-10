@@ -339,7 +339,18 @@ class VisitApi extends ApiAction
                 ])
                 ->count();
 
-            $visitType = empty($reportCount) ? 0 : $reportCount + 1;
+            $visitCount = Visit::find()
+                ->select('visit_time')
+                ->where(['project_id' => $this->_projectId])
+                ->andFilterWhere(['guest_mobile' => $guestMobile])
+                ->groupBy([
+                    'visit_time'
+                ])
+                ->count();
+
+            $visitType = empty($visitCount) ? 0 : $visitCount + 1;
+
+//            $visitType = empty($reportCount) ? 0 : $reportCount + 1;
 
             $model->project_id = intval($this->_projectId);
             $model->report_id = intval($reportId);

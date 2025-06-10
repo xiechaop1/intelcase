@@ -15,6 +15,7 @@ use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
 use common\models\Log;
+use common\models\Visit;
 use frontend\actions\ApiAction;
 use Yii;
 
