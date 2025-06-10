@@ -788,12 +788,63 @@ class Common extends Component
         return $ret;
     }
 
-    public function generateQrCode($url, $size = 300) {
+    public static function generateQrCode($url, $projectName = '')
+    {
         $qrCode = new \Da\QrCode\QrCode($url);
-        $qrCode->setSize($size);
+        $qrCode->setSize(300);
         $qrCode->setMargin(10);
         
-        // 生成二维码图片并返回 base64 编码
-        return $qrCode->writeDataUri();
+        // 生成二维码图片
+        $qrImage = $qrCode->writeDataUri();
+        
+        // 如果不需要添加项目名称，直接返回二维码
+        if (empty($projectName)) {
+            return $qrImage;
+        }
+        
+        // 创建图片
+        $image = imagecreatefromstring(base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $qrImage)));
+        
+        // 设置文字颜色（黑色）
+        $textColor = imagecolorallocate($image, 0, 0, 0);
+        
+        // 设置字体大小和边距
+        $fontSize = 20;
+        $padding = 20;
+        
+        // 获取图片尺寸
+        $width = imagesx($image);
+        $height = imagesy($image);
+        
+        // 创建新的图片，增加底部空间用于文字
+        $newHeight = $height + $padding + $fontSize;
+        $newImage = imagecreatetruecolor($width, $newHeight);
+        
+        // 设置背景为白色
+        $white = imagecolorallocate($newImage, 255, 255, 255);
+        imagefill($newImage, 0, 0, $white);
+        
+        // 复制二维码到新图片
+        imagecopy($newImage, $image, 0, 0, 0, 0, $width, $height);
+        
+        // 计算文字位置（居中）
+        $textWidth = strlen($projectName) * $fontSize * 0.6; // 估算文字宽度
+        $textX = ($width - $textWidth) / 2;
+        $textY = $height + $padding;
+        
+        // 添加文字
+        imagestring($newImage, 5, $textX, $textY, $projectName, $textColor);
+        
+        // 输出图片
+        ob_start();
+        imagepng($newImage);
+        $imageData = ob_get_clean();
+        
+        // 释放内存
+        imagedestroy($image);
+        imagedestroy($newImage);
+        
+        // 返回base64编码的图片
+        return 'data:image/png;base64,' . base64_encode($imageData);
     }
 }

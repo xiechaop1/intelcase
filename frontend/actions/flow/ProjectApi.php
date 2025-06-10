@@ -242,7 +242,7 @@ class ProjectApi extends ApiAction
             // $url 获取当前的域名
             // Todo: 这里的域名和前端确认以后给
             $url = Yii::$app->request->hostInfo . '/project/' . $projectId;
-            $qrCode = Yii::$app->common->generateQrCode($url);
+            $qrCode = Yii::$app->common->generateQrCode($url, $projectName);
 
 //            $qrFile = '/img/' . md5($qrCode) . '.png';
 //            file_put_contents(Yii::getAlias('@webroot') . $qrFile, $qrCode);
