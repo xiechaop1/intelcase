@@ -251,7 +251,7 @@ class ProjectApi extends ApiAction
             $model->qr_file = $qrFile;
             $ret = $model->save();
             if ($ret === false) {
-                Yii::error($ret->getErrors());
+                Yii::error($model->getErrors());
                 return $this->fail('保存失败', -1999);
             }
 
