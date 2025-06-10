@@ -16,6 +16,7 @@ use common\models\UserCompany;
 use yii\base\Component;
 use common\models\Company;
 use yii\helpers\ArrayHelper;
+use Yii;
 
 class Common extends Component
 {
@@ -817,7 +818,7 @@ class Common extends Component
         $height = imagesy($image);
         
         // 创建新的图片，增加底部空间用于文字
-        $newHeight = $height + $padding + $fontSize;
+        $newHeight = $height + $padding + $fontSize * 2; // 增加高度以适应中文
         $newImage = imagecreatetruecolor($width, $newHeight);
         
         // 设置背景为白色
@@ -827,13 +828,17 @@ class Common extends Component
         // 复制二维码到新图片
         imagecopy($newImage, $image, 0, 0, 0, 0, $width, $height);
         
+        // 使用中文字体
+        $fontPath = Yii::getAlias('@common/fonts/simhei.ttf'); // 请确保此字体文件存在
+        
         // 计算文字位置（居中）
-        $textWidth = strlen($projectName) * $fontSize * 0.6; // 估算文字宽度
+        $box = imagettfbbox($fontSize, 0, $fontPath, $projectName);
+        $textWidth = $box[2] - $box[0];
         $textX = ($width - $textWidth) / 2;
-        $textY = $height + $padding;
+        $textY = $height + $padding + $fontSize;
         
         // 添加文字
-        imagestring($newImage, 5, $textX, $textY, $projectName, $textColor);
+        imagettftext($newImage, $fontSize, 0, $textX, $textY, $textColor, $fontPath, $projectName);
         
         // 输出图片
         ob_start();
