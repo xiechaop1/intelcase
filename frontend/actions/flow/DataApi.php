@@ -422,10 +422,10 @@ class DataApi extends ApiAction
                     // 项目信息
                     $project->project_name ?? '',
                     // 员工信息
-                    $project->pm_staff->staff_name ?? '',
-                    $project->consultant_staff->staff_name ?? '',
-                    $project->advisor_staff->staff_name ?? '',
-                    $project->financial_staff->staff_name ?? '',
+                    $project->pmStaff->staff_name ?? '',
+                    $project->consultantStaff->staff_name ?? '',
+                    $project->advisorStaff->staff_name ?? '',
+                    $project->financialStaff->staff_name ?? '',
                     
                 ];
                 $data[] = $row;
