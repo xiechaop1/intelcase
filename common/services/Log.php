@@ -31,11 +31,16 @@ class Log extends Component
 
         try {
             $r = $model->save();
+            if ($r === false) {
+                Yii::error('Log save error: ' . json_encode($model->getErrors(), JSON_UNESCAPED_UNICODE));
+                return false;
+            }
+            return $r;
         } catch (\Exception $e) {
             Yii::error($e->getMessage());
+            return false;
         }
 
-        return $r;
     }
 
     public function read($code = 0, $beginTime = 0, $endTime = 0, $page = 1, $pageSize = 20) {
