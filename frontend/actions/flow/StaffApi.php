@@ -68,9 +68,15 @@ class StaffApi extends ApiAction
     public function getList() {
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
+        $role = !empty($this->_get['role']) ? $this->_get['role'] : 0;
 
-        $query = Staff::find()
-            ->orderBy([
+        $query = Staff::find();
+        if (!empty($role)) {
+            $query = $query->where([
+                'role' => $role,
+            ]);
+        }
+        $query = $query->orderBy([
                 'id' => SORT_DESC
             ]);
 
