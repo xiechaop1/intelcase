@@ -76,6 +76,9 @@ class StaffApi extends ApiAction
                 'role' => $role,
             ]);
         }
+        $query = $query->andWhere([
+            'staff_status' => Staff::STAFF_STATUS_NORMAL,
+        ]);
         $query = $query->orderBy([
                 'id' => SORT_DESC
             ]);
