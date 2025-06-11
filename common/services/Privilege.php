@@ -34,12 +34,13 @@ class Privilege extends Component
             ],
             \common\definitions\Privilege::SUB_CONFIRM_SIGN => [
                 Staff::STAFF_ROLE_ADMIN,
-                Staff::STAFF_ROLE_PM
+                Staff::STAFF_ROLE_PM,
+                Staff::STAFF_ROLE_ADVISOR,
             ],
             \common\definitions\Privilege::SUB_CONFIRM_DEAL => [
                 Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM,
-                Staff::STAFF_ROLE_FINANCE
+                Staff::STAFF_ROLE_FINANCE,
             ],
             \common\definitions\Privilege::PAYMENT_CONFIRM => [
                 Staff::STAFF_ROLE_ADMIN,
