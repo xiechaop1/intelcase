@@ -26,6 +26,8 @@ class VisitApi extends ApiAction
     private $_projectId;
     private $_reportId;
 
+    private $_report;
+
     private $_project;
 
     private $_staffId;
@@ -63,7 +65,7 @@ class VisitApi extends ApiAction
                 return $this->fail('需要指定报备', -1000);
             }
 
-            $report = Report::find()
+            $this->_report = Report::find()
                 ->where([
                     'id' => $this->_reportId,
                 ])
@@ -78,7 +80,7 @@ class VisitApi extends ApiAction
                 ])
                 ->one();
 
-            if (empty($report)) {
+            if (empty($this->_report)) {
                 return $this->fail('请做一次有效报备', -1000);
             }
 
@@ -205,7 +207,6 @@ class VisitApi extends ApiAction
         if ($visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
          || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
             $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
-            $content = [];
 
             if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
             || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
@@ -238,6 +239,7 @@ class VisitApi extends ApiAction
                     'project_id' => $this->_projectId,
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
             }
         }
 
@@ -317,6 +319,23 @@ class VisitApi extends ApiAction
             $visitCt = !empty($this->_get['visit_ct']) ? $this->_get['visit_ct'] : 0;
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
 
+            if (strpos("\n", $guestMobile) !== false) {
+                $guestMobiles = str_replace("\n", '', $guestMobile);
+            } else {
+                $guestMobiles = [$guestMobile];
+            }
+            $mobileTag = False;
+            foreach ($guestMobiles as $mobile) {
+                $mobile = trim($mobile);
+                $reportMobiles = $this->_report->guest_mobile;
+                if (strpos($reportMobiles, $mobile) !== false) {
+                    $mobileTag = True;
+                    break;
+                }
+            }
+            if (!$mobileTag) {
+                return $this->fail('请填写报备客户手机号', -1000);
+            }
 
             $lastReport = Report::find()
                 ->where(['project_id' => $this->_projectId])

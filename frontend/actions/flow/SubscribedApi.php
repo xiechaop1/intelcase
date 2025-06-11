@@ -26,6 +26,7 @@ class SubscribedApi extends ApiAction
     private $_get;
     private $_projectId;
     private $_reportId;
+    private $_report;
 
     private $_project;
 
@@ -67,7 +68,7 @@ class SubscribedApi extends ApiAction
                     return $this->fail('需要指定报备', -1000);
                 }
 
-                $report = Report::find()
+                $this->_report = Report::find()
                     ->where([
                         'id' => $this->_reportId,
                     ])
@@ -82,7 +83,7 @@ class SubscribedApi extends ApiAction
                     ])
                     ->one();
 
-                if (empty($report)) {
+                if (empty($this->_report)) {
                     return $this->fail('请做一次有效报备', -1000);
                 }
             }
@@ -152,6 +153,7 @@ class SubscribedApi extends ApiAction
 
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
             $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
+            $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
                 $content = [
                     'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
@@ -176,10 +178,20 @@ class SubscribedApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+                $contentPm = [
+                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，已经发送到出纳',
+                    'sub_id' => $subId,
+                    'title' => '新认购',
+                    'btn' => [
+                    ],
+                ];
+                Yii::$app->msg->add($pmRecvId, $contentPm, Msg::MSG_SENDER_SYSTEM);
+
             }
 
         } else if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN) {
             $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+            $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $sub = Subscribed::find()
                 ->where(['id' => $subId])
                 ->one();
@@ -193,6 +205,15 @@ class SubscribedApi extends ApiAction
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+                $contentPm = [
+                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，出纳已经确认',
+                    'sub_id' => $subId,
+                    'title' => '新认购',
+                    'btn' => [
+                    ],
+                ];
+                Yii::$app->msg->add($pmRecvId, $contentPm, Msg::MSG_SENDER_SYSTEM);
             }
         }
         Yii::$app->oplog->write(
@@ -485,6 +506,24 @@ class SubscribedApi extends ApiAction
             $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
             $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
             $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
+
+            if (strpos("\n", $guestMobile) !== false) {
+                $guestMobiles = str_replace("\n", '', $guestMobile);
+            } else {
+                $guestMobiles = [$guestMobile];
+            }
+            $mobileTag = False;
+            foreach ($guestMobiles as $mobile) {
+                $mobile = trim($mobile);
+                $reportMobiles = $this->_report->guest_mobile;
+                if (strpos($reportMobiles, $mobile) !== false) {
+                    $mobileTag = True;
+                    break;
+                }
+            }
+            if (!$mobileTag) {
+                return $this->fail('请填写报备客户手机号', -1000);
+            }
 
             $monthlyAmount = 0;
             $yearlyAmount = 0;
