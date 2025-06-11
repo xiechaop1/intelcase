@@ -77,7 +77,7 @@ class StaffApi extends ApiAction
             ]);
         }
         $query = $query->andWhere([
-            'staff_status' => Staff::STAFF_STATUS_NORMAL,
+            '<>', 'staff_status', Staff::STAFF_STATUS_DISABLE,
         ]);
         $query = $query->orderBy([
                 'id' => SORT_DESC
