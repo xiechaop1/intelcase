@@ -12,6 +12,7 @@ namespace frontend\actions\flow;
 use common\definitions\Common;
 use common\models\Msg;
 use common\models\Payment;
+use common\models\Project;
 use common\models\Report;
 use common\models\Subscribed;
 use common\models\Visit;
@@ -302,7 +303,7 @@ class DataApi extends ApiAction
                 $query->andWhere(['o_visit.project_id' => $projectId]);
             }
 
-            $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->all();
+            $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->asArray()->all();
 
             // 准备Excel数据
             $data = [];
@@ -367,63 +368,64 @@ class DataApi extends ApiAction
             ];
 
             foreach ($visits as $visit) {
+                $project = Project::findOne($visit['project_id']);
                 $row = [
                     // 访客基本信息
-                    $visit->guest_name,
-                    $visit->guest_mobile,
-                    Visit::$visitGuestAppeal2Name[$visit->guest_appeal] ?? '',
-                    $visit->budget,
-                    $visit->visit_time,
-                    $visit->visitStatus2Name[$visit->visit_status] ?? '',
-                    Visit::$visitConfirm2Name[$visit->visit_confirm_status] ?? '',
-                    $visit->person_ct,
+                    $visit['guest_name'],
+                    $visit['guest_mobile'],
+                    Visit::$visitGuestAppeal2Name[$visit['guest_appeal']] ?? '',
+                    $visit['budget'],
+                    $visit['visit_time'],
+                    Visit::$visitStatus2Name[$visit['visit_status']] ?? '',
+                    Visit::$visitConfirm2Name[$visit['visit_confirm_status']] ?? '',
+                    $visit['person_ct'],
                     // 认购基本信息
-                    !empty($visit->sub_guest) ? '是' : '否',
-                    !empty($visit->sub_type) ? ($visit->sub_type == 1 ? '全款' : '部分') : '',
-                    $visit->subscribed->sub_guest ?? '',
-                    $visit->subscribed->room_no ?? '',
-                    $visit->subscribed->building_area ?? '',
-                    $visit->subscribed->sub_total_price ?? '',
-                    $visit->subscribed->pay_method ?? '',
-                    !empty($visit->subscribed->sub_status) ? Subscribed::$subscribedStatus2Name[$visit->subscribed->sub_status] ?? '' : '',
-                    !empty($visit->subscribed->pay_status) ? Subscribed::$subscribedStatus2Name[$visit->subscribed->pay_status] ?? '' : '',
+                    !empty($visit['sub_guest']) ? '是' : '否',
+                    !empty($visit['sub_type']) ? ($visit['sub_type'] == 1 ? '全款' : '部分') : '',
+                    $visit['sub_guest'] ?? '',
+                    $visit['room_no'] ?? '',
+                    $visit['building_area'] ?? '',
+                    $visit['sub_total_price'] ?? '',
+                    $visit['pay_method'] ?? '',
+                    !empty($visit['sub_status']) ? Subscribed::$subscribedStatus2Name[$visit['sub_status']] ?? '' : '',
+                    !empty($visit['pay_status']) ? Subscribed::$subscribedStatus2Name[$visit['pay_status']] ?? '' : '',
                     // 身份证信息
-                    $visit->subscribed->id_type ?? '',
-                    $visit->subscribed->id_no ?? '',
+                    $visit['id_type'] ?? '',
+                    $visit['id_no'] ?? '',
                     // 业主信息
-                    $visit->subscribed->owner ?? '',
-                    $visit->subscribed->lessor ?? '',
-                    $visit->subscribed->lessor_detail ?? '',
+                    $visit['owner'] ?? '',
+                    $visit['lessor'] ?? '',
+                    $visit['lessor_detail'] ?? '',
                     // 租赁信息
-                    $visit->subscribed->rent_date_begin ?? '',
-                    $visit->subscribed->rent_date_end ?? '',
-                    $visit->subscribed->free_rent_date ?? '',
-                    $visit->subscribed->increase_date ?? '',
-                    $visit->subscribed->increase_rate ?? '',
-                    $visit->subscribed->deposit ?? '',
+                    $visit['rent_date_begin'] ?? '',
+                    $visit['rent_date_end'] ?? '',
+                    $visit['free_rent_date'] ?? '',
+                    $visit['increase_date'] ?? '',
+                    $visit['increase_rate'] ?? '',
+                    $visit['deposit'] ?? '',
                     // 租金信息
-                    $visit->subscribed->daily_amount ?? '',
-                    $visit->subscribed->monthly_amount ?? '',
-                    $visit->subscribed->yearly_amount ?? '',
-                    $visit->subscribed->rent_amount ?? '',
-                    $visit->subscribed->pro_rent_amount ?? '',
-                    $visit->subscribed->al_daily_amount ?? '',
-                    $visit->subscribed->al_amount ?? '',
-                    $visit->subscribed->al_other ?? '',
-                    $visit->subscribed->al_total_amount ?? '',
+                    $visit['daily_amount'] ?? '',
+                    $visit['monthly_amount'] ?? '',
+                    $visit['yearly_amount'] ?? '',
+                    $visit['rent_amount'] ?? '',
+                    $visit['pro_rent_amount'] ?? '',
+                    $visit['al_daily_amount'] ?? '',
+                    $visit['al_amount'] ?? '',
+                    $visit['al_other'] ?? '',
+                    $visit['al_total_amount'] ?? '',
                     // 补充信息
-                    $visit->subscribed->supply_sub_guest ?? '',
-                    $visit->subscribed->supply_guest_id_type ?? '',
-                    $visit->subscribed->supply_guest_id_no ?? '',
-                    $visit->subscribed->supply_guest_mobile ?? '',
-                    $visit->subscribed->supply_total_price ?? '',
+                    $visit['supply_sub_guest'] ?? '',
+                    $visit['supply_guest_id_type'] ?? '',
+                    $visit['supply_guest_id_no'] ?? '',
+                    $visit['supply_guest_mobile'] ?? '',
+                    $visit['supply_total_price'] ?? '',
                     // 项目信息
-                    $visit->project->project_name ?? '',
+                    $project->project_name ?? '',
                     // 员工信息
-                    $visit->project->pm_staff->staff_name ?? '',
-                    $visit->project->consultant_staff->staff_name ?? '',
-                    $visit->project->advisor_staff->staff_name ?? '',
-                    $visit->project->financial_staff->staff_name ?? '',
+                    $project->pm_staff->staff_name ?? '',
+                    $project->consultant_staff->staff_name ?? '',
+                    $project->advisor_staff->staff_name ?? '',
+                    $project->financial_staff->staff_name ?? '',
                     
                 ];
                 $data[] = $row;
