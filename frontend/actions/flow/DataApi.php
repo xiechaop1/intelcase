@@ -368,7 +368,7 @@ class DataApi extends ApiAction
             ];
 
             foreach ($visits as $visit) {
-                $project = Project::findOne($visit['project_id']);
+                $project = Project::find()->where(['id' => $visit['project_id']])->one();
                 $row = [
                     // 访客基本信息
                     $visit['guest_name'],
