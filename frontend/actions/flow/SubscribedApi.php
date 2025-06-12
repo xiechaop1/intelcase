@@ -265,6 +265,7 @@ class SubscribedApi extends ApiAction
         }
 
         try {
+
             $ret = $model->save();
             if ($ret === false) {
                 Yii::error($model->getErrors());

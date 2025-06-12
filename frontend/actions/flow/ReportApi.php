@@ -15,6 +15,7 @@ use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
 use common\models\Log;
+use common\models\Staff;
 use common\models\Visit;
 use frontend\actions\ApiAction;
 use Yii;
@@ -124,7 +125,8 @@ class ReportApi extends ApiAction
         try {
             $model->save();
 
-            $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+//            $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+            $recvId = $model->staff_id;
             $content = [];
             if (!empty($recvId)) {
                 $visitCount = Visit::find()
@@ -247,6 +249,13 @@ class ReportApi extends ApiAction
                 $reportStatus = Report::REPORT_STATUS_PASS;
             }
 
+//            $staff = Staff::find()
+//                ->where(['mobile' => $staffMobile])
+//                ->one();
+//
+//            $staffId = !empty($staff) ? $staff->id : 0;
+            $staffid = $this->_user->id;
+
             $model->project_id = $this->_projectId;
             $model->guest_name = $guestName;
             $model->guest_mobile = $guestMobile;
@@ -288,7 +297,8 @@ class ReportApi extends ApiAction
                 } else {
                     $type = 'visit_page';
                 }
-                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+//                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+                $recvId = $model->staff_id;
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
