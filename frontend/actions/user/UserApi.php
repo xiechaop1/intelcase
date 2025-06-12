@@ -172,8 +172,12 @@ class UserApi extends ApiAction
 //                    return [];
                 } else {
                     $userInfo = !empty($this->_get['user_info']) ? json_decode($this->_get['user_info'], true) : [];
-                    $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
-                    $user->avatar = !empty($userInfo['avatarUrl']) ? $userInfo['avatarUrl'] : '';
+                    if (empty($user->staff_name)) {
+                        $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
+                    }
+                    if (empty($user->avatar)) {
+                        $user->avatar = !empty($userInfo['avatarUrl']) ? $userInfo['avatarUrl'] : '';
+                    }
 
                     $user->wx_openid = $openId;
                     $user->wx_unionid = $unionId;
