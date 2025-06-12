@@ -69,8 +69,12 @@ class StaffApi extends ApiAction
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
         $role = !empty($this->_get['role']) ? $this->_get['role'] : 0;
+        $isTeam = !empty($this->_get['is_team']) ? $this->_get['is_team'] : 0;
 
         $query = Staff::find();
+        if ($isTeam == 1) {
+            $query->select('team');
+        }
         if (!empty($role)) {
             $query = $query->where([
                 'role' => [$role, Staff::STAFF_ROLE_ADMIN],
@@ -79,12 +83,18 @@ class StaffApi extends ApiAction
         $query = $query->andWhere([
             '<>', 'staff_status', Staff::STAFF_STATUS_DISABLE,
         ]);
-        $query = $query->orderBy([
+        if ($isTeam == 1) {
+            $query = $query->groupBy('team');
+            $count = $query->count();
+            $list = $query->all();
+        } else {
+            $query = $query->orderBy([
                 'id' => SORT_DESC
             ]);
 
-        $count = $query->count();
-        $list = $query->offset(($page - 1) * $pageSize)->limit($pageSize)->all();
+            $count = $query->count();
+            $list = $query->offset(($page - 1) * $pageSize)->limit($pageSize)->all();
+        }
 
         return $this->success([
             'list' => $list,
@@ -146,6 +156,7 @@ class StaffApi extends ApiAction
         $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
         $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
         $staffStatus = !empty($this->_get['staff_status']) ? $this->_get['staff_status'] : 0;
+        $team = !empty($this->_get['team']) ? $this->_get['team'] : '';
 
         $model = Staff::find()
             ->where([
@@ -170,6 +181,9 @@ class StaffApi extends ApiAction
             }
             if (!empty($mobile)) {
                 $model->mobile = $mobile;
+            }
+            if (!empty($team)) {
+                $model->team = $team;
             }
             if (!empty($wx_id)) {
                 $model->wx_id = $wx_id;
@@ -199,10 +213,12 @@ class StaffApi extends ApiAction
             $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
 //            $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
             $staffStatus = !empty($this->_get['staff_status']) ? $this->_get['staff_status'] : Staff::STAFF_STATUS_NORMAL;
+            $team = !empty($this->_get['team']) ? $this->_get['team'] : '';
 
             $model->staff_name = $staffName;
             $model->role = $role;
             $model->mobile = $mobile;
+            $model->team = $team;
 //            $model->wx_openid = $wx_id;
             $model->staff_status = $staffStatus;
 

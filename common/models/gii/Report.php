@@ -27,8 +27,8 @@ class Report extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['guest_name', 'guest_mobile', 'guest_channel', 'staff_mobile', ], 'string'],
-            [['staff_id', 'project_id', 'report_status', ], 'integer'],
+            [['guest_name', 'guest_mobile', 'guest_channel', 'guest_appeal', 'staff_mobile', ], 'string'],
+            [['staff_id', 'consultant_staff_id', 'advisor_staff_id', 'project_id', 'report_status', ], 'integer'],
             [[
 //                'visit_time',
                 'visit_type', ], 'integer'],

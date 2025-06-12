@@ -28,6 +28,7 @@ class PaymentApi extends ApiAction
     private $_projectId;
     private $_project;
     private $_reportId;
+    private $_report;
 
     private $_staffId;
     private $_user;
@@ -65,7 +66,7 @@ class PaymentApi extends ApiAction
                 return $this->fail('需要指定报备', -1000);
             }
 
-            $report = Report::find()
+            $this->_report = Report::find()
                 ->where([
                     'id' => $this->_reportId,
                 ])
@@ -80,7 +81,7 @@ class PaymentApi extends ApiAction
                 ])
                 ->one();
 
-            if (empty($report)) {
+            if (empty($this->_report)) {
                 return $this->fail('请做一次有效报备', -1000);
             }
 
@@ -215,8 +216,19 @@ class PaymentApi extends ApiAction
                             ],
                         ],
                     ];
-                    $recvId = $this->_project->advisor_staff_id;
-                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//                    $recvId = $this->_project->advisor_staff_id;
+                    $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                    if (!empty($guestAppel)) {
+                        if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                            || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                            $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                        } else {
+                            $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                        }
+                    }
+                    if (!empty($recvId)) {
+                        Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                    }
                 }
 
                 Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [

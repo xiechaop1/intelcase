@@ -206,6 +206,7 @@ class ReportApi extends ApiAction
             $guestName = !empty($this->_get['guest_name']) ? $this->_get['guest_name'] : '';
             $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
             $guestChannel = !empty($this->_get['guest_channel']) ? $this->_get['guest_channel'] : '';
+            $guestAppeal = !empty($this->_get['guest_appeal']) ? $this->_get['guest_appeal'] : '';
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d 00:00:00');
@@ -232,6 +233,13 @@ class ReportApi extends ApiAction
                 ])
                 ->count();
 
+            $firstReport = Report::find()
+                ->where(['project_id' => $this->_projectId])
+                ->andFilterWhere(['guest_mobile' => $guestMobile])
+                ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+                ->orderBy('id ASC')
+                ->one();
+
             $visitCount = Visit::find()
                 ->select('visit_time')
                 ->where(['project_id' => $this->_projectId])
@@ -254,7 +262,26 @@ class ReportApi extends ApiAction
 //                ->one();
 //
 //            $staffId = !empty($staff) ? $staff->id : 0;
-            $staffid = $this->_user->id;
+            $staffId = $this->_user->id;
+
+            if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+//                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                $team = !empty($this->_project->advisor_team) ? $this->_project->advisor_team : '';
+                $firstAdvisorId = !empty($firstReport->advisor_staff_id) ? $firstReport->advisor_staff_id : 0;
+                if (empty($firstAdvisorId) || !Yii::$app->privilege->checkStaffTeam($firstAdvisorId, $team)) {
+                    $randAdvisor = Yii::$app->privilege->getTeamStaff($team);
+                    $firstAdvisorId = !empty($randAdvisor) ? $randAdvisor->id : 0;
+                }
+            } else {
+//                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+                $team = !empty($this->_project->consultant_team) ? $this->_project->consultant_team : '';
+                $firstConsultantId = !empty($firstReport->consultant_staff_id) ? $firstReport->consultant_staff_id : 0;
+                if (empty($firstConsultantId) || !Yii::$app->privilege->checkStaffTeam($firstConsultantId, $team)) {
+                    $randConsultant = Yii::$app->privilege->getTeamStaff($team);
+                    $firstConsultantId = !empty($randConsultant) ? $randConsultant->id : 0;
+                }
+            }
 
             $model->project_id = $this->_projectId;
             $model->guest_name = $guestName;
@@ -262,6 +289,8 @@ class ReportApi extends ApiAction
             $model->guest_channel = $guestChannel;
             $model->staff_mobile = $staffMobile;
             $model->staff_id = $staffId;
+            $model->advisor_staff_id = !empty($firstAdvisorId) ? $firstAdvisorId : 0;
+            $model->consultant_staff_id = !empty($firstConsultantId) ? $firstConsultantId : 0;
             $model->visit_time = $visitTime;
             $model->visit_type = $visitType;
             $model->report_status = $reportStatus;
@@ -317,7 +346,14 @@ class ReportApi extends ApiAction
                     ];
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
-                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                    || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+//                    $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                    $recvId = $firstAdvisorId;
+                } else {
+//                    $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+                    $recvId = $firstConsultantId;
+                }
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
@@ -328,6 +364,9 @@ class ReportApi extends ApiAction
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
                     ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+                    $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
             }

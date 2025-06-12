@@ -55,6 +55,35 @@ class Privilege extends Component
         return $r;
     }
 
+    public function getTeamStaff($team) {
+        if (!empty($team)) {
+            $staff = Staff::find()
+                ->where(['team' => $team])
+                ->andWhere(['status' => Staff::STAFF_STATUS_NORMAL])
+                ->orderBy('rand')
+                ->one();
+
+            return $staff;
+
+        } else {
+            return [];
+        }
+    }
+
+    public function checkStaffTeam($staffId, $team) {
+        $staff = Staff::find()
+            ->where(['id' => $staffId])
+            ->andFilterWhere(['team' => $team])
+            ->andWhere(['status' => Staff::STAFF_STATUS_NORMAL])
+            ->one();
+
+        if (empty($staff)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function checkByUser($user, $tag) {
         $role = !empty($user->role) ? $user->role : '';
 

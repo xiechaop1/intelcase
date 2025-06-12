@@ -148,6 +148,8 @@ class ProjectApi extends ApiAction
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
+            $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
+            $advisorTeam = !empty($this->_get['advisor_team']) ? $this->_get['advisor_team'] : '';
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
             $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
 
@@ -174,6 +176,12 @@ class ProjectApi extends ApiAction
             }
             if (!empty($advisorStaffId)) {
                 $model->advisor_staff_id = $advisorStaffId;
+            }
+            if (!empty($consultantTeam)) {
+                $model->consultant_team = $consultantTeam;
+            }
+            if (!empty($advisorTeam)) {
+                $model->advisor_team = $advisorTeam;
             }
             if (!empty($financialStaffId)) {
                 $model->financial_staff_id = $financialStaffId;
@@ -219,6 +227,8 @@ class ProjectApi extends ApiAction
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
+            $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
+            $advisorTeam = !empty($this->_get['advisor_team']) ? $this->_get['advisor_team'] : '';
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
             $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
 
@@ -230,6 +240,8 @@ class ProjectApi extends ApiAction
             $model->pm_staff_id = $pmStaffId;
             $model->consultant_staff_id = $consultantStaffId;
             $model->advisor_staff_id = $advisorStaffId;
+            $model->consultant_team = $consultantTeam;
+            $model->advisor_team = $advisorTeam;
             $model->financial_staff_id = $financialStaffId;
             $model->save();
 
