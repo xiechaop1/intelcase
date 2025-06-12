@@ -26,6 +26,10 @@ class MsgController extends Controller
                 'class'     => 'frontend\actions\flow\MsgApi',
                 'action'    => 'get_by_recv_id',
             ],
+            'has_new' => [
+                'class'     => 'frontend\actions\flow\MsgApi',
+                'action'    => 'has_new',
+            ],
             'read' => [
                 'class'     => 'frontend\actions\flow\MsgApi',
                 'action'    => 'read',

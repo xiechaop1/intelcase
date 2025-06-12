@@ -54,6 +54,9 @@ class MsgApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
+                case 'has_new':
+                    $ret = $this->hasNew();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -99,6 +102,22 @@ class MsgApi extends ApiAction
         $model->save();
 
         return $this->success();
+    }
+
+    public function hasNew() {
+        $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : 0;
+
+        if (empty($recvId)) {
+            return $this->fail('需要指定接收人', -1000);
+        }
+
+        $model = new \common\models\Msg();
+        $count = $model::find()
+            ->where(['recv_id' => $recvId])
+            ->andWhere(['msg_status' => Msg::MSG_STATUS_UNREAD])
+            ->count();
+
+        return $this->success(['has_new' => $count > 0]);
     }
 
     public function getByRecvId()
