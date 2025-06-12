@@ -73,7 +73,7 @@ class StaffApi extends ApiAction
         $query = Staff::find();
         if (!empty($role)) {
             $query = $query->where([
-                'role' => $role,
+                'role' => [$role, Staff::STAFF_ROLE_ADMIN],
             ]);
         }
         $query = $query->andWhere([
