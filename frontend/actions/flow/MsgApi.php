@@ -54,8 +54,8 @@ class MsgApi extends ApiAction
                 case 'add':
                     $ret = $this->add();
                     break;
-                case 'has_new':
-                    $ret = $this->hasNew();
+                case 'msg_count':
+                    $ret = $this->msgCount();
                     break;
                 default:
                     $ret = [];
@@ -104,7 +104,7 @@ class MsgApi extends ApiAction
         return $this->success();
     }
 
-    public function hasNew() {
+    public function msgCount() {
         $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : 0;
 
         if (empty($recvId)) {
@@ -117,7 +117,7 @@ class MsgApi extends ApiAction
             ->andWhere(['msg_status' => Msg::MSG_STATUS_UNREAD])
             ->count();
 
-        return $this->success(['has_new' => $count > 0]);
+        return $this->success(['msg_count' => $count]);
     }
 
     public function getByRecvId()
