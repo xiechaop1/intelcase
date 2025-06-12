@@ -106,7 +106,7 @@ class MsgApi extends ApiAction
 
     public function msgCount() {
         $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : 0;
-        $msgStatus = !empty($this->_get['msg_status']) ? $this->_get['msg_status'] : 0;
+        $msgStatus = !empty($this->_get['msg_status']) ? $this->_get['msg_status'] : -1;
 
         if (empty($recvId)) {
             return $this->fail('需要指定接收人', -1000);
@@ -115,7 +115,7 @@ class MsgApi extends ApiAction
         $model = new \common\models\Msg();
         $count = $model::find()
             ->where(['recv_id' => $recvId]);
-        if (!empty($msgStatus)) {
+        if ($msgStatus >= 0) {
             $count = $count->andWhere(['msg_status' => $msgStatus]);
         }
         $count = $count->count();
