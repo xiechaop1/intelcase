@@ -116,13 +116,48 @@ class ReportApi extends ApiAction
             ->where(['id' => $reportId])
             ->one();
 
-        if (empty($model)) {
-            return $this->fail('请做一次有效报备', -1000);
-        }
+//        if (empty($model)) {
+//            return $this->fail('请做一次有效报备', -1000);
+//        }
 
         $model->report_status = $reportStatus;
         try {
             $model->save();
+
+            $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+            $content = [];
+            if (!empty($recvId)) {
+                $visitCount = Visit::find()
+                    ->select('visit_time')
+                    ->where(['project_id' => $this->_projectId])
+                    ->andFilterWhere(['guest_mobile' => $model->guest_mobile])
+                    ->groupBy([
+                        'visit_time'
+                    ])
+                    ->count();
+
+                $visitType = empty($visitCount) ? 0 : $visitCount + 1;
+                if ($visitType > 1) {
+                    $type = 'visit_repeat_page';
+                } else {
+                    $type = 'visit_page';
+                }
+                $content = [
+                    'content' => '有客户：' . $model->guest_name . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
+                    'title' => '新报备',
+                    'btn' => [
+                        [
+                            'label' => '到访',
+                            'type' => $type,
+                            'report_id' => $reportId,
+                            'project_id' => $this->_projectId,
+                        ],
+                    ],
+                    'report_id' => $reportId,
+                    'project_id' => $this->_projectId,
+                ];
+                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+            }
         } catch (\Exception $e) {
             return $this->fail('操作失败', -1000);
         }
@@ -234,7 +269,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
                         'title' => '新报备',
                         'btn' => [
                             'label' => '确认',
@@ -253,7 +288,7 @@ class ReportApi extends ApiAction
                 } else {
                     $type = 'visit_page';
                 }
-                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
@@ -261,11 +296,24 @@ class ReportApi extends ApiAction
                         'title' => '新报备',
                         'btn' => [
                             [
-                                'label' => '查看',
+                                'label' => '到访',
                                 'type' => $type,
                                 'report_id' => $reportId,
                                 'project_id' => $this->_projectId,
                             ],
+                        ],
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+                $content = [];
+                if (!empty($recvId)) {
+                    $content = [
+                        'content' => '有客户：' . $guestName . '，手机号：' . $guestMobile . '，项目：' . $this->_project['project_name'] . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '',
+                        'title' => '新报备',
+                        'btn' => [
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
