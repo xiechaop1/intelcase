@@ -21,8 +21,8 @@ class Staff extends \common\models\gii\Staff
 
     const STAFF_ROLE_ADMIN          = 99;       // 管理员
 
-    const STAFF_STATUS_NORMAL       = 1;      // 正常
-    const STAFF_STATUS_DISABLE      = 2;      // 禁用
+    const STAFF_STATUS_NORMAL       = 0;      // 正常
+    const STAFF_STATUS_DISABLE      = 1;      // 禁用
 
     public static $staffRole2Name = [
         self::STAFF_ROLE_SALES         => '销售',

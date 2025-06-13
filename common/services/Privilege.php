@@ -59,7 +59,7 @@ class Privilege extends Component
         if (!empty($team)) {
             $staff = Staff::find()
                 ->where(['team' => $team])
-                ->andWhere(['status' => Staff::STAFF_STATUS_NORMAL])
+                ->andWhere(['<>', 'status', Staff::STAFF_STATUS_DISABLE])
                 ->orderBy('rand()')
                 ->one();
 
@@ -74,7 +74,7 @@ class Privilege extends Component
         $staff = Staff::find()
             ->where(['id' => $staffId])
             ->andFilterWhere(['team' => $team])
-            ->andWhere(['status' => Staff::STAFF_STATUS_NORMAL])
+            ->andWhere(['<>', 'status', Staff::STAFF_STATUS_DISABLE])
             ->one();
 
         if (empty($staff)) {

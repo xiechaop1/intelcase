@@ -214,7 +214,8 @@ class ReportApi extends ApiAction
             $guestAppeal = !empty($this->_get['guest_appeal']) ? $this->_get['guest_appeal'] : '';
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
-            $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d 00:00:00');
+            $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d H:i:s');
+//            $visitTime = !empty($this->_get['created']) ? $this->_get['created'] : $visitTime;
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
 
             $lastReport = Report::find()
