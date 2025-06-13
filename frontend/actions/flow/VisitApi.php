@@ -212,8 +212,8 @@ class VisitApi extends ApiAction
         if ($visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
          || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
 
-            if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-            || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+            if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+            || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
                 $jumpType = 'sub_buy_page';
                 $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
 //                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
