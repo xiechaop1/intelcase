@@ -461,6 +461,7 @@ class PaymentApi extends ApiAction
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
+                                'sub_id' => $subId,
                             ],
                         ],
                     ];
@@ -478,6 +479,7 @@ class PaymentApi extends ApiAction
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
+                                'sub_id' => $subId,
                             ],
                         ],
                     ];
