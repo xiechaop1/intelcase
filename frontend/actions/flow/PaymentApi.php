@@ -219,7 +219,7 @@ class PaymentApi extends ApiAction
                     ];
 //                    $recvId = $this->_project->advisor_staff_id;
                     $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                    if (!empty($guestAppel)) {
+                    if (!empty($guestAppeal)) {
                         if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
                             || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
                             $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
