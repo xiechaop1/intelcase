@@ -236,7 +236,7 @@ class ReportApi extends ApiAction
                     ->where(['project_id' => $this->_projectId])
                     ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
                     ->andFilterWhere([
-                        '<', 'visit_time', time() - 24 * 3600
+                        '>', 'visit_time', time() - 24 * 3600
                     ])
                     ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
                     ->orderBy('id DESC')
