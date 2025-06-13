@@ -384,16 +384,18 @@ class SubscribedApi extends ApiAction
 
     public function getWithPaymentsByRoomNo() {
         $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
-        $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
+//        $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
 
-        if (empty($roomNo) && empty($mobile)) {
-            return $this->fail('需要指定房间号和手机号', -1000);
+        if (empty($roomNo)
+//            && empty($mobile)
+        ) {
+            return $this->fail('需要指定房间号', -1000);
         }
 
         $model = Subscribed::find()
             ->where([
                 'room_no' => $roomNo,
-                'mobile' => $mobile
+//                'mobile' => $mobile
             ])
             ->one();
 
