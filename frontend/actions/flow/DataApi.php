@@ -505,6 +505,7 @@ class DataApi extends ApiAction
 
         $count = $reportListCount->count();
         $data = $reportList->offset(($page - 1) * $pageSize)
+            ->limit($pageSize)
             ->all();
 
         $ret = [];
@@ -567,6 +568,7 @@ class DataApi extends ApiAction
 
         $count = $visitList->count();
         $data = $visitList->offset(($page - 1) * $pageSize)
+            ->limit($pageSize)
             ->all();
 
         $ret = [];
