@@ -328,7 +328,7 @@ class VisitApi extends ApiAction
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
-            if (strpos("\n", $guestMobile) !== false) {
+            if (strpos($guestMobile, "\n") !== false) {
                 $guestMobiles = str_replace("\n", '', $guestMobile);
             } else {
                 $guestMobiles = [$guestMobile];
