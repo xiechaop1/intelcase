@@ -60,7 +60,7 @@ class Privilege extends Component
             $staff = Staff::find()
                 ->where(['team' => $team])
                 ->andWhere(['status' => Staff::STAFF_STATUS_NORMAL])
-                ->orderBy('rand')
+                ->orderBy('rand()')
                 ->one();
 
             return $staff;
