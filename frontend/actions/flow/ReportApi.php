@@ -269,8 +269,8 @@ class ReportApi extends ApiAction
 //            $staffId = !empty($staff) ? $staff->id : 0;
             $staffId = $this->_user->id;
 
-            if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+            if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
 //                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
                 $team = !empty($this->_project->advisor_team) ? $this->_project->advisor_team : '';
                 $firstAdvisorId = !empty($firstReport->advisor_staff_id) ? $firstReport->advisor_staff_id : 0;
@@ -292,6 +292,7 @@ class ReportApi extends ApiAction
             $model->guest_name = $guestName;
             $model->guest_mobile = $guestMobile;
             $model->guest_channel = $guestChannel;
+            $model->guest_appeal = $guestAppeal;
             $model->staff_mobile = $staffMobile;
             $model->staff_id = $staffId;
             $model->advisor_staff_id = !empty($firstAdvisorId) ? $firstAdvisorId : 0;
@@ -353,8 +354,8 @@ class ReportApi extends ApiAction
                     ];
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
-                if ($model->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                    || $model->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
 //                    $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
                     $recvId = $firstAdvisorId;
                 } else {
