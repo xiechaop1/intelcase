@@ -384,6 +384,7 @@ class SubscribedApi extends ApiAction
 
     public function getWithPaymentsByRoomNo() {
         $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
 //        $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
 
         if (empty($roomNo)
@@ -395,7 +396,11 @@ class SubscribedApi extends ApiAction
         $model = Subscribed::find()
             ->where([
                 'room_no' => $roomNo,
+                'project_id' => $projectId,
 //                'mobile' => $mobile
+            ])
+            ->orderBy([
+                'id' => SORT_DESC
             ])
             ->one();
 
