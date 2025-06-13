@@ -319,7 +319,7 @@ class VisitApi extends ApiAction
             $budget = !empty($this->_get['budget']) ? $this->_get['budget'] : '';
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
-            $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d 00:00:00');
+            $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d H:i:s');
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
             $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
             $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
