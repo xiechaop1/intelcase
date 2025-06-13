@@ -134,35 +134,46 @@ class ReportApi extends ApiAction
             $recvId = $model->staff_id;
             $content = [];
             if (!empty($recvId)) {
-                $visitCount = Visit::find()
-                    ->select('visit_time')
-                    ->where(['project_id' => $this->_projectId])
-                    ->andFilterWhere(['guest_mobile' => $model->guest_mobile])
-                    ->groupBy([
-                        'visit_time'
-                    ])
-                    ->count();
+                if ($reportStatus == Report::REPORT_STATUS_PASS) {
+                    $visitCount = Visit::find()
+                        ->select('visit_time')
+                        ->where(['project_id' => $this->_projectId])
+                        ->andFilterWhere(['guest_mobile' => $model->guest_mobile])
+                        ->groupBy([
+                            'visit_time'
+                        ])
+                        ->count();
 
-                $visitType = empty($visitCount) ? 0 : $visitCount + 1;
-                if ($visitType > 1) {
-                    $type = 'visit_repeat_page';
-                } else {
-                    $type = 'visit_page';
-                }
-                $content = [
-                    'content' => '有客户：' . $model->guest_name . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
-                    'title' => '新报备',
-                    'btn' => [
-                        [
-                            'label' => '到访',
-                            'type' => $type,
-                            'report_id' => $reportId,
-                            'project_id' => $this->_projectId,
+                    $visitType = empty($visitCount) ? 0 : $visitCount + 1;
+                    if ($visitType > 1) {
+                        $type = 'visit_repeat_page';
+                    } else {
+                        $type = 'visit_page';
+                    }
+                    $content = [
+                        'content' => '有客户：' . $model->guest_name . '，手机号：' . $model->guest_mobile . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
+                        'title' => '新报备',
+                        'btn' => [
+                            [
+                                'label' => '到访',
+                                'type' => $type,
+                                'report_id' => $reportId,
+                                'project_id' => $this->_projectId,
+                            ],
                         ],
-                    ],
-                    'report_id' => $reportId,
-                    'project_id' => $this->_projectId,
-                ];
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                } else {
+                    $content = [
+                        'content' => '有客户：' . $model->guest_name . '，手机号：' . $model->guest_mobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
+                        'title' => '新报备',
+                        'btn' => [
+                        ],
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                }
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
         } catch (\Exception $e) {
@@ -339,7 +350,7 @@ class ReportApi extends ApiAction
                                 'type'  => 'report_confirm_page',
                                 'report_id' => $reportId,
                                 'project_id' => $this->_projectId,
-                            ]
+                            ],
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
