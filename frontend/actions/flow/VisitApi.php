@@ -334,12 +334,14 @@ class VisitApi extends ApiAction
                 $guestMobiles = [$guestMobile];
             }
             $mobileTag = False;
-            foreach ($guestMobiles as $mobile) {
-                $mobile = trim($mobile);
-                $reportMobiles = $this->_report->guest_mobile;
-                if (strpos($reportMobiles, $mobile) !== false) {
-                    $mobileTag = True;
-                    break;
+            if (!empty($guestMobiles)) {
+                foreach ($guestMobiles as $mobile) {
+                    $mobile = trim($mobile);
+                    $reportMobiles = $this->_report->guest_mobile;
+                    if (strpos($reportMobiles, $mobile) !== false) {
+                        $mobileTag = True;
+                        break;
+                    }
                 }
             }
             if (!$mobileTag) {
