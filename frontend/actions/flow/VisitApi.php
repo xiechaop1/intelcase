@@ -328,11 +328,24 @@ class VisitApi extends ApiAction
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
-            if (strpos($guestMobile, "\n") !== false) {
-                $guestMobiles = explode("\n", $guestMobile);
-            } else {
+            $tagSplit = [
+                "\n", ",", "，", "/"
+            ];
+            foreach ($tagSplit as $t) {
+                if (strpos($guestMobile, $t) !== false) {
+                    $guestMobiles = explode($t, $guestMobile);
+                }
+            }
+            if (empty($guestMobiles)) {
                 $guestMobiles = [$guestMobile];
             }
+
+//            if (strpos($guestMobile, "\n") !== false) {
+//                $guestMobiles = explode("\n", $guestMobile);
+//            } else {
+//                $guestMobiles = [$guestMobile];
+//            }
+
             $mobileTag = False;
             if (!empty($guestMobiles)) {
                 foreach ($guestMobiles as $mobile) {

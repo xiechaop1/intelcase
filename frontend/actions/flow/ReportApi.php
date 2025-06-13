@@ -218,42 +218,59 @@ class ReportApi extends ApiAction
 //            $visitTime = !empty($this->_get['created']) ? $this->_get['created'] : $visitTime;
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
 
-            $lastReport = Report::find()
-                ->where(['project_id' => $this->_projectId])
-                ->andFilterWhere(['guest_mobile' => $guestMobile])
-                ->andFilterWhere([
-                    '<', 'visit_time', time() - 24 * 3600
-                ])
-                ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
-                ->orderBy('id DESC')
-                ->one();
+            $tagSplit = [
+                "\n", ",", "，", "/"
+            ];
+            foreach ($tagSplit as $t) {
+                if (strpos($guestMobile, $t) !== false) {
+                    $guestMobiles = explode($t, $guestMobile);
+                }
+            }
+            if (empty($guestMobiles)) {
+                $guestMobiles = [$guestMobile];
+            }
 
-            $reportCount = Report::find()
-                ->select('visit_time')
-                ->where([
-                    'project_id' => $this->_projectId,
-                    'guest_mobile' => $guestMobile,
-                ])
-                ->groupBy([
-                    'visit_time'
-                ])
-                ->count();
+            $visitCount = 0;
+            foreach ($guestMobiles as $guestMobile) {
+                $lastReport = Report::find()
+                    ->where(['project_id' => $this->_projectId])
+                    ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                    ->andFilterWhere([
+                        '<', 'visit_time', time() - 24 * 3600
+                    ])
+                    ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+                    ->orderBy('id DESC')
+                    ->one();
 
-            $firstReport = Report::find()
-                ->where(['project_id' => $this->_projectId])
-                ->andFilterWhere(['guest_mobile' => $guestMobile])
-                ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
-                ->orderBy('id ASC')
-                ->one();
+                $reportCount = Report::find()
+                    ->select('visit_time')
+                    ->where([
+                        'project_id' => $this->_projectId,
+                        'guest_mobile' => $guestMobile,
+                    ])
+                    ->groupBy([
+                        'visit_time'
+                    ])
+                    ->count();
 
-            $visitCount = Visit::find()
-                ->select('visit_time')
-                ->where(['project_id' => $this->_projectId])
-                ->andFilterWhere(['guest_mobile' => $guestMobile])
-                ->groupBy([
-                    'visit_time'
-                ])
-                ->count();
+                $firstReport = Report::find()
+                    ->where(['project_id' => $this->_projectId])
+                    ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                    ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+                    ->orderBy('id ASC')
+                    ->one();
+
+                $vCountTmp = Visit::find()
+                    ->select('visit_time')
+                    ->where(['project_id' => $this->_projectId])
+                    ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                    ->groupBy([
+                        'visit_time'
+                    ])
+                    ->count();
+
+                $visitCount += $vCountTmp;
+            }
 
             $visitType = empty($visitCount) ? 0 : $visitCount + 1;
 
@@ -314,7 +331,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
+                        'content' => '有一条新报备，客户：' . $guestName . '，手机号：' . $guestMobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -340,7 +357,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'content' => '有客户：' . $guestName . '，手机号：' . $guestMobile . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                         'title' => '新报备',
                         'btn' => [
                             [
