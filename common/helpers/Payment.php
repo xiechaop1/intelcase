@@ -37,7 +37,7 @@ class Payment
         }
 
         if (!empty($payments) || !empty($nowPayment)) {
-            if ($payTotal > $subTotalPrice) {
+            if ($payTotal >= $subTotalPrice) {
                 $payStatus = Subscribed::SUB_PAY_FULLY;
             } else {
                 $payStatus = Subscribed::SUB_PAY_PARTLY;
