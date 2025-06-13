@@ -401,7 +401,7 @@ class ReportApi extends ApiAction
             $transaction->rollBack();
             Yii::$app->oplog->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_FAILED, $this->_staffId, $guestMobile, [
                 'project_id' => $this->_projectId,
-                'report_id' => $reportId,
+//                'report_id' => $reportId,
                 'guest_name' => $guestName,
                 'guest_mobile' => $guestMobile,
                 'visit_time' => $visitTime,
