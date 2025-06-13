@@ -329,7 +329,7 @@ class VisitApi extends ApiAction
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
             if (strpos($guestMobile, "\n") !== false) {
-                $guestMobiles = str_replace("\n", '', $guestMobile);
+                $guestMobiles = explode("\n", $guestMobile);
             } else {
                 $guestMobiles = [$guestMobile];
             }
