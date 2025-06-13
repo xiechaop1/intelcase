@@ -13,6 +13,7 @@ use common\services\Curl;
 use common\models\User;
 use yii\base\Component;
 use yii;
+use function Symfony\Component\String\u;
 
 class Msg extends Component
 {
@@ -39,6 +40,23 @@ class Msg extends Component
         }
 
         return $r;
+    }
+
+    public function removeBtn($msgId) {
+        $msg = \common\models\Msg::findOne($msgId);
+        if (!empty($msg)) {
+            $content = $msg->content;
+            $cont = json_decode($content, true);
+            if (isset($cont['btn'])) {
+                unset($cont['btn']);
+                $msg->content = json_encode($cont, JSON_UNESCAPED_UNICODE);
+                try {
+                    $r = $msg->save();
+                } catch (\Exception $e) {
+                    Yii::error($e->getMessage());
+                }
+            }
+        }
     }
 
 }

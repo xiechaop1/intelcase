@@ -129,6 +129,7 @@ class SubscribedApi extends ApiAction
     public function confirmDeal() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
         $subStatus = !empty($this->_get['sub_status']) ? $this->_get['sub_status'] : Subscribed::SUBSCRIBED_STATUS_CONFIRM;
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
         if (empty($subId)) {
             return $this->fail('需要指定认购ID', -1000);
@@ -149,6 +150,9 @@ class SubscribedApi extends ApiAction
         if ($ret === false) {
             Yii::error($model->getErrors());
             return $this->fail('操作失败', -1000);
+        }
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
         }
 
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
@@ -232,6 +236,7 @@ class SubscribedApi extends ApiAction
     }
     public function confirmSign() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 //        $supplySubGuest = !empty($this->_get['supply_sub_guest']) ? $this->_get['supply_sub_guest'] : '';
 //        $supplyGuestIdType = !empty($this->_get['supply_guest_id_type']) ? $this->_get['supply_guest_id_type'] : 0;
 //        $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
@@ -270,6 +275,10 @@ class SubscribedApi extends ApiAction
             if ($ret === false) {
                 Yii::error($model->getErrors());
                 return $this->fail('操作失败', -1000);
+            }
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
             }
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
@@ -508,6 +517,8 @@ class SubscribedApi extends ApiAction
             $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
             $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
 
+            $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+
             if (strpos("\n", $guestMobile) !== false) {
                 $guestMobiles = str_replace("\n", '', $guestMobile);
             } else {
@@ -613,6 +624,10 @@ class SubscribedApi extends ApiAction
             // 获取最新一条数据ID
             $subId = $model->getPrimaryKey();
 //            $subId = Yii::$app->db->getLastInsertID();
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
+            }
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {

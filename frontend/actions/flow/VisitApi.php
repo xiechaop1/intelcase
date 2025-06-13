@@ -156,6 +156,7 @@ class VisitApi extends ApiAction
         $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
         $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : Visit::VISIT_CONFIRM_STATUS_CONFIRM;
         $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
         Yii::$app->privilege->checkByUser($this->_user, Privilege::VISIT_CONFIRM);
 
@@ -177,6 +178,10 @@ class VisitApi extends ApiAction
             $ret = $model->save();
             if ($ret === false) {
                 Yii::error($model->getErrors());
+            }
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
             }
             Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
                 'visit_id' => $visitId,
@@ -321,6 +326,7 @@ class VisitApi extends ApiAction
             $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
             $visitCt = !empty($this->_get['visit_ct']) ? $this->_get['visit_ct'] : 0;
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
+            $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
             if (strpos("\n", $guestMobile) !== false) {
                 $guestMobiles = str_replace("\n", '', $guestMobile);
@@ -396,6 +402,10 @@ class VisitApi extends ApiAction
 
             // 获取最新一条数据ID
             $visitId = $model->getPrimaryKey();
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
+            }
 //            $visitId = Yii::$app->db->getLastInsertID();
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;

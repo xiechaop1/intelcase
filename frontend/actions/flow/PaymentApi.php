@@ -164,6 +164,7 @@ class PaymentApi extends ApiAction
         $recv_time = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : time();
         $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
         $pay_status = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : Payment::PAYMENT_STATUS_COMPLETED;
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
         Yii::$app->privilege->checkByUser($this->_user, Privilege::PAYMENT_CONFIRM);
 
@@ -229,6 +230,10 @@ class PaymentApi extends ApiAction
                     if (!empty($recvId)) {
                         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                     }
+                }
+
+                if (!empty($msgId)) {
+                    Yii::$app->msg->removeBtn($msgId);
                 }
 
                 Yii::$app->oplog->write(\common\models\Log::OP_CODE_PAYMENT_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, '', [
@@ -361,6 +366,8 @@ class PaymentApi extends ApiAction
             $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
             $recvTime = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : 0;
 
+            $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+
             if (!empty($payTime) && is_string($payTime)) {
                 $payTime = strtotime($payTime);
             }
@@ -477,6 +484,10 @@ class PaymentApi extends ApiAction
                     $recvId = $this->_project->financial_staff_id;
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
+            }
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
             }
 
 //            $paymentId = Yii::$app->db->getLastInsertID();

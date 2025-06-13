@@ -106,6 +106,7 @@ class ReportApi extends ApiAction
     public function confirm() {
         $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
         $reportStatus = !empty($this->_get['report_status']) ? $this->_get['report_status'] : Report::REPORT_STATUS_INVALID;
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
         Yii::$app->privilege->checkByUser($this->_user, Privilege::REPORT_CONFIRM);
 
@@ -124,6 +125,10 @@ class ReportApi extends ApiAction
         $model->report_status = $reportStatus;
         try {
             $model->save();
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
+            }
 
 //            $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
             $recvId = $model->staff_id;
@@ -310,10 +315,12 @@ class ReportApi extends ApiAction
                         'content' => '有一条新报备，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
                         'title' => '新报备',
                         'btn' => [
-                            'label' => '确认',
-                            'type'  => 'report_confirm_page',
-                            'report_id' => $reportId,
-                            'project_id' => $this->_projectId,
+                            [
+                                'label' => '确认',
+                                'type'  => 'report_confirm_page',
+                                'report_id' => $reportId,
+                                'project_id' => $this->_projectId,
+                            ]
                         ],
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
