@@ -27,6 +27,14 @@ class Subscribed extends \common\models\gii\Subscribed
     const SUB_PAY_PARTLY                = 2;    // 部分
     const SUB_PAY_WAIT                  = 0;    // 待支付
 
+    const SUB_TYPE_BUY                  = 0;    // 购买
+    const SUB_TYPE_RENT                 = 1;    // 租赁
+
+    public static $subType2Name = [
+        self::SUB_TYPE_BUY => '购买',
+        self::SUB_TYPE_RENT => '租赁',
+    ];
+
 
     public function behaviors()
     {

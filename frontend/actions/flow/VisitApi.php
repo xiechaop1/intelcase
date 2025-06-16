@@ -14,6 +14,7 @@ use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
+use common\models\Subscribed;
 use common\models\Visit;
 //use common\services\Log;
 use frontend\actions\ApiAction;
@@ -220,10 +221,12 @@ class VisitApi extends ApiAction
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
             || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
                 $jumpType = 'sub_buy_page';
+                $subType = Subscribed::SUB_TYPE_BUY;
                 $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
 //                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
             } else {
                 $jumpType = 'sub_rent_page';
+                $subType = Subscribed::SUB_TYPE_RENT;
                 $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
 //                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
             }
@@ -239,6 +242,7 @@ class VisitApi extends ApiAction
                             'visit_id' => $visitId,
                             'report_id' => $this->_reportId,
                             'project_id' => $this->_projectId,
+                            'sub_type' => $subType,
                         ],
                         [
                             'label' => '取消',
