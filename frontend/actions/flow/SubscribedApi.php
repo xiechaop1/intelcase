@@ -525,6 +525,7 @@ class SubscribedApi extends ApiAction
             $supplyGuestIdNo = !empty($this->_get['supply_guest_id_no']) ? $this->_get['supply_guest_id_no'] : '';
             $supplyGuestMobile = !empty($this->_get['supply_guest_mobile']) ? $this->_get['supply_guest_mobile'] : '';
             $supplyTotalPrice = !empty($this->_get['supply_total_price']) ? $this->_get['supply_total_price'] : 0;
+            $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
 
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
@@ -651,6 +652,7 @@ class SubscribedApi extends ApiAction
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,
                             'report_id' => $this->_reportId,
+                            'visit_id' => $visitId,
                         ]
                     ],
                 ];
