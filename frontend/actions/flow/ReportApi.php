@@ -96,11 +96,18 @@ class ReportApi extends ApiAction
             ->where(['id' => $reportId])
             ->one();
 
-        if (empty($model)) {
+        $ret = $model->toArray();
+        $ret['staff'] = $model->staff;
+        $ret['consultant_staff'] = $model->consultantStaff;
+        $ret['advisor_staff'] = $model->adviorStaff;
+        $ret['project'] = $model->project;
+
+
+        if (empty($ret)) {
             return $this->fail('请做一次有效报备', -1000);
         }
 
-        return $this->success($model);
+        return $this->success($ret);
     }
 
     public function confirm() {

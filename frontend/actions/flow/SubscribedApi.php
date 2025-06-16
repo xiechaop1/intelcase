@@ -166,14 +166,16 @@ class SubscribedApi extends ApiAction
                     'btn' => [
                         [
                             'label' => '确认',
-                            'type' => 'sub_confirm_deal_btn',
+//                            'type' => 'sub_confirm_deal_btn',
+                            'type' => 'sub_confirm_payment_page',
                             'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN,
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,
                         ],
                         [
                             'label' => '拒绝',
-                            'type' => 'sub_confirm_deal_btn',
+//                            'type' => 'sub_confirm_deal_btn',
+                            'type' => 'sub_confirm_payment_page',
                             'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,

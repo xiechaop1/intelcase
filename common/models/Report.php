@@ -36,5 +36,25 @@ class Report extends \common\models\gii\Report
         return $this->hasMany(Report::className(), ['guest_mobile' => 'guest_mobile']);
     }
 
+    public function getStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'staff_id']);
+    }
+
+    public function getProject()
+    {
+        return $this->hasOne(Project::className(), ['id' => 'project_id']);
+    }
+
+    public function getConsultantStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'consultant_staff_id']);
+    }
+
+    public function getAdviorStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'advisor_staff_id']);
+    }
+
 
 }
