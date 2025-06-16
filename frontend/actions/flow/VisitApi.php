@@ -127,6 +127,7 @@ class VisitApi extends ApiAction
         $ret = $model->toArray();
         $ret['project'] = $this->_project->toArray();
         $ret['report'] = $this->_report->toArray();
+        $ret['staff'] = !empty($model->staff_id) ? $model->staff->toArray() : [];
 
         if (empty($ret)) {
             return $this->fail('到访不存在', -1000);

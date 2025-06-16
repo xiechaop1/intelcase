@@ -70,4 +70,9 @@ class Visit extends \common\models\gii\Visit
     {
         return $this->hasOne(Report::className(), ['id' => 'report_id']);
     }
+
+    public function getStaff()
+    {
+        return $this->hasOne(Staff::className(), ['id' => 'staff_id']);
+    }
 }
