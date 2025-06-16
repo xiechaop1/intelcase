@@ -124,11 +124,15 @@ class VisitApi extends ApiAction
             ->where(['id' => $visitId])
             ->one();
 
-        if (empty($model)) {
+        $ret = $model->toArray();
+        $ret['project'] = $this->_project->toArray();
+        $ret['report'] = $this->_report->toArray();
+
+        if (empty($ret)) {
             return $this->fail('到访不存在', -1000);
         }
 
-        return $this->success($model);
+        return $this->success($ret);
     }
 
     public function getByProjectId()
