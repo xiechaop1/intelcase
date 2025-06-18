@@ -27,6 +27,7 @@ class Log extends \common\models\gii\Log
     const OP_CODE_REPORT_ADD = 'report_add'; // 新建报告
     const OP_CODE_REPORT_CONFIRM = 'report_confirm'; // 确认报告
     const OP_CODE_VISIT_ADD = 'visit_add'; // 新建拜访
+    const OP_CODE_VISIT_INFO_CONFIRM = 'visit_info_confirm'; // 确认拜访
     const OP_CODE_VISIT_CONFIRM = 'visit_confirm'; // 确认拜访
     const OP_CODE_SUB_ADD = 'sub_add'; // 新建签约
     const OP_CODE_SUB_CONFIRM_SIGN = 'sub_confirm_sign'; // 确认签约

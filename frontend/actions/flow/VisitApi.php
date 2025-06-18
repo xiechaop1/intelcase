@@ -96,6 +96,9 @@ class VisitApi extends ApiAction
                 case 'confirm':
                     $ret = $this->confirm();
                     break;
+                case 'info_confirm':
+                    $ret = $this->infoConfirm();
+                    break;
                 case 'get_by_id':
                     $ret = $this->getById();
                     break;
@@ -179,7 +182,8 @@ class VisitApi extends ApiAction
         }
 
         $model->visit_confirm_status = $visitConfirmStatus;
-        $model->visit_status_comment = $visitStatusComment;
+//        $model->visit_status_comment = $visitStatusComment;
+//        $visitConfirmStatus = $model->visit_confirm_status;
         try {
             $ret = $model->save();
             if ($ret === false) {
@@ -194,7 +198,7 @@ class VisitApi extends ApiAction
                 'project_id' => $this->_projectId,
                 'report_id' => $this->_reportId,
                 'visit_confirm_status' => $visitConfirmStatus,
-                'visit_status_comment' => $visitStatusComment,
+//                'visit_status_comment' => $visitStatusComment,
             ], '用户确认到访', [
                 'ret' => $ret,
                 'visit_id' => $visitId,
@@ -207,7 +211,7 @@ class VisitApi extends ApiAction
                 'project_id' => $this->_projectId,
                 'report_id' => $this->_reportId,
                 'visit_confirm_status' => $visitConfirmStatus,
-                'visit_status_comment' => $visitStatusComment,
+//                'visit_status_comment' => $visitStatusComment,
             ], '用户确认到访', [
                 'code' => $e->getCode(),
                 'msg' => $e->getMessage(),
@@ -216,10 +220,10 @@ class VisitApi extends ApiAction
         }
 
         if ($visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
-         || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
+            || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
 
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-            || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
                 $jumpType = 'sub_buy_page';
                 $subType = Subscribed::SUB_TYPE_BUY;
                 $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
@@ -265,6 +269,112 @@ class VisitApi extends ApiAction
             'project_id' => $this->_projectId,
             'report_id' => $this->_reportId,
             'visit_confirm_status' => $visitConfirmStatus,
+//            'visit_status_comment' => $visitStatusComment,
+        ], '用户确认到访', [
+            'visit_id' => $visitId,
+            'project_id' => $this->_projectId,
+            'report_id' => $this->_reportId,
+        ]);
+
+        return $this->success(['visit' => $model]);
+    }
+
+    public function infoConfirm() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+//        $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : Visit::VISIT_CONFIRM_STATUS_CONFIRM;
+        $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : Visit::VISIT_STATUS_DEFAULT;
+        $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+
+        Yii::$app->privilege->checkByUser($this->_user, Privilege::VISIT_INFO_CONFIRM);
+
+        if (empty($visitId)) {
+            return $this->fail('需要指定到访ID', -1000);
+        }
+
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+
+//        $model->visit_confirm_status = $visitConfirmStatus;
+        $model->visit_status = $visitStatus;
+        $model->visit_status_comment = $visitStatusComment;
+        try {
+            $ret = $model->save();
+            if ($ret === false) {
+                Yii::error($model->getErrors());
+            }
+
+            if (!empty($msgId)) {
+                Yii::$app->msg->removeBtn($msgId);
+            }
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_INFO_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+//                'visit_confirm_status' => $visitConfirmStatus,
+                'visit_status_comment' => $visitStatusComment,
+            ], '用户确认到访', [
+                'ret' => $ret,
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+            ]);
+        } catch (\Exception $e) {
+            Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_INFO_CONFIRM, \common\models\Log::OP_STATUS_FAILED, $this->_staffId, $model->guest_mobile, [
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+                'report_id' => $this->_reportId,
+//                'visit_confirm_status' => $visitConfirmStatus,
+                'visit_status_comment' => $visitStatusComment,
+            ], '用户确认到访', [
+                'code' => $e->getCode(),
+                'msg' => $e->getMessage(),
+            ]);
+            return $this->fail('操作失败', -1000);
+        }
+
+        $jumpType = 'visit_confirm_page';
+        $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+
+        $visitStatusName = !empty(Visit::$visitStatus2Name[$visitStatus]) ? Visit::$visitStatus2Name[$visitStatus] : '未知';
+
+        if (!empty($recvId)) {
+            $content = [
+                'content' => '有一条待确认的到访消息，状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                'title' => '到访确认',
+                'btn' => [
+                    [
+                        'label' => '确认',
+                        'type'  => 'visit_confirm_page',
+                        'visit_id' => $visitId,
+                        'report_id' => $this->_reportId,
+                        'project_id' => $this->_projectId,
+                    ],
+                    [
+                        'label' => '取消',
+                        'type'  => 'visit_page',
+                        'visit_id' => $visitId,
+                        'report_id' => $this->_reportId,
+                        'project_id' => $this->_projectId,
+                    ],
+                ],
+                'visit_id' => $visitId,
+                'project_id' => $this->_projectId,
+            ];
+            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+        }
+
+        Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_INFO_CONFIRM, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $model->guest_mobile, [
+            'visit_id' => $visitId,
+            'project_id' => $this->_projectId,
+            'report_id' => $this->_reportId,
+//            'visit_confirm_status' => $visitConfirmStatus,
             'visit_status_comment' => $visitStatusComment,
         ], '用户确认到访', [
             'visit_id' => $visitId,
@@ -332,6 +442,7 @@ class VisitApi extends ApiAction
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
             $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
             $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+            $location = !empty($this->_get['location']) ? $this->_get['location'] : '';
             $reportId = !empty($this->_get['report_id']) ? $this->_get['report_id'] : 0;
             $visitCt = !empty($this->_get['visit_ct']) ? $this->_get['visit_ct'] : 0;
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
@@ -410,6 +521,7 @@ class VisitApi extends ApiAction
             $model->guest_mobile = $guestMobile;
             $model->guest_appeal = $guestAppeal;
             $model->budget = $budget;
+            $model->location = $location;
             $model->staff_mobile = $staffMobile;
             $model->staff_id = intval($staffId);
             $model->visit_time = $visitTime;
@@ -432,12 +544,19 @@ class VisitApi extends ApiAction
             }
 //            $visitId = Yii::$app->db->getLastInsertID();
 
-            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+//                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+            } else {
+                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+//                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+            }
             if (!empty($recvId)) {
                 if ($visitType > 1) {
-                    $type = 'visit_repeat_confirm_page';
+                    $type = 'visit_repeat_info_confirm_page';
                 } else {
-                    $type = 'visit_confirm_page';
+                    $type = 'visit_info_confirm_page';
                 }
                 $content = [
                     'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',

@@ -28,6 +28,11 @@ class Privilege extends Component
                 Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM,
             ],
+            \common\definitions\Privilege::VISIT_INFO_CONFIRM => [
+                Staff::STAFF_ROLE_ADMIN,
+                Staff::STAFF_ROLE_ADVISOR,
+                Staff::STAFF_ROLE_CONSULTANT
+            ],
             \common\definitions\Privilege::VISIT_CONFIRM => [
                 Staff::STAFF_ROLE_ADMIN,
                 Staff::STAFF_ROLE_PM
