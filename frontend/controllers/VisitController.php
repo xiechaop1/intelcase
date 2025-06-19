@@ -34,6 +34,10 @@ class VisitController extends Controller
                 'class'     => 'frontend\actions\flow\VisitApi',
                 'action'    => 'update',
             ],
+            'info_confirm' => [
+                'class'     => 'frontend\actions\flow\VisitApi',
+                'action'    => 'info_confirm',
+            ],
             'confirm' => [
                 'class'     => 'frontend\actions\flow\VisitApi',
                 'action'    => 'confirm',
