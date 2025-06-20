@@ -658,6 +658,16 @@ class SubscribedApi extends ApiAction
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+                $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+                $content = [
+                    'content' => '有一条新认购，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'project_id' => $this->_projectId,
+                    'title' => '新认购',
+                    'btn' => [
+                    ],
+                ];
+                Yii::$app->msg->add($pmRecvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
 
             Yii::$app->oplog->write(
