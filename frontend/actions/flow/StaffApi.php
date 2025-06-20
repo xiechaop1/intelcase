@@ -69,6 +69,7 @@ class StaffApi extends ApiAction
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
         $role = !empty($this->_get['role']) ? $this->_get['role'] : 0;
+        $team = !empty($this->_get['team']) ? $this->_get['team'] : '';
         $isTeam = !empty($this->_get['is_team']) ? $this->_get['is_team'] : 0;
 
         $query = Staff::find();
@@ -78,6 +79,11 @@ class StaffApi extends ApiAction
         if (!empty($role)) {
             $query = $query->where([
                 'role' => [$role, Staff::STAFF_ROLE_ADMIN],
+            ]);
+        }
+        if (!empty($team)) {
+            $query = $query->andWhere([
+                'team' => $team,
             ]);
         }
         $query = $query->andWhere([
