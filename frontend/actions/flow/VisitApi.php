@@ -237,7 +237,7 @@ class VisitApi extends ApiAction
 
             if (!empty($recvId)) {
                 $content = [
-                    'content' => '有一条新认购/签约，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'content' => '有一条新认购/签约，客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
                     'title' => '新认购/签约',
                     'btn' => [
                         [
@@ -345,7 +345,7 @@ class VisitApi extends ApiAction
 
         if (!empty($recvId)) {
             $content = [
-                'content' => '有一条待确认的到访消息，状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                'content' => '有一条待确认的到访消息，客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
                 'title' => '到访确认',
                 'btn' => [
                     [
