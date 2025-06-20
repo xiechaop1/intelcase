@@ -639,7 +639,8 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->removeBtn($msgId);
             }
 
-            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+//            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+            $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
             if (!empty($recvId)) {
                 $content = [
                     'content' => '有一条新认购，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
