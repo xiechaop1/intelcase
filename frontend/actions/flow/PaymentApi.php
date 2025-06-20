@@ -456,7 +456,7 @@ class PaymentApi extends ApiAction
                 $roomNo = !empty($subscribed->room_no) ? $subscribed->room_no : '未知房号';
                 if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付，' . '房号：' . $roomNo . '，金额：' . $amount . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请最终确认',
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请最终确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成支付',
                         'btn' =>
@@ -475,7 +475,7 @@ class PaymentApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 } else {
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，' . '房号：' . $roomNo . '，金额：' . $amount . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
+                        'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成部分支付',
                         'btn' => [
