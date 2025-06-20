@@ -121,17 +121,22 @@ class PaymentApi extends ApiAction
             return $this->fail('需要指定支付ID', -1000);
         }
 
+//        $ret = [];
+
         $model = Payment::find()
             ->where([
                 'id' => $paymentId,
             ])
             ->one();
 
-        if (empty($model)) {
+        $ret = $model->toArray();
+        $ret['pay_time_str'] = !empty($ret['pay_time']) ? date('Y-m-d H:i:s', $ret['pay_time']) : '';
+
+        if (empty($ret)) {
             return $this->fail('支付不存在', -1000);
         }
 
-        return $this->success($model);
+        return $this->success($ret);
     }
 
     public function getByProjectId()
