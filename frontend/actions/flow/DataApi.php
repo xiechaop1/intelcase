@@ -133,6 +133,9 @@ class DataApi extends ApiAction
         $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
+        if (strpos($projectId, ',') !== false) {
+            $projectId = explode(',', $projectId);
+        }
 
         if ($inter == 'daily') {
             $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
