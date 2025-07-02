@@ -159,8 +159,9 @@ class SubscribedApi extends ApiAction
             $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -202,8 +203,9 @@ class SubscribedApi extends ApiAction
                 ->where(['id' => $subId])
                 ->one();
             if (!empty($recvId)) {
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '新认购 ' . $sub->room_no . ' 出纳已经确认！',
+                    'content' => '新认购 项目：' . $projectName . ' ' . $sub->room_no . ' 出纳已经确认！',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -213,7 +215,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
                 $contentPm = [
-                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，出纳已经确认',
+                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，出纳已经确认',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -285,8 +287,9 @@ class SubscribedApi extends ApiAction
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -642,8 +645,9 @@ class SubscribedApi extends ApiAction
 //            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
             if (!empty($recvId)) {
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -661,7 +665,7 @@ class SubscribedApi extends ApiAction
 
                 $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                 $content = [
-                    'content' => '有一条新认购，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [

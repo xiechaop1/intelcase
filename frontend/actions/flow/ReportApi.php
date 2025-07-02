@@ -140,6 +140,7 @@ class ReportApi extends ApiAction
 //            $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
             $recvId = $model->staff_id;
             $content = [];
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             if (!empty($recvId)) {
                 if ($reportStatus == Report::REPORT_STATUS_PASS) {
                     $visitCount = Visit::find()
@@ -158,7 +159,7 @@ class ReportApi extends ApiAction
                         $type = 'visit_page';
                     }
                     $content = [
-                        'content' => '有客户：' . $model->guest_name . '，手机号：' . $model->guest_mobile . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
+                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . $model->guest_mobile . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -173,7 +174,7 @@ class ReportApi extends ApiAction
                     ];
                 } else {
                     $content = [
-                        'content' => '有客户：' . $model->guest_name . '，手机号：' . $model->guest_mobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
+                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . $model->guest_mobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
                         'title' => '新报备',
                         'btn' => [
                         ],
@@ -344,12 +345,13 @@ class ReportApi extends ApiAction
 //            $reportId = Yii::$app->db->getLastInsertID();
 
 
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             if ($reportStatus == Report::REPORT_STATUS_INVALID) {
                 $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有一条新报备，客户：' . $guestName . '，手机号：' . $guestMobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
+                        'content' => '有一条新报备，客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -375,7 +377,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有客户：' . $guestName . '，手机号：' . $guestMobile . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -401,7 +403,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有客户：' . $guestName . '，手机号：' . $guestMobile . '，项目：' . $this->_project['project_name'] . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '',
+                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '，项目：' . $this->_project['project_name'] . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '',
                         'title' => '新报备',
                         'btn' => [
                         ],

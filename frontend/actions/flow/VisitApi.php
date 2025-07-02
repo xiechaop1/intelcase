@@ -236,8 +236,9 @@ class VisitApi extends ApiAction
             }
 
             if (!empty($recvId)) {
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购/签约，客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'content' => '有一条新认购/签约，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
                     'title' => '新认购/签约',
                     'btn' => [
                         [
@@ -344,8 +345,9 @@ class VisitApi extends ApiAction
         $visitStatusName = !empty(Visit::$visitStatus2Name[$visitStatus]) ? Visit::$visitStatus2Name[$visitStatus] : '未知';
 
         if (!empty($recvId)) {
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             $content = [
-                'content' => '有一条待确认的到访消息，客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                'content' => '有一条待确认的到访消息，项目：' . $projectName . '，客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
                 'title' => '到访确认',
                 'btn' => [
                     [
@@ -558,8 +560,9 @@ class VisitApi extends ApiAction
                 } else {
                     $type = 'visit_info_confirm_page';
                 }
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新到访，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                    'content' => '有一条新到访，项目：' . $projectName . '，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,
                     'visit_id' => $visitId,
