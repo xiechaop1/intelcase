@@ -330,6 +330,8 @@ class DataApi extends ApiAction
                 $visitRateAll = $visitRate['all'] = 0;
             }
 
+            $paymentData = [];
+
             if (!empty($paymentRet)) {
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
@@ -367,6 +369,7 @@ class DataApi extends ApiAction
             'report_drift' => $reportDrift,
             'visit_drift' => $visitDrift,
             'visit_rate_drift' => $visitRateDrift,
+            'payment_data' => $paymentData,
         ]);
 
 
