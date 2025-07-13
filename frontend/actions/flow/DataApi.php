@@ -159,6 +159,8 @@ class DataApi extends ApiAction
                         foreach ($projects as $pro) {
                             $projectId[] = $pro->id;
                         }
+                    } else {
+                        $projectId = [-1];
                     }
                     break;
                 case Staff::STAFF_ROLE_SALES:
@@ -169,6 +171,8 @@ class DataApi extends ApiAction
                         foreach ($projects as $pro) {
                             $projectId[] = $pro->project_id;
                         }
+                    } else {
+                        $projectId = [-1];
                     }
                     break;
                 case Staff::STAFF_ROLE_ADVISOR:
@@ -179,6 +183,8 @@ class DataApi extends ApiAction
                         foreach ($projects as $pro) {
                             $projectId[] = $pro->project_id;
                         }
+                    } else {
+                        $projectId = [-1];
                     }
                     break;
                 case Staff::STAFF_ROLE_CONSULTANT:
@@ -189,6 +195,8 @@ class DataApi extends ApiAction
                         foreach ($projects as $pro) {
                             $projectId[] = $pro->project_id;
                         }
+                    } else {
+                        $projectId = [-1];
                     }
                     break;
                 case Staff::STAFF_ROLE_ADMIN:
@@ -200,6 +208,8 @@ class DataApi extends ApiAction
             }
 
 
+        } else {
+            $projectId = [-1];
         }
 
         if ($inter == 'daily') {
