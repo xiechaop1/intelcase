@@ -366,7 +366,7 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['total']['pay'])) {
                             $paymentData['total']['pay'] = 0;
                         }
-                        $paymentData['project']['pay'] += $payment['amount'];
+                        $paymentData['total']['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
                         if (!isset($paymentData['time'][$payTime]['refund'])) {
                             $paymentData['time'][$payTime]['refund'] = 0;
@@ -381,6 +381,7 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
+                        $paymentData['total']['refund'] += $payment['amount'];
                     }
 
                 }
@@ -419,7 +420,7 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['total']['pay'])) {
                             $paymentData['total']['pay'] = 0;
                         }
-                        $paymentData['project']['pay'] += $payment['amount'];
+                        $paymentData['total']['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
                         if (!isset($paymentData['project'][$projectName]['refund'])) {
                             $paymentData['project'][$projectName]['refund'] = 0;
@@ -429,6 +430,7 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
+                        $paymentData['total']['refund'] += $payment['amount'];
                     }
 
                 }

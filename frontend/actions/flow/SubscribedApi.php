@@ -274,6 +274,7 @@ class SubscribedApi extends ApiAction
                     $model->$key = $value;
                 }
             }
+            $model->sub_status = Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN;
         }
 
         try {
@@ -292,25 +293,25 @@ class SubscribedApi extends ApiAction
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '完成了一次签约，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                     'project_id' => $this->_projectId,
-                    'title' => '新认购',
-                    'btn' => [
-                        [
-                            'label' => '确认',
-                            'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM,
-                            'sub_id' => $subId,
-                            'project_id' => $this->_projectId,
-                        ],
-                        [
-                            'label' => '拒绝',
-                            'type' => 'sub_confirm_deal_btn',
-                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
-                            'sub_id' => $subId,
-                            'project_id' => $this->_projectId,
-                        ],
-                    ],
+                    'title' => '完成签约',
+//                    'btn' => [
+//                        [
+//                            'label' => '确认',
+//                            'type' => 'sub_confirm_deal_btn',
+//                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM,
+//                            'sub_id' => $subId,
+//                            'project_id' => $this->_projectId,
+//                        ],
+//                        [
+//                            'label' => '拒绝',
+//                            'type' => 'sub_confirm_deal_btn',
+//                            'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
+//                            'sub_id' => $subId,
+//                            'project_id' => $this->_projectId,
+//                        ],
+//                    ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
             }
