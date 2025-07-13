@@ -14,6 +14,7 @@ use common\models\Msg;
 use common\models\Payment;
 use common\models\Project;
 use common\models\Report;
+use common\models\Staff;
 use common\models\Subscribed;
 use common\models\Visit;
 //use common\services\Log;
@@ -24,6 +25,8 @@ class DataApi extends ApiAction
 {
     public $action;
     private $_get;
+    private $_staffId;
+    private $_staff;
 
     public function run()
     {
@@ -41,6 +44,13 @@ class DataApi extends ApiAction
 //            if (empty($this->_projectId)) {
 //                return $this->fail('需要指定项目', -1000);
 //            }
+
+            $this->_staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+            if (!empty($this->_staffId)) {
+                $this->_staff = Staff::find()
+                    ->where(['id' => $this->_staffId])
+                    ->one();
+            }
 
             $this->valToken();
             switch ($this->action) {
@@ -137,12 +147,33 @@ class DataApi extends ApiAction
             $projectId = explode(',', $projectId);
         }
 
+        if (!empty($this->_staff)) {
+            $staffRole = $this->_staff->role;
+
+            if ($staffRole == Staff::STAFF_ROLE_PM) {
+                $projects = Project::find()
+                    ->where(['pm_staff_id' => $this->_staffId])
+                    ->all();
+
+//                $projectIds = [];
+                if (!empty($projects)) {
+                    foreach ($projects as $pro) {
+                        $projectId[] = $pro->id;
+                    }
+                }
+            }
+
+
+        }
+
         if ($inter == 'daily') {
             $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
             $visitCount = Visit::find()->select('DATE(visit_time) as dt, count(*) as ct');
+            $paymentRet = Payment::find();
         } else {
             $reportCount = Report::find()->select('count(*) as ct');
             $visitCount = Visit::find()->select('count(*) as ct');
+            $paymentRet = Payment::find();
         }
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
@@ -151,6 +182,7 @@ class DataApi extends ApiAction
         if (!empty($projectId)) {
             $reportCount->andFilterWhere(['project_id' => $projectId]);
             $visitCount->andFilterWhere(['project_id' => $projectId]);
+            $paymentRet->andFilterWhere(['project_id' => $projectId]);
         }
         if (!empty($advStaffId)) {
 //            $reportCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
@@ -159,10 +191,12 @@ class DataApi extends ApiAction
         if (!empty($beginTime)) {
             $reportCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
             $visitCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
+            $paymentRet->andFilterWhere(['>=', 'pay_time', $beginTime]);
         }
         if (!empty($endTime)) {
             $reportCount->andFilterWhere(['<=', 'visit_time', $endTime]);
             $visitCount->andFilterWhere(['<=', 'visit_time', $endTime]);
+            $paymentRet->andFilterWhere(['<=', 'pay_time', $endTime]);
         }
         if (!empty($visitStatus)) {
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
@@ -253,6 +287,29 @@ class DataApi extends ApiAction
                     $idx++;
                 }
             }
+
+            $paymentData = [];
+            if (!empty($paymentRet)) {
+                foreach ($paymentRet as $payment) {
+                    // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
+                    // 每天一条数据，需要规整pay_time到日
+                    $payment = $payment->toArray();
+                    $payTime = date('Y-m-d', strtotime($payment['pay_time']));
+                    if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
+                        if (!isset($paymentData[$payTime]['pay'])) {
+                            $paymentData[$payTime]['pay'] = 0;
+                        }
+                        $paymentData[$payTime]['pay'] += $payment['amount'];
+                    } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
+                        if (!isset($paymentData[$payTime]['refund'])) {
+                            $paymentData[$payTime]['refund'] = 0;
+                        }
+                        $paymentData[$payTime]['refund'] += $payment['amount'];
+                    }
+
+                }
+            }
+
         } else {
             $reportRet = $reportCount->asArray()->all();
             $visitRet = $visitCount->asArray()->all();
@@ -263,6 +320,27 @@ class DataApi extends ApiAction
             $reportAll = $reportTemp['all'] = $reportRet['ct'];
             $visitAll = $visitTemp['all'] = $visitRet['ct'];
             $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
+
+            if (!empty($paymentRet)) {
+                foreach ($paymentRet as $payment) {
+                    // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
+                    // 每天一条数据，需要规整pay_time到日
+                    $payment = $payment->toArray();
+                    $payTime = 'all';
+                    if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
+                        if (!isset($paymentData[$payTime]['pay'])) {
+                            $paymentData[$payTime]['pay'] = 0;
+                        }
+                        $paymentData[$payTime]['pay'] += $payment['amount'];
+                    } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
+                        if (!isset($paymentData[$payTime]['refund'])) {
+                            $paymentData[$payTime]['refund'] = 0;
+                        }
+                        $paymentData[$payTime]['refund'] += $payment['amount'];
+                    }
+
+                }
+            }
         }
 
 //        $reportCt = $reportCount->count();

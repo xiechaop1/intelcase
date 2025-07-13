@@ -16,6 +16,7 @@ use common\models\Project;
 use common\models\Report;
 //use common\services\Log;
 use common\models\Subscribed;
+use common\models\Visit;
 use frontend\actions\ApiAction;
 use Mpdf\Tag\Sub;
 use Yii;
@@ -491,6 +492,13 @@ class SubscribedApi extends ApiAction
 
         $transaction = Yii::$app->db->beginTransaction();
 
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+        if (!empty($visitId)) {
+            $visit = Visit::find()
+                ->where(['id' => $visitId])
+                ->one();
+        }
+
         try {
 
             $subType = !empty($this->_get['sub_type']) ? $this->_get['sub_type'] : 0;
@@ -644,34 +652,65 @@ class SubscribedApi extends ApiAction
 
 //            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
-            if (!empty($recvId)) {
-                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+            if ($visit->visit_confirm_status == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
                 $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '项目 ' . $this->_project->project_name . ' 进入签约流程',
                     'project_id' => $this->_projectId,
-                    'title' => '新认购',
+                    'title' => '签约',
                     'btn' => [
                         [
-                            'label' => '确认',
-                            'type' => 'payment_page',
-                            'sub_id' => $subId,
+                            'label' => '签约',
+                            'type' => 'sub_confirm_deal_page',
                             'project_id' => $this->_projectId,
+                            'sub_id' => $model->sub_id,
                             'report_id' => $this->_reportId,
-                            'visit_id' => $visitId,
-                        ]
+                            'payment_id' => $model->id,
+                        ],
                     ],
                 ];
-                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//                    $recvId = $this->_project->advisor_staff_id;
+                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                if (!empty($guestAppeal)) {
+                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                    } else {
+                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                    }
+                }
+                if (!empty($recvId)) {
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+            } else {
+                if (!empty($recvId)) {
+                    $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                    $content = [
+                        'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                        'project_id' => $this->_projectId,
+                        'title' => '新认购',
+                        'btn' => [
+                            [
+                                'label' => '确认',
+                                'type' => 'payment_page',
+                                'sub_id' => $subId,
+                                'project_id' => $this->_projectId,
+                                'report_id' => $this->_reportId,
+                                'visit_id' => $visitId,
+                            ]
+                        ],
+                    ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
-                $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
-                $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
-                    'project_id' => $this->_projectId,
-                    'title' => '新认购',
-                    'btn' => [
-                    ],
-                ];
-                Yii::$app->msg->add($pmRecvId, $content, Msg::MSG_SENDER_SYSTEM);
+                    $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+                    $content = [
+                        'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                        'project_id' => $this->_projectId,
+                        'title' => '新认购',
+                        'btn' => [
+                        ],
+                    ];
+                    Yii::$app->msg->add($pmRecvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
             }
 
             Yii::$app->oplog->write(

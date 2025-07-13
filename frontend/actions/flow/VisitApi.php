@@ -219,8 +219,10 @@ class VisitApi extends ApiAction
             return $this->fail('操作失败', -1000);
         }
 
-        if ($visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
-            || $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
+        if (
+            $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
+            ||
+            $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
 
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
                 || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
@@ -237,9 +239,10 @@ class VisitApi extends ApiAction
 
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                $type = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED ? '签约' : '认购';
                 $content = [
-                    'content' => '有一条新认购/签约，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
-                    'title' => '新认购/签约',
+                    'content' => '有一条新' . $type . '，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . $model->guest_mobile . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'title' => '新' . $type,
                     'btn' => [
                         [
                             'label' => '确认',
@@ -248,6 +251,7 @@ class VisitApi extends ApiAction
                             'report_id' => $this->_reportId,
                             'project_id' => $this->_projectId,
                             'sub_type' => $subType,
+                            'visit_confirm_status' => $visitConfirmStatus,
                         ],
                         [
                             'label' => '取消',
@@ -255,6 +259,7 @@ class VisitApi extends ApiAction
                             'visit_id' => $visitId,
                             'report_id' => $this->_reportId,
                             'project_id' => $this->_projectId,
+                            'visit_confirm_status' => $visitConfirmStatus,
                         ],
                     ],
                     'visit_id' => $visitId,
