@@ -662,9 +662,9 @@ class SubscribedApi extends ApiAction
                             'label' => '签约',
                             'type' => 'sub_confirm_deal_page',
                             'project_id' => $this->_projectId,
-                            'sub_id' => $model->sub_id,
+                            'sub_id' => $model->id,
                             'report_id' => $this->_reportId,
-                            'payment_id' => $model->id,
+//                            'payment_id' => $model->id,
                         ],
                     ],
                 ];
