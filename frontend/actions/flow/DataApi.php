@@ -150,17 +150,53 @@ class DataApi extends ApiAction
         if (!empty($this->_staff)) {
             $staffRole = $this->_staff->role;
 
-            if ($staffRole == Staff::STAFF_ROLE_PM) {
-                $projects = Project::find()
-                    ->where(['pm_staff_id' => $this->_staffId])
-                    ->all();
-
-//                $projectIds = [];
-                if (!empty($projects)) {
-                    foreach ($projects as $pro) {
-                        $projectId[] = $pro->id;
+            switch ($staffRole) {
+                case Staff::STAFF_ROLE_PM:
+                    $projects = Project::find()
+                        ->where(['pm_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->id;
+                        }
                     }
-                }
+                    break;
+                case Staff::STAFF_ROLE_SALES:
+                    $projects = Report::find()
+                        ->where(['staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    }
+                    break;
+                case Staff::STAFF_ROLE_ADVISOR:
+                    $projects = Report::find()
+                        ->where(['advisor_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    }
+                    break;
+                case Staff::STAFF_ROLE_CONSULTANT:
+                    $projects = Report::find()
+                        ->where(['consultant_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    }
+                    break;
+                case Staff::STAFF_ROLE_ADMIN:
+                case Staff::STAFF_ROLE_FINANCE:
+                    break;
+                default:
+                    $projectId = [-1];
+                    break;
             }
 
 
