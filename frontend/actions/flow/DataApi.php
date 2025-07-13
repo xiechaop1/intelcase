@@ -256,7 +256,7 @@ class DataApi extends ApiAction
         $visitTemp = [];
         $visitRate = [];
 
-        $paymentRet = $paymentRet->asArray()->all();
+        $paymentRet = $paymentRet->all();
 
         if ($inter == 'daily') {
             $reportCount->groupBy('DATE(visit_time)');
@@ -350,16 +350,28 @@ class DataApi extends ApiAction
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
                     $payTime = date('Y-m-d', $payment['pay_time']);
+                    $projectName = !empty($payment->project->project_name) ? $payment->project->project_name : '未知项目';
+                    $payment = $payment->toArray();
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
                         if (!isset($paymentData[$payTime]['pay'])) {
                             $paymentData[$payTime]['pay'] = 0;
                         }
                         $paymentData[$payTime]['pay'] += $payment['amount'];
+
+                        if (!isset($paymentData[$projectName]['pay'])) {
+                            $paymentData[$projectName]['pay'] = 0;
+                        }
+                        $paymentData[$projectName]['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
                         if (!isset($paymentData[$payTime]['refund'])) {
                             $paymentData[$payTime]['refund'] = 0;
                         }
                         $paymentData[$payTime]['refund'] += $payment['amount'];
+
+                        if (!isset($paymentData[$projectName]['refund'])) {
+                            $paymentData[$projectName]['refund'] = 0;
+                        }
+                        $paymentData[$projectName]['refund'] += $payment['amount'];
                     }
 
                 }
@@ -386,17 +398,19 @@ class DataApi extends ApiAction
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
-                    $payTime = 'all';
+//                    $payTime = 'all';
+                    $payment = $payment->toArray();
+                    $projectName = !empty($payment->project->project_name) ? $payment->project->project_name : '未知项目';
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
-                        if (!isset($paymentData[$payTime]['pay'])) {
-                            $paymentData[$payTime]['pay'] = 0;
+                        if (!isset($paymentData[$projectName]['pay'])) {
+                            $paymentData[$projectName]['pay'] = 0;
                         }
-                        $paymentData[$payTime]['pay'] += $payment['amount'];
+                        $paymentData[$projectName]['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
-                        if (!isset($paymentData[$payTime]['refund'])) {
-                            $paymentData[$payTime]['refund'] = 0;
+                        if (!isset($paymentData[$projectName]['refund'])) {
+                            $paymentData[$projectName]['refund'] = 0;
                         }
-                        $paymentData[$payTime]['refund'] += $payment['amount'];
+                        $paymentData[$projectName]['refund'] += $payment['amount'];
                     }
 
                 }
