@@ -206,6 +206,8 @@ class DataApi extends ApiAction
         $visitTemp = [];
         $visitRate = [];
 
+        $paymentRet = $paymentRet->asArray()->all();
+
         if ($inter == 'daily') {
             $reportCount->groupBy('DATE(visit_time)');
             $visitCount->groupBy('DATE(visit_time)');
@@ -293,7 +295,6 @@ class DataApi extends ApiAction
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
-                    $payment = $payment->toArray();
                     $payTime = date('Y-m-d', strtotime($payment['pay_time']));
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
                         if (!isset($paymentData[$payTime]['pay'])) {
@@ -325,7 +326,6 @@ class DataApi extends ApiAction
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
-                    $payment = $payment->toArray();
                     $payTime = 'all';
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
                         if (!isset($paymentData[$payTime]['pay'])) {
