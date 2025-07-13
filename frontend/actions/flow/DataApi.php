@@ -134,8 +134,8 @@ class DataApi extends ApiAction
 
     public function getData()
     {
-        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : strtotime(Date('Y-m-d 00:00:00', strtotime('-7 days')));
-        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : strtotime('now');
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d 00:00:00', strtotime('-7 days'));
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d H:i:s');
 
         $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
@@ -191,12 +191,12 @@ class DataApi extends ApiAction
         if (!empty($beginTime)) {
             $reportCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
             $visitCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
-            $paymentRet->andFilterWhere(['>=', 'pay_time', $beginTime]);
+            $paymentRet->andFilterWhere(['>=', 'pay_time', strtotime($beginTime)]);
         }
         if (!empty($endTime)) {
             $reportCount->andFilterWhere(['<=', 'visit_time', $endTime]);
             $visitCount->andFilterWhere(['<=', 'visit_time', $endTime]);
-            $paymentRet->andFilterWhere(['<=', 'pay_time', $endTime]);
+            $paymentRet->andFilterWhere(['<=', 'pay_time', strtotime($endTime)]);
         }
         if (!empty($visitStatus)) {
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
@@ -299,7 +299,7 @@ class DataApi extends ApiAction
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
-                    $payTime = date('Y-m-d', strtotime($payment['pay_time']));
+                    $payTime = date('Y-m-d', $payment['pay_time']);
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
                         if (!isset($paymentData[$payTime]['pay'])) {
                             $paymentData[$payTime]['pay'] = 0;
