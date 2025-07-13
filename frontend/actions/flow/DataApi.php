@@ -353,25 +353,25 @@ class DataApi extends ApiAction
                     $projectName = !empty($payment->project->project_name) ? $payment->project->project_name : '未知项目';
                     $payment = $payment->toArray();
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
-                        if (!isset($paymentData[$payTime]['pay'])) {
-                            $paymentData[$payTime]['pay'] = 0;
+                        if (!isset($paymentData['time'][$payTime]['pay'])) {
+                            $paymentData['time'][$payTime]['pay'] = 0;
                         }
-                        $paymentData[$payTime]['pay'] += $payment['amount'];
+                        $paymentData['time'][$payTime]['pay'] += $payment['amount'];
 
-                        if (!isset($paymentData[$projectName]['pay'])) {
-                            $paymentData[$projectName]['pay'] = 0;
+                        if (!isset($paymentData['project'][$projectName]['pay'])) {
+                            $paymentData['project'][$projectName]['pay'] = 0;
                         }
-                        $paymentData[$projectName]['pay'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
-                        if (!isset($paymentData[$payTime]['refund'])) {
-                            $paymentData[$payTime]['refund'] = 0;
+                        if (!isset($paymentData['time'][$payTime]['refund'])) {
+                            $paymentData['time'][$payTime]['refund'] = 0;
                         }
-                        $paymentData[$payTime]['refund'] += $payment['amount'];
+                        $paymentData['time'][$payTime]['refund'] += $payment['amount'];
 
-                        if (!isset($paymentData[$projectName]['refund'])) {
-                            $paymentData[$projectName]['refund'] = 0;
+                        if (!isset($paymentData['project'][$projectName]['refund'])) {
+                            $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData[$projectName]['refund'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
                     }
 
                 }
@@ -402,15 +402,15 @@ class DataApi extends ApiAction
                     $payment = $payment->toArray();
                     $projectName = !empty($payment->project->project_name) ? $payment->project->project_name : '未知项目';
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
-                        if (!isset($paymentData[$projectName]['pay'])) {
-                            $paymentData[$projectName]['pay'] = 0;
+                        if (!isset($paymentData['project'][$projectName]['pay'])) {
+                            $paymentData['project'][$projectName]['pay'] = 0;
                         }
-                        $paymentData[$projectName]['pay'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['pay'] += $payment['amount'];
                     } elseif ($payment['pay_type'] == Payment::PAYMENT_TYPE_REFUND) {
-                        if (!isset($paymentData[$projectName]['refund'])) {
-                            $paymentData[$projectName]['refund'] = 0;
+                        if (!isset($paymentData['project'][$projectName]['refund'])) {
+                            $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData[$projectName]['refund'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
                     }
 
                 }
