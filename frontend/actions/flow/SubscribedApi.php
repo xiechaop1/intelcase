@@ -173,6 +173,7 @@ class SubscribedApi extends ApiAction
                             'sub_status' => Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN,
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,
+                            'visit_id' => $model->visit_id,
                         ],
                         [
                             'label' => '拒绝',
@@ -181,6 +182,7 @@ class SubscribedApi extends ApiAction
                             'sub_status' => Subscribed::SUBSCRIBED_STATUS_REJECT,
                             'sub_id' => $subId,
                             'project_id' => $this->_projectId,
+                            'visit_id' => $model->visit_id,
                         ]
                     ],
                 ];
@@ -596,6 +598,7 @@ class SubscribedApi extends ApiAction
                 ->one();
 
             $model->project_id = $this->_projectId;
+            $model->visit_id = $visitId;
 //            $model->report_id = $this->_reportId;
             $model->sub_type = $subType;
             $model->sub_guest = $subGuest;
@@ -664,6 +667,7 @@ class SubscribedApi extends ApiAction
                             'project_id' => $this->_projectId,
                             'sub_id' => $model->id,
                             'report_id' => $this->_reportId,
+                            'visit_id' => $visitId,
 //                            'payment_id' => $model->id,
                         ],
                     ],
