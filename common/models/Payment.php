@@ -49,5 +49,10 @@ class Payment extends \common\models\gii\Payment
         ];
     }
 
+    public function getProject()
+    {
+        return $this->hasOne(Project::class, ['id' => 'project_id']);
+    }
+
 
 }
