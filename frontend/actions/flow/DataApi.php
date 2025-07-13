@@ -266,7 +266,11 @@ class DataApi extends ApiAction
                 }
             }
 
-            $visitRateAll = round($visitAll / $reportAll, 2);
+            if ($reportAll != 0) {
+                $visitRateAll = round($visitAll / $reportAll, 2);
+            } else {
+                $visitRateAll = 0;
+            }
             if (!empty($reportTemp)) {
                 $lastVisitRate = 0;
                 $idx = 0;
@@ -320,7 +324,11 @@ class DataApi extends ApiAction
             $visitRateDrift = [];
             $reportAll = $reportTemp['all'] = $reportRet['ct'];
             $visitAll = $visitTemp['all'] = $visitRet['ct'];
-            $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
+            if (!empty($reportRet['ct'])) {
+                $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
+            } else {
+                $visitRateAll = $visitRate['all'] = 0;
+            }
 
             if (!empty($paymentRet)) {
                 foreach ($paymentRet as $payment) {
