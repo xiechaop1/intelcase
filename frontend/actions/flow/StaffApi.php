@@ -102,8 +102,17 @@ class StaffApi extends ApiAction
             $list = $query->offset(($page - 1) * $pageSize)->limit($pageSize)->all();
         }
 
+        $ret = [];
+        if (!empty($list)) {
+            foreach ($list as $l) {
+                $row = $l->toArray();
+                $row['role_name'] = !empty(Staff::$staffRole2Name[$l->role]) ? Staff::$staffRole2Name[$l->role] : '未知角色';
+                $ret[] = $row;
+            }
+        }
+
         return $this->success([
-            'list' => $list,
+            'list' => $ret,
             'total_count' => $count,
         ]);
     }
@@ -126,7 +135,16 @@ class StaffApi extends ApiAction
             return $this->fail('用户不存在', -1000);
         }
 
-        return $this->success($model);
+        $ret = [];
+        if (!empty($model)) {
+            foreach ($model as $l) {
+                $row = $l->toArray();
+                $row['role_name'] = !empty(Staff::$staffRole2Name[$l->role]) ? Staff::$staffRole2Name[$l->role] : '未知角色';
+                $ret[] = $row;
+            }
+        }
+
+        return $this->success($ret);
     }
 
     public function getById() {
@@ -147,7 +165,11 @@ class StaffApi extends ApiAction
             return $this->fail('用户不存在', -1000);
         }
 
-        return $this->success($model);
+        $roleName = !empty(Staff::$staffRole2Name[$model->role]) ? Staff::$staffRole2Name[$model->role] : '未知角色';
+        $ret = $model->toArray();
+        $ret['role_name'] = $roleName;
+
+        return $this->success($ret);
     }
 
     public function update() {

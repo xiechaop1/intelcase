@@ -20,6 +20,8 @@ class Staff extends \common\models\gii\Staff
     const STAFF_ROLE_FINANCE        = 10;      // 财务
 
     const STAFF_ROLE_ADMIN          = 99;       // 管理员
+    const STAFF_ROLE_ADMIN_CHILD    = 98;       // 子管理员
+    const STAFF_ROLE_ADMIN_PART     = 97;       // 分管理员
 
     const STAFF_STATUS_NORMAL       = 0;      // 正常
     const STAFF_STATUS_DISABLE      = 1;      // 禁用
@@ -31,6 +33,8 @@ class Staff extends \common\models\gii\Staff
         self::STAFF_ROLE_ADVISOR       => '投资顾问',
         self::STAFF_ROLE_FINANCE       => '财务',
         self::STAFF_ROLE_ADMIN         => '管理员',
+        self::STAFF_ROLE_ADMIN_CHILD   => '子管理员',
+        self::STAFF_ROLE_ADMIN_PART    => '分管理员',
     ];
 
     public static $staffStatus2Name = [
