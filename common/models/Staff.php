@@ -27,8 +27,8 @@ class Staff extends \common\models\gii\Staff
     const STAFF_STATUS_DISABLE      = 1;      // 禁用
 
     public static $staffRole2Name = [
-        self::STAFF_ROLE_SALES         => '销售',
-        self::STAFF_ROLE_PM            => '项目经理',
+        self::STAFF_ROLE_SALES         => '经纪人',
+        self::STAFF_ROLE_PM            => '项目总监',
         self::STAFF_ROLE_CONSULTANT    => '招商顾问',
         self::STAFF_ROLE_ADVISOR       => '投资顾问',
         self::STAFF_ROLE_FINANCE       => '财务',
