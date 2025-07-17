@@ -312,7 +312,7 @@ class ReportApi extends ApiAction
                 $team = !empty($this->_project->advisor_team) ? $this->_project->advisor_team : '';
                 $firstAdvisorId = !empty($firstReport->advisor_staff_id) ? $firstReport->advisor_staff_id : 0;
                 if (empty($firstAdvisorId) || !Yii::$app->privilege->checkStaffTeam($firstAdvisorId, $team)) {
-                    $randAdvisor = Yii::$app->privilege->getTeamStaff($team);
+                    $randAdvisor = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_ADVISOR);
                     $firstAdvisorId = !empty($randAdvisor) ? $randAdvisor->id : 0;
                 }
             } else {
@@ -320,7 +320,7 @@ class ReportApi extends ApiAction
                 $team = !empty($this->_project->consultant_team) ? $this->_project->consultant_team : '';
                 $firstConsultantId = !empty($firstReport->consultant_staff_id) ? $firstReport->consultant_staff_id : 0;
                 if (empty($firstConsultantId) || !Yii::$app->privilege->checkStaffTeam($firstConsultantId, $team)) {
-                    $randConsultant = Yii::$app->privilege->getTeamStaff($team);
+                    $randConsultant = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_CONSULTANT);
                     $firstConsultantId = !empty($randConsultant) ? $randConsultant->id : 0;
                 }
             }

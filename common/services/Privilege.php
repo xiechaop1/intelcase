@@ -60,11 +60,14 @@ class Privilege extends Component
         return $r;
     }
 
-    public function getTeamStaff($team) {
+    public function getTeamStaff($team, $role = 0) {
         if (!empty($team)) {
             $staff = Staff::find()
-                ->where(['team' => $team])
-                ->andWhere(['<>', 'status', Staff::STAFF_STATUS_DISABLE])
+                ->where(['team' => $team]);
+            if (!empty($role)) {
+                $staff = $staff->andFilterWhere(['role' => $role]);
+            }
+            $staff = $staff->andFilterWhere(['<>', 'status', Staff::STAFF_STATUS_DISABLE])
                 ->orderBy('rand()')
                 ->one();
 
