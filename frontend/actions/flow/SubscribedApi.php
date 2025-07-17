@@ -200,7 +200,13 @@ class SubscribedApi extends ApiAction
             }
 
         } else if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM_BY_FIN) {
-            $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+//            $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+            if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+            } else {
+                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+            }
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $sub = Subscribed::find()
                 ->where(['id' => $subId])
@@ -655,7 +661,13 @@ class SubscribedApi extends ApiAction
             }
 
 //            $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
-            $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
+//            $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
+            if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+            } else {
+                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+            }
             if ($visit->visit_confirm_status == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
                 $content = [
                     'content' => '项目 ' . $this->_project->project_name . ' 进入签约流程',
