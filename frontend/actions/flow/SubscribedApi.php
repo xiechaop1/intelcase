@@ -156,6 +156,10 @@ class SubscribedApi extends ApiAction
         $model->sub_status = $subStatus;
         $ret = $model->save();
 
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
+
         $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
 
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
