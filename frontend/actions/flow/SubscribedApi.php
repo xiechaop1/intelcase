@@ -226,6 +226,20 @@ class SubscribedApi extends ApiAction
             Yii::$app->msg->add($pmRecvId, $content, Msg::MSG_SENDER_SYSTEM);
         }
 
+        Yii::$app->oplog->write(
+            \common\models\Log::OP_CODE_SUB_CONFIRM_DEAL,
+            \common\models\Log::OP_STATUS_SUCCESS,
+            $this->_staffId,
+            $model->mobile,
+            $model->getAttributes(),
+            '确认认购信息',
+            [
+                'sub_id' => $model->getPrimaryKey()
+            ]
+        );
+
+        return $this->success();
+
     }
 
     public function confirmDeal() {
