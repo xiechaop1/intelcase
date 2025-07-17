@@ -42,6 +42,10 @@ class SubscribedController extends Controller
                 'class'     => 'frontend\actions\flow\SubscribedApi',
                 'action'    => 'update',
             ],
+            'confirm_info' => [
+                'class'     => 'frontend\actions\flow\SubscribedApi',
+                'action'    => 'confirm_info',
+            ],
             'confirm_sign' => [
                 'class'     => 'frontend\actions\flow\SubscribedApi',
                 'action'    => 'confirm_sign',
