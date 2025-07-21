@@ -143,15 +143,32 @@ class ReportApi extends ApiAction
             $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             if (!empty($recvId)) {
                 if ($reportStatus == Report::REPORT_STATUS_PASS) {
-                    $visitCount = Visit::find()
-                        ->select('visit_time')
-                        ->where(['project_id' => $this->_projectId])
-                        ->andFilterWhere(['guest_mobile' => $model->guest_mobile])
-                        ->groupBy([
-                            'visit_time'
-                        ])
-                        ->count();
+                    $guestMobiles = [];
+                    if (!empty($model->guest_mobile)) {
+                        $tagSplit = Report::$tagSplit;
+                        foreach ($tagSplit as $tag) {
+                            $guestMobiles = explode($tag, $model->guest_mobile);
+                        }
+                    }
 
+                    $visitCount = 0;
+                    if (!empty($guestMobiles)) {
+                        foreach ($guestMobiles as $guestMobile) {
+
+                            $visitCountTmp = Visit::find()
+                                ->select('visit_time')
+                                ->where(['project_id' => $this->_projectId])
+                                ->andFilterWhere(['guest_mobile' => $guestMobile])
+                                ->groupBy([
+                                    'visit_time'
+                                ])
+                                ->count();
+
+                            $visitCount += $visitCountTmp;
+
+
+                        }
+                    }
                     $visitType = empty($visitCount) ? 0 : $visitCount + 1;
                     if ($visitType > 1) {
                         $type = 'visit_repeat_page';
@@ -159,7 +176,7 @@ class ReportApi extends ApiAction
                         $type = 'visit_page';
                     }
                     $content = [
-                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . $model->guest_mobile . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
+                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '，时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，已经确认有效，请您填写到访信息。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -174,7 +191,7 @@ class ReportApi extends ApiAction
                     ];
                 } else {
                     $content = [
-                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . $model->guest_mobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
+                        'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
                         'title' => '新报备',
                         'btn' => [
                         ],
@@ -237,9 +254,10 @@ class ReportApi extends ApiAction
 //            $visitTime = !empty($this->_get['created']) ? $this->_get['created'] : $visitTime;
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
 
-            $tagSplit = [
-                "\n", ",", "，", "/"
-            ];
+//            $tagSplit = [
+//                "\n", ",", "，", "/"
+//            ];
+            $tagSplit = Report::$tagSplit;
             foreach ($tagSplit as $t) {
                 if (strpos($guestMobile, $t) !== false) {
                     $guestMobiles = explode($t, $guestMobile);
@@ -353,7 +371,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有一条新报备，客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '， 时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
+                        'content' => '有一条新报备，客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '， 时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，系统检测无效报备，请您确认。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -379,7 +397,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -405,7 +423,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . $guestMobile . '，项目：' . $this->_project['project_name'] . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '',
+                        'content' => '有客户：' . $guestName . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '，项目：' . $this->_project['project_name'] . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '',
                         'title' => '新报备',
                         'btn' => [
                         ],

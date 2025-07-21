@@ -15,10 +15,15 @@ class Report extends \common\models\gii\Report
     const REPORT_STATUS_PASS         = 1;
     const REPORT_STATUS_INVALID      = 2;
 
-    public $reportStatus2Name = [
+    public static $reportStatus2Name = [
         self::REPORT_STATUS_PASS     => '有效',
         self::REPORT_STATUS_INVALID  => '无效',
     ];
+
+    public static $tagSplit  = [
+        "\n", ",", "，", "/"
+    ];
+
 
 
     public function behaviors()
