@@ -716,6 +716,11 @@ class SubscribedApi extends ApiAction
                 $alAmount = $alTotalAmount + $alOther;
             }
 
+            if (empty($deposit)) {
+                $depositX = !empty(Subscribed::$depositX[$payMethod]) ? Subscribed::$depositX[$payMethod] : 0;
+                $deposit = $monthlyAmount * $depositX;
+            }
+
             $lastReport = Report::find()
                 ->where(['project_id' => $this->_projectId])
                 ->andFilterWhere(['guest_mobile' => $guestMobile])

@@ -35,6 +35,37 @@ class Subscribed extends \common\models\gii\Subscribed
         self::SUB_TYPE_RENT => '租赁',
     ];
 
+    const PAY_METHOD_DE_1_PAY_3 = 1;        // 押一付三
+    const PAY_METHOD_DE_1_PAY_6 = 2;        // 押一付六
+    const PAY_METHOD_DE_2_PAY_3 = 11;       // 押二付三
+    const PAY_METHOD_DE_2_PAY_6 = 12;       // 押二付六
+    const PAY_METHOD_DE_3_PAY_3 = 21;       // 押三付三
+    const PAY_METHOD_DE_3_PAY_6 = 22;       // 押三付六
+    const PAY_METHOD_DE_1_PAY_YEAR = 91;    // 押一付年
+    const PAY_METHOD_DE_2_PAY_YEAR = 92;    // 押二付年
+
+    public static $payMethod2Name = [
+        self::PAY_METHOD_DE_1_PAY_3 => '押一付三',
+        self::PAY_METHOD_DE_1_PAY_6 => '押一付六',
+        self::PAY_METHOD_DE_2_PAY_3 => '押二付三',
+        self::PAY_METHOD_DE_2_PAY_6 => '押二付六',
+        self::PAY_METHOD_DE_3_PAY_3 => '押三付三',
+        self::PAY_METHOD_DE_3_PAY_6 => '押三付六',
+        self::PAY_METHOD_DE_1_PAY_YEAR => '押一付年',
+        self::PAY_METHOD_DE_2_PAY_YEAR => '押二付年',
+    ];
+
+    public static $depositX = [
+        self::PAY_METHOD_DE_1_PAY_3 => 1,
+        self::PAY_METHOD_DE_1_PAY_6 => 1,
+        self::PAY_METHOD_DE_2_PAY_3 => 2,
+        self::PAY_METHOD_DE_2_PAY_6 => 2,
+        self::PAY_METHOD_DE_3_PAY_3 => 3,
+        self::PAY_METHOD_DE_3_PAY_6 => 3,
+        self::PAY_METHOD_DE_1_PAY_YEAR => 1,
+        self::PAY_METHOD_DE_2_PAY_YEAR => 2,
+    ];
+
 
     public function behaviors()
     {
