@@ -69,12 +69,13 @@ class SubscribedApi extends ApiAction
                     return $this->fail('需要指定报备', -1000);
                 }
 
+                $beginTime = Date('Y-m-d 00:00:00', strtotime('-1year'));
                 $this->_report = Report::find()
                     ->where([
                         'id' => $this->_reportId,
                     ])
                     ->andFilterWhere([
-                        'between', 'visit_time', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')
+                        'between', 'visit_time', $beginTime, date('Y-m-d 23:59:59')
                     ])
                     ->andFilterWhere([
                         'report_status' => Report::REPORT_STATUS_PASS,
@@ -645,8 +646,8 @@ class SubscribedApi extends ApiAction
             $increaseRate = !empty($this->_get['increase_rate']) ? $this->_get['increase_rate'] : 0;
             $deposit = !empty($this->_get['deposit']) ? $this->_get['deposit'] : 0;
             $dailyAmount = !empty($this->_get['daily_amount']) ? $this->_get['daily_amount'] : 0;
-//            $monthlyAmount = !empty($this->_get['monthly_amount']) ? $this->_get['monthly_amount'] : 0;
-//            $yearlyAmount = !empty($this->_get['yearly_amount']) ? $this->_get['yearly_amount'] : 0;
+            $monthlyAmount = !empty($this->_get['monthly_amount']) ? $this->_get['monthly_amount'] : 0;
+            $yearlyAmount = !empty($this->_get['yearly_amount']) ? $this->_get['yearly_amount'] : 0;
             $rentAmount = !empty($this->_get['rent_amount']) ? $this->_get['rent_amount'] : 0;
             $proRentAmount = !empty($this->_get['pro_rent_amount']) ? $this->_get['pro_rent_amount'] : 0;
             $alDailyAmount = !empty($this->_get['al_daily_amount']) ? $this->_get['al_daily_amount'] : 0;
@@ -682,14 +683,16 @@ class SubscribedApi extends ApiAction
                 return $this->fail('请填写报备客户手机号', -1000);
             }
 
-            $monthlyAmount = 0;
-            $yearlyAmount = 0;
-            if (!empty($dailyAmount) && !empty($buildingArea)) {
-                $monthlyAmount = $dailyAmount * $buildingArea * 30;
-                $yearlyAmount = $dailyAmount * $buildingArea * 365;
+            if (empty($monthlyAmount) || empty($yearlyAmount)) {
+//                $monthlyAmount = 0;
+//                $yearlyAmount = 0;
+                if (!empty($dailyAmount) && !empty($buildingArea)) {
+                    $monthlyAmount = $dailyAmount * $buildingArea * 30;
+                    $yearlyAmount = $dailyAmount * $buildingArea * 365;
 
-                if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
-                    $rentAmount = $dailyAmount * $buildingArea * (int((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
+                    if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
+                        $rentAmount = $dailyAmount * $buildingArea * (int((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
+                    }
                 }
             }
 
@@ -702,12 +705,16 @@ class SubscribedApi extends ApiAction
                 }
             }
 
-            $alDailyAmount = $dailyAmount - $proRentAmount;
-            if (!empty($rentAmount) && !empty($alDateBegin) && !empty($alDateEnd) && !empty($buildingArea)) {
-                $alTotalAmount = $alDailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
+            if (empty($alDailyAmount) || empty($alTotalAmount)) {
+                $alDailyAmount = $dailyAmount - $proRentAmount;
+                if (!empty($rentAmount) && !empty($alDateBegin) && !empty($alDateEnd) && !empty($buildingArea)) {
+                    $alTotalAmount = $alDailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
+                }
             }
 
-            $alAmount = $alTotalAmount + $alOther;
+            if (empty($alAmount)) {
+                $alAmount = $alTotalAmount + $alOther;
+            }
 
             $lastReport = Report::find()
                 ->where(['project_id' => $this->_projectId])
