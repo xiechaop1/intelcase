@@ -137,6 +137,9 @@ class Common
                     $guestMobiles = explode($tag, $mobile);
                 }
             }
+            if (empty($guestMobiles)) {
+                $guestMobiles = [$mobile];
+            }
         }
         return $guestMobiles;
     }
