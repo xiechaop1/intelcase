@@ -101,7 +101,7 @@ class ReportApi extends ApiAction
         $ret['consultant_staff'] = $model->consultantStaff;
         $ret['advisor_staff'] = $model->adviorStaff;
         $ret['project'] = $model->project;
-
+        $ret['guest_mobile'] = \common\helpers\Common::formatMultyMobiles(\common\helpers\Common::splitMobile($model->guest_mobile));
 
         if (empty($ret)) {
             return $this->fail('请做一次有效报备', -1000);

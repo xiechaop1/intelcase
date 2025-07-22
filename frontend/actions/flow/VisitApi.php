@@ -139,6 +139,7 @@ class VisitApi extends ApiAction
         $ret['project'] = $this->_project->toArray();
         $ret['report'] = $this->_report->toArray();
         $ret['staff'] = !empty($model->staff_id) ? $model->staff->toArray() : [];
+        $ret['guest_mobile'] = \common\helpers\Common::formatMultyMobiles(\common\helpers\Common::splitMobile($model->guest_mobile));
 
         if (empty($ret)) {
             return $this->fail('到访不存在', -1000);
