@@ -14,6 +14,7 @@ use common\definitions\Privilege;
 use common\models\Msg;
 use common\models\Project;
 use common\models\Report;
+use common\models\Staff;
 use common\models\Subscribed;
 use common\models\Visit;
 //use common\services\Log;
@@ -98,6 +99,12 @@ class VisitApi extends ApiAction
                     break;
                 case 'info_confirm':
                     $ret = $this->infoConfirm();
+                    break;
+                case 'rechange_visit':
+                    $ret = $this->rechangeVisit();
+                    break;
+                case 'rechange_visit_confirm':
+                    $ret = $this->rechangeVisitConfirm();
                     break;
                 case 'get_by_id':
                     $ret = $this->getById();
@@ -314,6 +321,122 @@ class VisitApi extends ApiAction
         ]);
 
         return $this->success(['visit' => $model]);
+    }
+
+    public function rechangeVisit() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+        $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+        $guestMobiles = \common\helpers\Common::splitMobile($model->guest_mobile);
+        $recvId = $this->_project->pm_staff_id;
+
+        if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+            || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+            $role = Staff::STAFF_ROLE_ADVISOR;
+        } else {
+            $role = Staff::STAFF_ROLE_CONSULTANT;
+        }
+
+        $content = [
+            'content' => '有一条转接访，项目：' . $projectName . '，客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+            'title' => '转接访确认',
+            'btn' => [
+                [
+                    'label' => '确认',
+                    'type' => 'rechange_visit_confirm_page',
+                    'visit_id' => $visitId,
+                    'report_id' => $this->_reportId,
+                    'project_id' => $this->_projectId,
+                    'role' => $role,
+                ],
+//                    [
+//                        'label' => '取消',
+//                        'type'  => 'visit_page',
+//                        'visit_id' => $visitId,
+//                        'report_id' => $this->_reportId,
+//                        'project_id' => $this->_projectId,
+//                    ],
+            ],
+            'visit_id' => $visitId,
+            'project_id' => $this->_projectId,
+        ];
+        Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
+
+        return true;
+    }
+
+    public function rechangeVisitConfirm() {
+        $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
+        $role = !empty($this->_get['role']) ? $this->_get['role'] : 0;
+        $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
+        $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
+        $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $model = Visit::find()
+            ->where(['id' => $visitId])
+            ->one();
+
+        if (empty($model)) {
+            return $this->fail('到访不存在', -1000);
+        }
+
+        if (!empty($consultantStaffId)) {
+            $this->_report->consultant_staff_id = $consultantStaffId;
+            $recvId = $consultantStaffId;
+        }
+
+        if (!empty($advisorStaffId)) {
+            $this->_report->advisor_staff_id = $advisorStaffId;
+            $recvId = $advisorStaffId;
+        }
+
+        $r = $this->_report->save();
+
+        $visitType = $model->visit_type;
+        if ($visitType > 1) {
+            $type = 'visit_repeat_info_confirm_page';
+        } else {
+            $type = 'visit_info_confirm_page';
+        }
+        $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $guestName = !empty($model->guest_name) ? $model->guest_name : '未知客户';
+        $visitTime = !empty($model->visit_time) ? $model->visit_time : date('Y-m-d H:i:s');
+        $reportId = !empty($this->_report->id) ? $this->_report->id : 0;
+
+        $content = [
+            'content' => '有一条新到访，项目：' . $projectName . '，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+            'report_id' => $reportId,
+            'project_id' => $this->_projectId,
+            'visit_id' => $visitId,
+            'title' => '新到访',
+            'btn' => [
+                [
+                    'label' => '确认',
+                    'type'  => $type,
+                    'visit_id'  => $visitId,
+                    'project_id' => $this->_projectId,
+                    'report_id' => $reportId,
+                ],
+                [
+                    'label' => '转接访',
+                    'type'  => 'rechange_visit_page',
+                    'visit_id'  => $visitId,
+                    'project_id' => $this->_projectId,
+                    'report_id' => $reportId,
+                ],
+            ],
+        ];
+        Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
     }
 
     public function infoConfirm() {
@@ -632,7 +755,14 @@ class VisitApi extends ApiAction
                             'visit_id'  => $visitId,
                             'project_id' => $this->_projectId,
                             'report_id' => $reportId,
-                        ]
+                        ],
+                        [
+                            'label' => '转接访',
+                            'type'  => 'rechange_visit_page',
+                            'visit_id'  => $visitId,
+                            'project_id' => $this->_projectId,
+                            'report_id' => $reportId,
+                        ],
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
