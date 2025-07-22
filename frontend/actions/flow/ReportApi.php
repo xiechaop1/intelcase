@@ -270,11 +270,11 @@ class ReportApi extends ApiAction
             }
 
             $visitCount = 0;
-            foreach ($guestMobiles as $guestMobile) {
+            foreach ($guestMobiles as $tmpMobile) {
                 if (empty($lastReport)) {
                     $lastReport = Report::find()
                         ->where(['project_id' => $this->_projectId])
-                        ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                        ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
                         ->andFilterWhere([
                             '>', 'visit_time', time() - 24 * 3600
                         ])
@@ -287,7 +287,10 @@ class ReportApi extends ApiAction
                     ->select('visit_time')
                     ->where([
                         'project_id' => $this->_projectId,
-                        'guest_mobile' => $guestMobile,
+//                        'guest_mobile' => $tmpMobile,
+                    ])
+                    ->andFilterWhere([
+                        'like', 'guest_mobile', $tmpMobile
                     ])
                     ->groupBy([
                         'visit_time'
@@ -296,7 +299,7 @@ class ReportApi extends ApiAction
 
                 $firstReport = Report::find()
                     ->where(['project_id' => $this->_projectId])
-                    ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                    ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
                     ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
                     ->orderBy('id ASC')
                     ->one();
@@ -304,7 +307,7 @@ class ReportApi extends ApiAction
                 $vCountTmp = Visit::find()
                     ->select('visit_time')
                     ->where(['project_id' => $this->_projectId])
-                    ->andFilterWhere(['like', 'guest_mobile', $guestMobile])
+                    ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
                     ->groupBy([
                         'visit_time'
                     ])
