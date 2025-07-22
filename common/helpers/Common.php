@@ -9,6 +9,8 @@
 namespace common\helpers;
 
 
+use common\models\Report;
+
 class Common
 {
     public static function getRealIP()
@@ -126,5 +128,21 @@ class Common
         return false;
     }
 
+    public static function splitMobile($mobile) {
+        $guestMobiles = [];
+        if (!empty($mobile)) {
+            $tagSplit = Report::$tagSplit;
+            foreach ($tagSplit as $tag) {
+                if (strpos($mobile, $tag) !== false) {
+                    $guestMobiles = explode($tag, $mobile);
+                }
+            }
+        }
+        return $guestMobiles;
+    }
+
+    public static function formatMultyMobiles($mobiles) {
+        return implode(',', $mobiles);
+    }
 
 }
