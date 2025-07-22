@@ -340,8 +340,10 @@ class VisitApi extends ApiAction
         if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
             || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
             $role = Staff::STAFF_ROLE_ADVISOR;
+            $team = $this->_project->advisor_team;
         } else {
             $role = Staff::STAFF_ROLE_CONSULTANT;
+            $team = $this->_project->consultant_team;
         }
 
         $content = [
@@ -355,7 +357,7 @@ class VisitApi extends ApiAction
                     'report_id' => $this->_reportId,
                     'project_id' => $this->_projectId,
                     'role' => $role,
-                    'team' => $this->_project->team,
+                    'team' => $team,
                 ],
 //                    [
 //                        'label' => '取消',
