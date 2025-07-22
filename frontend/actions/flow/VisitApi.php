@@ -354,6 +354,7 @@ class VisitApi extends ApiAction
                     'report_id' => $this->_reportId,
                     'project_id' => $this->_projectId,
                     'role' => $role,
+                    'team' => $this->_project->team,
                 ],
 //                    [
 //                        'label' => '取消',
