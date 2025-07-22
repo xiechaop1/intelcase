@@ -376,7 +376,7 @@ class VisitApi extends ApiAction
             Yii::$app->msg->removeBtn($msgId);
         }
 
-        return true;
+        return $this->success(['visit' => $model]);
     }
 
     public function rechangeVisitConfirm() {
@@ -440,6 +440,8 @@ class VisitApi extends ApiAction
             ],
         ];
         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+        return $this->success(['visit' => $model]);
 
     }
 
