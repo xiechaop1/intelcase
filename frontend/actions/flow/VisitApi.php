@@ -386,6 +386,7 @@ class VisitApi extends ApiAction
         $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
         $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
         $model = Visit::find()
             ->where(['id' => $visitId])
             ->one();
@@ -441,6 +442,10 @@ class VisitApi extends ApiAction
             ],
         ];
         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
 
         return $this->success(['visit' => $model]);
 
