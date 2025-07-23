@@ -327,6 +327,7 @@ class VisitApi extends ApiAction
     public function rechangeVisit() {
         $visitId = !empty($this->_get['visit_id']) ? $this->_get['visit_id'] : 0;
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
         $model = Visit::find()
             ->where(['id' => $visitId])
             ->one();
