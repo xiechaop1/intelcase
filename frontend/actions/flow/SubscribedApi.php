@@ -514,7 +514,7 @@ class SubscribedApi extends ApiAction
         $ret = [];
         if (!empty($model)) {
             $tmp = $model->toArray();
-            $tmpIdNos = Common::splitMobile($tmp->id_no);
+            $tmpIdNos = Common::splitMobile($model->id_no);
             $tmp['id_no'] = Common::formatMultyMobiles($tmpIdNos);
             $ret = $tmp;
         }
