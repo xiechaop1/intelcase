@@ -10,6 +10,7 @@ namespace frontend\actions\flow;
 
 
 use common\definitions\Privilege;
+use common\helpers\Common;
 use common\models\Msg;
 use common\models\Payment;
 use common\models\Project;
@@ -510,7 +511,15 @@ class SubscribedApi extends ApiAction
             return $this->fail('认购不存在', -1000);
         }
 
-        return $this->success(['sub' => $model]);
+        $ret = [];
+        if (!empty($model)) {
+            $tmp = $model->toArray();
+            $tmpIdNos = Common::splitMobile($tmp->id_no);
+            $tmp['id_no'] = Common::formatMultyMobiles($tmpIdNos);
+            $ret = $tmp;
+        }
+
+        return $this->success(['sub' => $ret]);
     }
 
     public function getWithPaymentsByRoomNo() {
