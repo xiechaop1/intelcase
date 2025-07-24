@@ -697,10 +697,13 @@ class SubscribedApi extends ApiAction
 //                $yearlyAmount = 0;
                 if (!empty($dailyAmount) && !empty($buildingArea)) {
                     $monthlyAmount = $dailyAmount * $buildingArea * 30;
+                    $monthlyAmount = number_format($monthlyAmount, 2, '.', '');
                     $yearlyAmount = $dailyAmount * $buildingArea * 365;
+                    $yearlyAmount = number_format($yearlyAmount, 2, '.', '');
 
                     if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
                         $rentAmount = $dailyAmount * $buildingArea * (int((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
+                        $rentAmount = number_format($rentAmount, 2, '.', '');
                     }
                 }
             }
@@ -711,6 +714,7 @@ class SubscribedApi extends ApiAction
 
                 if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
                     $rentAmount = $monthlyAmount * (intval((strtotime($rentDateEnd) - strtotime($rentDateBegin)) / 86400) + 1);
+                    $rentAmount = number_format($rentAmount, 2, '.', '');
                 }
             }
 
@@ -718,16 +722,19 @@ class SubscribedApi extends ApiAction
                 $alDailyAmount = $dailyAmount - $proRentAmount;
                 if (!empty($rentAmount) && !empty($alDateBegin) && !empty($alDateEnd) && !empty($buildingArea)) {
                     $alTotalAmount = $alDailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
+                    $alTotalAmount = number_format($alTotalAmount, 2, '.', '');
                 }
             }
 
             if (empty($alAmount)) {
                 $alAmount = $alTotalAmount + $alOther;
+                $alAmount = number_format($alAmount, 2, '.', '');
             }
 
             if (empty($deposit)) {
                 $depositX = !empty(Subscribed::$depositX[$payMethod]) ? Subscribed::$depositX[$payMethod] : 0;
                 $deposit = $monthlyAmount * $depositX;
+                $deposit = number_format($deposit, 2, '.', '');
             }
 
             $lastReport = Report::find()
