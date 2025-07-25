@@ -696,7 +696,7 @@ class SubscribedApi extends ApiAction
 //                $monthlyAmount = 0;
 //                $yearlyAmount = 0;
                 if (!empty($dailyAmount) && !empty($buildingArea)) {
-                    $monthlyAmount = $dailyAmount * $buildingArea * 30;
+                    $monthlyAmount = $dailyAmount * $buildingArea * 365 / 12;
                     $monthlyAmount = number_format($monthlyAmount, 2, '.', '');
                     $yearlyAmount = $dailyAmount * $buildingArea * 365;
                     $yearlyAmount = number_format($yearlyAmount, 2, '.', '');
@@ -709,7 +709,7 @@ class SubscribedApi extends ApiAction
             }
 
             if (!empty($monthlyAmount) && !empty($buildingArea)) {
-                $dailyAmount = $monthlyAmount / 30;
+//                $dailyAmount = $monthlyAmount / 30;
                 $yearlyAmount = $monthlyAmount * 12;
 
                 if (!empty($rendDateEnd) && !empty($rentDateBegin)) {
