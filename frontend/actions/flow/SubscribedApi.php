@@ -652,7 +652,7 @@ class SubscribedApi extends ApiAction
             $rentDateEnd = !empty($this->_get['rent_date_end']) ? $this->_get['rent_date_end'] : Date('Y-m-d 00:00:00', strtotime('+1 year'));
             $freeRentDate = !empty($this->_get['free_rent_date']) ? $this->_get['free_rent_date'] : '';
             $increaseDate = !empty($this->_get['increase_date']) ? $this->_get['increase_date'] : '';
-            $increaseRate = !empty($this->_get['increase_rate']) ? $this->_get['increase_rate'] : 0;
+            $increaseRate = !empty($this->_get['increase_rate']) ? $this->_get['increase_rate'] : '';
             $deposit = !empty($this->_get['deposit']) ? $this->_get['deposit'] : 0;
             $dailyAmount = !empty($this->_get['daily_amount']) ? $this->_get['daily_amount'] : 0;
             $monthlyAmount = !empty($this->_get['monthly_amount']) ? $this->_get['monthly_amount'] : 0;
@@ -767,7 +767,7 @@ class SubscribedApi extends ApiAction
             $model->rent_date_end = $rentDateEnd;
             $model->free_rent_date = $freeRentDate;
             $model->increase_date = $increaseDate;
-            $model->increase_rate = $increaseRate;
+            $model->increase_rate = (string)$increaseRate;
             $model->deposit = $deposit;
             $model->daily_amount = $dailyAmount;
             $model->monthly_amount = $monthlyAmount;
