@@ -490,10 +490,10 @@ class DataApi extends ApiAction
             $reportDrift = [];
             $visitDrift = [];
             $visitRateDrift = [];
-            $reportAll = $reportTemp['all'] = $reportRet['ct'];
-            $visitAll = $visitTemp['all'] = $visitRet['ct'];
-            if (!empty($reportRet['ct'])) {
-                $visitRateAll = $visitRate['all'] = round($visitRet['ct'] / $reportRet['ct'], 2);
+            $reportAll = $reportTemp['all'] = $reportRet[0]['ct'];
+            $visitAll = $visitTemp['all'] = $visitRet[0]['ct'];
+            if (!empty($reportRet[0]['ct'])) {
+                $visitRateAll = $visitRate['all'] = round($visitRet[0]['ct'] / $reportRet[0]['ct'], 2);
             } else {
                 $visitRateAll = $visitRate['all'] = 0;
             }
