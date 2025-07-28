@@ -147,6 +147,8 @@ class DataApi extends ApiAction
         $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
+        $reportChannel = !empty($this->_get['report_channel']) ? $this->_get['report_channel'] : '';
+
         if (strpos($projectId, ',') !== false) {
             $projectId = explode(',', $projectId);
         }
@@ -216,23 +218,49 @@ class DataApi extends ApiAction
             $projectId = [-1];
         }
 
+        $reportIds = [];
+        if (!empty($reportChannel)) {
+            $reportTmps = Report::find()
+                ->where([
+                    'guest_channel' => $reportChannel,
+                ])
+                ->all();
+
+            if (!empty($reportTmps)) {
+                foreach ($reportTmps as $rt) {
+                    $reportIds[] = $rt->id;
+                }
+            }
+        }
+
         if ($inter == 'daily') {
             $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
             $visitCount = Visit::find()->select('DATE(visit_time) as dt, count(*) as ct');
+            $subscribedRet = Subscribed::find();
             $paymentRet = Payment::find();
         } else {
             $reportCount = Report::find()->select('count(*) as ct');
             $visitCount = Visit::find()->select('count(*) as ct');
+            $subscribedRet = Subscribed::find();
             $paymentRet = Payment::find();
         }
+
+        if (!empty($reportIds)) {
+            $reportCount->andFilterWhere(['id' => $reportIds]);
+            $visitCount->andFilterWhere(['report_id' => $reportIds]);
+            $subscribedRet->andFilterWhere(['report_id' => $reportIds]);
+        }
+
         if (!empty($guestMobile)) {
             $reportCount->andFilterWhere(['guest_mobile' => $guestMobile]);
             $visitCount->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $subscribedRet->andFilterWhere(['mobile' => $guestMobile]);
         }
         if (!empty($projectId)) {
             $reportCount->andFilterWhere(['project_id' => $projectId]);
             $visitCount->andFilterWhere(['project_id' => $projectId]);
             $paymentRet->andFilterWhere(['project_id' => $projectId]);
+            $subscribedRet->andFilterWhere(['project_id' => $projectId]);
         }
         if (!empty($advStaffId)) {
 //            $reportCount->andFilterWhere(['adv_staff_id' => $advStaffId]);
@@ -242,11 +270,13 @@ class DataApi extends ApiAction
             $reportCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
             $visitCount->andFilterWhere(['>=', 'visit_time', $beginTime]);
             $paymentRet->andFilterWhere(['>=', 'pay_time', strtotime($beginTime)]);
+            $subscribedRet->andFilterWhere(['>=', 'created_at', strtotime($beginTime)]);
         }
         if (!empty($endTime)) {
             $reportCount->andFilterWhere(['<=', 'visit_time', $endTime]);
             $visitCount->andFilterWhere(['<=', 'visit_time', $endTime]);
             $paymentRet->andFilterWhere(['<=', 'pay_time', strtotime($endTime)]);
+            $subscribedRet->andFilterWhere(['<=', 'created_at', strtotime($endTime)]);
         }
         if (!empty($visitStatus)) {
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
@@ -256,7 +286,7 @@ class DataApi extends ApiAction
         $visitTemp = [];
         $visitRate = [];
 
-        $paymentRet = $paymentRet->all();
+        $subscribedRet = $subscribedRet->all();
 
         if ($inter == 'daily') {
             $reportCount->groupBy('DATE(visit_time)');
@@ -344,6 +374,71 @@ class DataApi extends ApiAction
                 }
             }
 
+            $subscribedData = [];
+            $subIds = [];
+            if (!empty($subscribedRet)) {
+                $subCount = 0;
+                $subArea = 0;
+                foreach ($subscribedRet as $subscribed) {
+                    $subTime = Date('Y-m-d', $subscribedRet->created_at);
+                    $projectName = !empty($subscribed->project->project_name) ? $subscribed->project->project_name : '未知项目';
+                    $subscribedTmp = $subscribed->toArray();
+                    $subIds[] = $subscribed->id;
+//                    $subCount++;
+//                    $subArea += $subscribedTmp['building_area'];
+                    if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['count'])) {
+                        $subscribedData['time'][$subTime][$subscribed->sub_type]['count'] = 0;
+                    }
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['count'] += 1;
+
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['count'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['count'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['count'] += 1;
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['count'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['count'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['count'] += 1;
+
+                    if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'])) {
+                        $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] = 0;
+                    }
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+
+                    if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'])) {
+                        $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] = 0;
+                    }
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                }
+            }
+
+            $paymentRet->andFilterWhere([
+                'sub_id' => $subIds
+            ]);
+            $paymentRet = $paymentRet->all();
+
             $paymentData = [];
             if (!empty($paymentRet)) {
                 foreach ($paymentRet as $payment) {
@@ -387,6 +482,7 @@ class DataApi extends ApiAction
                 }
             }
 
+
         } else {
             $reportRet = $reportCount->asArray()->all();
             $visitRet = $visitCount->asArray()->all();
@@ -402,8 +498,59 @@ class DataApi extends ApiAction
                 $visitRateAll = $visitRate['all'] = 0;
             }
 
-            $paymentData = [];
+            $subscribedData = [];
+            $subIds = [];
+            if (!empty($subscribedRet)) {
+                $subCount = 0;
+                $subArea = 0;
+                foreach ($subscribedRet as $subscribed) {
+                    $projectName = !empty($subscribed->project->project_name) ? $subscribed->project->project_name : '未知项目';
+                    $subscribedTmp = $subscribed->toArray();
+                    $subIds[] = $subscribed->id;
+//                    $subCount++;
+//                    $subArea += $subscribedTmp['building_area'];
 
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['count'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['count'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['count'] += 1;
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['count'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['count'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['count'] += 1;
+
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+
+                    if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
+                        $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
+                    }
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                    if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
+                        $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
+                    }
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                    if (!isset($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
+                        $subscribedData['project'][$projectName]['all']['sub_total_price'] = 0;
+                    }
+                    $subscribedData['project'][$projectName]['all']['sub_total_price'] += $subscribedTmp['sub_total_price'];
+
+                }
+            }
+
+            $paymentRet->andFilterWhere(['sub_id' => $subIds]);
+            $paymentRet = $paymentRet->all();
+            $paymentData = [];
             if (!empty($paymentRet)) {
                 foreach ($paymentRet as $payment) {
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
@@ -416,6 +563,9 @@ class DataApi extends ApiAction
                             $paymentData['project'][$projectName]['pay'] = 0;
                         }
                         $paymentData['project'][$projectName]['pay'] += $payment['amount'];
+                        if (!empty($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
+                            $paymentData['project'][$projectName]['wait_pay'] = $subscribedData['project'][$projectName]['all']['sub_total_price'] - $paymentData['project'][$projectName]['pay'];
+                        }
 
                         if (!isset($paymentData['total']['pay'])) {
                             $paymentData['total']['pay'] = 0;
@@ -454,8 +604,8 @@ class DataApi extends ApiAction
             'visit_drift' => $visitDrift,
             'visit_rate_drift' => $visitRateDrift,
             'payment_data' => $paymentData,
+            'subscribed_data' => $subscribedData,
         ]);
-
 
     }
 
