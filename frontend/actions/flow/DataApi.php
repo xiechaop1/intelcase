@@ -404,32 +404,32 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
 
                     if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                 }
             }
@@ -451,12 +451,12 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['time'][$payTime]['pay'])) {
                             $paymentData['time'][$payTime]['pay'] = 0;
                         }
-                        $paymentData['time'][$payTime]['pay'] += $payment['amount'];
+                        $paymentData['time'][$payTime]['pay'] += number_format($payment['amount'], 2);
 
                         if (!isset($paymentData['project'][$projectName]['pay'])) {
                             $paymentData['project'][$projectName]['pay'] = 0;
                         }
-                        $paymentData['project'][$projectName]['pay'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['pay'] += number_format($payment['amount'], 2);
 
                         if (!isset($paymentData['total']['pay'])) {
                             $paymentData['total']['pay'] = 0;
@@ -466,17 +466,17 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['time'][$payTime]['refund'])) {
                             $paymentData['time'][$payTime]['refund'] = 0;
                         }
-                        $paymentData['time'][$payTime]['refund'] += $payment['amount'];
+                        $paymentData['time'][$payTime]['refund'] += number_format($payment['amount'], 2);
 
                         if (!isset($paymentData['project'][$projectName]['refund'])) {
                             $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['refund'] += number_format($payment['amount'], 2);
 
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
-                        $paymentData['total']['refund'] += $payment['amount'];
+                        $paymentData['total']['refund'] += number_format($payment['amount'], 2);
                     }
 
                 }
@@ -523,27 +523,27 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                     if (!isset($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
                         $subscribedData['project'][$projectName]['all']['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName]['all']['sub_total_price'] += $subscribedTmp['sub_total_price'];
+                    $subscribedData['project'][$projectName]['all']['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
 
                 }
             }
@@ -564,7 +564,7 @@ class DataApi extends ApiAction
                         }
                         $paymentData['project'][$projectName]['pay'] += $payment['amount'];
                         if (!empty($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
-                            $paymentData['project'][$projectName]['wait_pay'] = $subscribedData['project'][$projectName]['all']['sub_total_price'] - $paymentData['project'][$projectName]['pay'];
+                            $paymentData['project'][$projectName]['wait_pay'] = number_format($subscribedData['project'][$projectName]['all']['sub_total_price'] - $paymentData['project'][$projectName]['pay'], 2);
                         }
 
                         if (!isset($paymentData['total']['pay'])) {
@@ -575,12 +575,12 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['project'][$projectName]['refund'])) {
                             $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
+                        $paymentData['project'][$projectName]['refund'] += number_format($payment['amount'], 2);
 
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
-                        $paymentData['total']['refund'] += $payment['amount'];
+                        $paymentData['total']['refund'] += number_format($payment['amount'], 2);
                     }
 
                 }
