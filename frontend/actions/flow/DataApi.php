@@ -564,7 +564,7 @@ class DataApi extends ApiAction
                         }
                         $paymentData['project'][$projectName]['pay'] += $payment['amount'];
                         if (!empty($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
-                            $paymentData['project'][$projectName]['wait_pay'] = number_format($subscribedData['project'][$projectName]['all']['sub_total_price'] - $paymentData['project'][$projectName]['pay'], 2);
+                            $paymentData['project'][$projectName]['wait_pay'] = $subscribedData['project'][$projectName]['all']['sub_total_price'] - $paymentData['project'][$projectName]['pay'];
                         }
 
                         if (!isset($paymentData['total']['pay'])) {
