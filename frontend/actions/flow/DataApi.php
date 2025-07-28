@@ -451,12 +451,12 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['time'][$payTime]['pay'])) {
                             $paymentData['time'][$payTime]['pay'] = 0;
                         }
-                        $paymentData['time'][$payTime]['pay'] += number_format($payment['amount'], 2);
+                        $paymentData['time'][$payTime]['pay'] += $payment['amount'];
 
                         if (!isset($paymentData['project'][$projectName]['pay'])) {
                             $paymentData['project'][$projectName]['pay'] = 0;
                         }
-                        $paymentData['project'][$projectName]['pay'] += number_format($payment['amount'], 2);
+                        $paymentData['project'][$projectName]['pay'] += $payment['amount'];
 
                         if (!isset($paymentData['total']['pay'])) {
                             $paymentData['total']['pay'] = 0;
@@ -466,17 +466,17 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['time'][$payTime]['refund'])) {
                             $paymentData['time'][$payTime]['refund'] = 0;
                         }
-                        $paymentData['time'][$payTime]['refund'] += number_format($payment['amount'], 2);
+                        $paymentData['time'][$payTime]['refund'] += $payment['amount'];
 
                         if (!isset($paymentData['project'][$projectName]['refund'])) {
                             $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData['project'][$projectName]['refund'] += number_format($payment['amount'], 2);
+                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
 
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
-                        $paymentData['total']['refund'] += number_format($payment['amount'], 2);
+                        $paymentData['total']['refund'] += $payment['amount'];
                     }
 
                 }
@@ -575,12 +575,12 @@ class DataApi extends ApiAction
                         if (!isset($paymentData['project'][$projectName]['refund'])) {
                             $paymentData['project'][$projectName]['refund'] = 0;
                         }
-                        $paymentData['project'][$projectName]['refund'] += number_format($payment['amount'], 2);
+                        $paymentData['project'][$projectName]['refund'] += $payment['amount'];
 
                         if (!isset($paymentData['total']['refund'])) {
                             $paymentData['total']['refund'] = 0;
                         }
-                        $paymentData['total']['refund'] += number_format($payment['amount'], 2);
+                        $paymentData['total']['refund'] += $payment['amount'];
                     }
 
                 }
