@@ -380,7 +380,7 @@ class DataApi extends ApiAction
                 $subCount = 0;
                 $subArea = 0;
                 foreach ($subscribedRet as $subscribed) {
-                    $subTime = Date('Y-m-d', $subscribedRet->created_at);
+                    $subTime = Date('Y-m-d', $subscribed->created_at);
                     $projectName = !empty($subscribed->project->project_name) ? $subscribed->project->project_name : '未知项目';
                     $subscribedTmp = $subscribed->toArray();
                     $subIds[] = $subscribed->id;
