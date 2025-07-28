@@ -419,7 +419,7 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
