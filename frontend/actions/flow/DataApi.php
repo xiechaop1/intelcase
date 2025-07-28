@@ -424,12 +424,12 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                 }
             }
@@ -533,17 +533,17 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['total'][$subscribed->sub_type]['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                     if (!isset($subscribedData['project'][$projectName]['all']['sub_total_price'])) {
                         $subscribedData['project'][$projectName]['all']['sub_total_price'] = 0;
                     }
-                    $subscribedData['project'][$projectName]['all']['sub_total_price'] += number_format($subscribedTmp['sub_total_price'], 2);
+                    $subscribedData['project'][$projectName]['all']['sub_total_price'] += $subscribedTmp['sub_total_price'];
 
                 }
             }
