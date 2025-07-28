@@ -78,5 +78,10 @@ class Subscribed extends \common\models\gii\Subscribed
         ];
     }
 
+    public function getProject()
+    {
+        return $this->hasOne(Project::class, ['id' => 'project_id']);
+    }
+
 
 }
