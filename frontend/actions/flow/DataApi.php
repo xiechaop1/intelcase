@@ -404,17 +404,17 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
+                    $subscribedData['time'][$subTime][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
 
                     if (!isset($subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['time'][$subTime][$subscribed->sub_type]['sub_total_price'] = 0;
@@ -523,12 +523,12 @@ class DataApi extends ApiAction
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
+                    $subscribedData['project'][$projectName][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
 
                     if (!isset($subscribedData['total'][$subscribed->sub_type]['building_area'])) {
                         $subscribedData['total'][$subscribed->sub_type]['building_area'] = 0;
                     }
-                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += number_format($subscribedTmp['building_area'], 2);
+                    $subscribedData['total'][$subscribed->sub_type]['building_area'] += $subscribedTmp['building_area'];
 
                     if (!isset($subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'])) {
                         $subscribedData['project'][$projectName][$subscribed->sub_type]['sub_total_price'] = 0;
