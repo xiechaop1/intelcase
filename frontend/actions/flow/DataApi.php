@@ -556,8 +556,8 @@ class DataApi extends ApiAction
                     // 根据payment的pay_type进行区分，如果是1就是支付，2就是退款，记录到paymentData的pay和refund里
                     // 每天一条数据，需要规整pay_time到日
 //                    $payTime = 'all';
-                    $payment = $payment->toArray();
                     $projectName = !empty($payment->project->project_name) ? $payment->project->project_name : '未知项目';
+                    $payment = $payment->toArray();
                     if ($payment['pay_type'] == Payment::PAYMENT_TYPE_PAY) {
                         if (!isset($paymentData['project'][$projectName]['pay'])) {
                             $paymentData['project'][$projectName]['pay'] = 0;
