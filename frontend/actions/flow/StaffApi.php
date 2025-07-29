@@ -299,13 +299,13 @@ class StaffApi extends ApiAction
     public function getRules() {
         $rules = Staff::$staffRule2Name;
 
-        return $rules;
+        return $this->success($rules);
     }
 
     public function getRoleRules() {
         $roleRules = Staff::$staffRole2rule;
 
-        return $roleRules;
+        return $this->success($roleRules);
     }
 
 
