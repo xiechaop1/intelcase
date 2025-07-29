@@ -593,7 +593,7 @@ class DataApi extends ApiAction
 //        $visitRate = $visitCt / $reportCt * 100;
 //        $visitRate = round($visitRate, 2);
 
-        return $this->success([
+        $data = [
             'report_count' => $reportTemp,
             'visit_count' => $visitTemp,
             'visit_rate' => $visitRate,
@@ -605,10 +605,37 @@ class DataApi extends ApiAction
             'visit_rate_drift' => $visitRateDrift,
             'payment_data' => $paymentData,
             'subscribed_data' => $subscribedData,
-        ]);
+        ];
+
+        $rule = Staff::$staffRole2rule[Staff::STAFF_ROLE_ADMIN_PART];
+
+        $data = $this->_filterByRule($data);
+        var_dump($data);
+
+        return $this->success($data);
 
     }
 
+    private function _filterByRule(&$data, $rule, $prevKeys = []) {
+//        $ret = [];
+        if (!empty($data)) {
+            foreach ($data as $key => &$item) {
+                if (empty($prevKeys)) {
+                    $prevKeys[] = $key;
+                }
+                if (is_array($item)) {
+                    $this->_filterByRule($item, $rule, $prevKeys);
+                }
+                $prevKeys[] = $key;
+
+                $filterKey = implode('_', $prevKeys);
+                if (in_array($rule, $filterKey)) {
+                    unset($data[$key]);
+                }
+            }
+        }
+        return $data;
+    }
 
     public function exportGuestList()
     {

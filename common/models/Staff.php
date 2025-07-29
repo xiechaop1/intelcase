@@ -42,6 +42,92 @@ class Staff extends \common\models\gii\Staff
         self::STAFF_STATUS_DISABLE      => '禁用',
     ];
 
+    const STAFF_RULE_DATA_REPORT_ALL        = 'report_all';            // 全部报备数
+    const STAFF_RULE_DATA_REPORT_COUNT      = 'report_count';        // 报备统计
+    const STAFF_RULE_DATA_REPORT_DRIFT      = 'report_drift';        // 报备变化率
+    const STAFF_RULE_DATA_VISIT_ALL         = 'visit_all';              // 全部到访数
+    const STAFF_RULE_DATA_VISIT_COUNT       = 'visit_count';          // 到访统计
+    const STAFF_RULE_DATA_VISIT_DRIFT       = 'visit_drift';          // 到访变化率
+    const STAFF_RULE_DATA_VISIT_RATE_ALL    = 'visit_rate_all';    // 全部到访率
+    const STAFF_RULE_DATA_PAYMENT_PAY       = 'payment_data_pay';      // 已付款数据
+    const STAFF_RULE_DATA_PAYMENT_WAITPAY   = 'payment_data_waitpay'; // 付款待付款数据
+    const STAFF_RULE_DATA_PAYMENT_REFUND    = 'payment_data_refund'; // 退款数据
+    const STAFF_RULE_DATA_PAYMENT_TOTAL     = 'payment_total';    // 付款总额数据
+    const STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA = 'subscribed_data_building_area';  // 认购面积
+    const STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE = 'subscribed_data_sub_total_price'; // 认购总额
+    const STAFF_RULE_DATA_SUBSCRIBED_TOTAL = 'subscribed_total'; // 认购总额数据
+
+    const STAFF_RULE_SET_RULE = 'set_rule'; // 设置规则
+
+    public static $staffRule2Name = [
+        self::STAFF_RULE_DATA_REPORT_ALL          => '全部报备数',
+        self::STAFF_RULE_DATA_REPORT_COUNT        => '报备统计',
+        self::STAFF_RULE_DATA_REPORT_DRIFT        => '报备变化率',
+        self::STAFF_RULE_DATA_VISIT_ALL           => '全部到访数',
+        self::STAFF_RULE_DATA_VISIT_COUNT         => '到访统计',
+        self::STAFF_RULE_DATA_VISIT_DRIFT         => '到访变化率',
+        self::STAFF_RULE_DATA_VISIT_RATE_ALL      => '全部到访率',
+        self::STAFF_RULE_DATA_PAYMENT_PAY         => '已付款数据',
+        self::STAFF_RULE_DATA_PAYMENT_WAITPAY     => '付款待付款数据',
+        self::STAFF_RULE_DATA_PAYMENT_REFUND      => '退款数据',
+        self::STAFF_RULE_DATA_PAYMENT_TOTAL       => '付款总额数据',
+        self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA => '认购面积',
+        self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE => '认购总额',
+        self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL    => '认购总额数据'
+    ];
+
+    public static $staffRole2rule = [
+        self::STAFF_ROLE_ADMIN => [
+            self::STAFF_RULE_DATA_REPORT_ALL,
+            self::STAFF_RULE_DATA_REPORT_COUNT,
+            self::STAFF_RULE_DATA_REPORT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_ALL,
+            self::STAFF_RULE_DATA_VISIT_COUNT,
+            self::STAFF_RULE_DATA_VISIT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_PAYMENT_PAY,
+            self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
+            self::STAFF_RULE_DATA_PAYMENT_REFUND,
+            self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
+            self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
+            self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
+            self::STAFF_RULE_SET_RULE,
+        ],
+        self::STAFF_ROLE_ADMIN_CHILD => [
+            self::STAFF_RULE_DATA_REPORT_ALL,
+            self::STAFF_RULE_DATA_REPORT_COUNT,
+            self::STAFF_RULE_DATA_REPORT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_ALL,
+            self::STAFF_RULE_DATA_VISIT_COUNT,
+            self::STAFF_RULE_DATA_VISIT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_PAYMENT_PAY,
+            self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
+            self::STAFF_RULE_DATA_PAYMENT_REFUND,
+            self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
+            self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
+            self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
+        ],
+        self::STAFF_ROLE_ADMIN_PART => [
+            self::STAFF_RULE_DATA_REPORT_ALL,
+            self::STAFF_RULE_DATA_REPORT_COUNT,
+            self::STAFF_RULE_DATA_REPORT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_ALL,
+            self::STAFF_RULE_DATA_VISIT_COUNT,
+            self::STAFF_RULE_DATA_VISIT_DRIFT,
+            self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_PAYMENT_PAY,
+            self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
+            self::STAFF_RULE_DATA_PAYMENT_REFUND,
+            self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
+            self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
+            self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
+        ],
+    ];
+
     public function behaviors()
     {
 
