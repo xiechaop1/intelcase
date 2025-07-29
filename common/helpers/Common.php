@@ -13,6 +13,10 @@ use common\models\Report;
 
 class Common
 {
+    public static $tagSplit  = [
+        "\n", ",", "，", "/"
+    ];
+
     public static function getRealIP()
     {
         $ip = '';
@@ -131,10 +135,11 @@ class Common
     public static function splitMobile($mobile) {
         $guestMobiles = [];
         if (!empty($mobile)) {
-            $tagSplit = Report::$tagSplit;
+            $tagSplit = self::$tagSplit;
             foreach ($tagSplit as $tag) {
                 if (strpos($mobile, $tag) !== false) {
                     $guestMobiles = explode($tag, $mobile);
+                    break;
                 }
             }
             if (empty($guestMobiles)) {

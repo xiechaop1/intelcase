@@ -20,9 +20,7 @@ class Report extends \common\models\gii\Report
         self::REPORT_STATUS_INVALID  => '无效',
     ];
 
-    public static $tagSplit  = [
-        "\n", ",", "，", "/"
-    ];
+
 
 
 

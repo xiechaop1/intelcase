@@ -206,10 +206,13 @@ class StaffApi extends ApiAction
             if (!empty($nowRuleJson)) {
                 $needRule = Staff::STAFF_RULE_SET_RULE;
                 if (in_array($needRule, $nowRuleJson)) {
+                    $rules = \common\helpers\Common::splitMobile($rules);
                     $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+                } else {
+                    return $this->fail('您不能更改用户权限', -1000);
                 }
             } else {
-                return $this->fail('您不能更改用户权限', -1000);
+                return $this->fail('更改用户权限失败', -1000);
             }
         }
 
@@ -236,6 +239,9 @@ class StaffApi extends ApiAction
             }
             if (!empty($wx_id)) {
                 $model->wx_id = $wx_id;
+            }
+            if (!empty($rules)) {
+                $model->rules = $rules;
             }
 
             $model->save();
@@ -267,6 +273,8 @@ class StaffApi extends ApiAction
 
             if (empty($rules) && !empty(Staff::$staffRole2rule[$role])) {
                 $rules = Staff::$staffRole2rule[$role];
+            } else {
+                $rules = \common\helpers\Common::splitMobile($rules);
             }
 
             $model->staff_name = $staffName;
