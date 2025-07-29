@@ -616,30 +616,59 @@ class DataApi extends ApiAction
 
     }
 
-    private function _filterByRule(&$data, $rule, $prevKeys = []) {
-        $ret = [];
-        if (!empty($data)) {
-            foreach ($data as $key => &$item) {
-//                if (empty($prevKeys)) {
-                    $prevKeys[] = $key;
-//                }
-                if (is_array($item)) {
-                    $this->_filterByRule($item, $rule, $prevKeys);
-                    $prevKeys = [];
-                } else {
-//                    $prevKeys[] = $key;
 
-                    $filterKey = implode('_', $prevKeys);
-                    if (in_array($filterKey, $rule)) {
-                        foreach ($filterKey as $setKey) {
-                            $tmp = &$ret[$setKey];
+    private function _filterByRule($data, $rules, $prevKeys = []) {
+        $ret = [];
+        // 判断data中的key和数据，如果数据是数组，就继续递归
+        // 如果数据是值，就按照之前所有的key，记录到ret里
+        // 最终返回ret
+        if (is_array($data)) {
+            foreach ($data as $key => $item) {
+                if (is_array($item)) {
+                    // 如果是数组，递归调用
+                    $ret[$key] = $this->_filterByRule($item, $rules, array_merge($prevKeys, [$key]));
+                } else {
+                    // 如果是值，判断是否在规则中
+                    $filterKey = implode('_', array_merge($prevKeys, [$key]));
+                    if (in_array($filterKey, $rules)) {
+                        // 如果在规则中，就记录到ret里
+                        // ret的记录是多层数组嵌套，和原data数据结构一样
+                        $tmp = &$ret;
+                        foreach ($prevKeys as $setKey) {
+                            if (!isset($tmp[$setKey])) {
+                                $tmp[$setKey] = [];
+                            }
+                            $tmp = &$tmp[$setKey];
                         }
-                        $tmp = $item;
-//                        unset($data[$key]);
+                        $tmp[$key] = $item;
                     }
                 }
             }
         }
+
+
+//        if (!empty($data)) {
+//            foreach ($data as $key => $item) {
+////                if (empty($prevKeys)) {
+//                    $prevKeys[] = $key;
+////                }
+//                if (is_array($item)) {
+//                    $this->_filterByRule($item, $rules, $prevKeys);
+////                    $prevKeys = [];
+//                } else {
+////                    $prevKeys[] = $key;
+//
+//                    $filterKey = implode('_', $prevKeys);
+//                    if (in_array($filterKey, $rules)) {
+//                        foreach ($prevKeys as $setKey) {
+//                            $tmp = &$ret[$setKey];
+//                        }
+//                        $tmp = $item;
+////                        unset($data[$key]);
+//                    }
+//                }
+//            }
+//        }
         return $ret;
     }
 
