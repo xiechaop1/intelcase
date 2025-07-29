@@ -214,8 +214,12 @@ class StaffApi extends ApiAction
             if (!empty($nowRuleJson)) {
                 $needRule = Staff::STAFF_RULE_SET_RULE;
                 if (in_array($needRule, $nowRuleJson)) {
-                    $rules = \common\helpers\Common::splitMobile($rules);
-                    $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+                    if ($rules != 'clear') {
+                        $rules = \common\helpers\Common::splitMobile($rules);
+                        $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $rules = json_encode([], JSON_UNESCAPED_UNICODE);
+                    }
                 } else {
                     return $this->fail('您不能更改用户权限', -1000);
                 }
