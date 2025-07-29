@@ -617,24 +617,30 @@ class DataApi extends ApiAction
     }
 
     private function _filterByRule(&$data, $rule, $prevKeys = []) {
-//        $ret = [];
+        $ret = [];
         if (!empty($data)) {
             foreach ($data as $key => &$item) {
-                if (empty($prevKeys)) {
+//                if (empty($prevKeys)) {
                     $prevKeys[] = $key;
-                }
+//                }
                 if (is_array($item)) {
                     $this->_filterByRule($item, $rule, $prevKeys);
-                }
-                $prevKeys[] = $key;
+                    $prevKeys = [];
+                } else {
+//                    $prevKeys[] = $key;
 
-                $filterKey = implode('_', $prevKeys);
-                if (in_array($filterKey, $rule)) {
-                    unset($data[$key]);
+                    $filterKey = implode('_', $prevKeys);
+                    if (in_array($filterKey, $rule)) {
+                        foreach ($filterKey as $setKey) {
+                            $tmp = &$ret[$setKey];
+                        }
+                        $tmp = $item;
+//                        unset($data[$key]);
+                    }
                 }
             }
         }
-        return $data;
+        return $ret;
     }
 
     public function exportGuestList()
