@@ -50,7 +50,7 @@ class Staff extends \common\models\gii\Staff
     const STAFF_RULE_DATA_VISIT_DRIFT       = 'visit_drift';          // 到访变化率
     const STAFF_RULE_DATA_VISIT_RATE_ALL    = 'visit_rate_all';    // 全部到访率
     const STAFF_RULE_DATA_PAYMENT_PAY       = 'payment_data_pay';      // 已付款数据
-    const STAFF_RULE_DATA_PAYMENT_WAITPAY   = 'payment_data_waitpay'; // 付款待付款数据
+    const STAFF_RULE_DATA_PAYMENT_WAITPAY   = 'payment_data_wait_pay'; // 付款待付款数据
     const STAFF_RULE_DATA_PAYMENT_REFUND    = 'payment_data_refund'; // 退款数据
     const STAFF_RULE_DATA_PAYMENT_TOTAL     = 'payment_total';    // 付款总额数据
     const STAFF_RULE_DATA_SUBSCRIBED_COUNT = 'subscribed_data_count';  // 认购数量

@@ -640,12 +640,12 @@ class DataApi extends ApiAction
                         // 如果在规则中，就记录到ret里
                         // 按照原来的层级结构重建数据
                         $tmp = &$ret;
-                        foreach ($prevKeys as $setKey) {
-                            if (!isset($tmp[$setKey])) {
-                                $tmp[$setKey] = [];
-                            }
-                            $tmp = &$tmp[$setKey];
-                        }
+//                        foreach ($prevKeys as $setKey) {
+//                            if (!isset($tmp[$setKey])) {
+//                                $tmp[$setKey] = [];
+//                            }
+//                            $tmp = &$tmp[$setKey];
+//                        }
                         $tmp[$key] = $item;
                     }
                 }
