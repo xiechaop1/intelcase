@@ -609,10 +609,10 @@ class DataApi extends ApiAction
 
         $rule = Staff::$staffRole2rule[Staff::STAFF_ROLE_ADMIN_PART];
 
-        $data = $this->_filterByRule($data);
+        $data = $this->_filterByRule($data, $rule);
         var_dump($data);
 
-        return $this->success($data, $rule);
+        return $this->success($data);
 
     }
 
