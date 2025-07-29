@@ -187,6 +187,8 @@ class StaffApi extends ApiAction
             return $this->fail('需要指定用户', -1000);
         }
 
+        $adminStaffId = !empty($this->_get['admin_staff_id']) ? $this->_get['admin_staff_id'] : 0;
+
         $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
         $role = !empty($this->_get['role']) ? $this->_get['role'] : 0;
         $mobile = !empty($this->_get['mobile']) ? $this->_get['mobile'] : '';
@@ -201,7 +203,13 @@ class StaffApi extends ApiAction
             ])
             ->one();
 
-        $nowRuleJson = json_decode($model->rules, true);
+        $admin = Staff::find()
+            ->where([
+                'id' => $adminStaffId
+            ])
+            ->one();
+
+        $nowRuleJson = json_decode($admin->rules, true);
         if (!empty($rules)) {
             if (!empty($nowRuleJson)) {
                 $needRule = Staff::STAFF_RULE_SET_RULE;
