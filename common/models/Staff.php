@@ -53,6 +53,7 @@ class Staff extends \common\models\gii\Staff
     const STAFF_RULE_DATA_PAYMENT_WAITPAY   = 'payment_data_waitpay'; // 付款待付款数据
     const STAFF_RULE_DATA_PAYMENT_REFUND    = 'payment_data_refund'; // 退款数据
     const STAFF_RULE_DATA_PAYMENT_TOTAL     = 'payment_total';    // 付款总额数据
+    const STAFF_RULE_DATA_SUBSCRIBED_COUNT = 'subscribed_data_count';  // 认购数量
     const STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA = 'subscribed_data_building_area';  // 认购面积
     const STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE = 'subscribed_data_sub_total_price'; // 认购总额
     const STAFF_RULE_DATA_SUBSCRIBED_TOTAL = 'subscribed_total'; // 认购总额数据
@@ -71,6 +72,7 @@ class Staff extends \common\models\gii\Staff
         self::STAFF_RULE_DATA_PAYMENT_WAITPAY     => '付款待付款数据',
         self::STAFF_RULE_DATA_PAYMENT_REFUND      => '退款数据',
         self::STAFF_RULE_DATA_PAYMENT_TOTAL       => '付款总额数据',
+        self::STAFF_RULE_DATA_SUBSCRIBED_COUNT    => '认购数量',
         self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA => '认购面积',
         self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE => '认购总额',
         self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL    => '认购总额数据'
@@ -89,6 +91,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
             self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_COUNT,
             self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
             self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
             self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
@@ -106,6 +109,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
             self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_COUNT,
             self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
             self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
             self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
@@ -122,6 +126,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
             self::STAFF_RULE_DATA_PAYMENT_TOTAL,
+            self::STAFF_RULE_DATA_SUBSCRIBED_COUNT,
             self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA,
             self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE,
             self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL,
