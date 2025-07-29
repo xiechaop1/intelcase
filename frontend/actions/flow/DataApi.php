@@ -612,7 +612,7 @@ class DataApi extends ApiAction
         $data = $this->_filterByRule($data);
         var_dump($data);
 
-        return $this->success($data);
+        return $this->success($data, $rule);
 
     }
 
@@ -629,7 +629,7 @@ class DataApi extends ApiAction
                 $prevKeys[] = $key;
 
                 $filterKey = implode('_', $prevKeys);
-                if (in_array($rule, $filterKey)) {
+                if (in_array($filterKey, $rule)) {
                     unset($data[$key]);
                 }
             }
