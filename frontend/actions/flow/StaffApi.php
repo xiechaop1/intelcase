@@ -53,6 +53,12 @@ class StaffApi extends ApiAction
                 case 'get_list':
                     $ret = $this->getList();
                     break;
+                case 'get_rules':
+                    $ret = $this->getRules();
+                    break;
+                case 'get_role_rules':
+                    $ret = $this->getRoleRules();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -140,6 +146,7 @@ class StaffApi extends ApiAction
             foreach ($model as $l) {
                 $row = $l->toArray();
                 $row['role_name'] = !empty(Staff::$staffRole2Name[$l->role]) ? Staff::$staffRole2Name[$l->role] : '未知角色';
+                $row['rules_json'] = !empty($row['rules_json']) ? json_decode($row['rules'], true) : [];
                 $ret[] = $row;
             }
         }
@@ -168,6 +175,7 @@ class StaffApi extends ApiAction
         $roleName = !empty(Staff::$staffRole2Name[$model->role]) ? Staff::$staffRole2Name[$model->role] : '未知角色';
         $ret = $model->toArray();
         $ret['role_name'] = $roleName;
+        $ret['rules_json'] = !empty($model['rules']) ? json_decode($model['rules'], true) : [];
 
         return $this->success($ret);
     }
@@ -185,12 +193,25 @@ class StaffApi extends ApiAction
         $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
         $staffStatus = !empty($this->_get['staff_status']) ? $this->_get['staff_status'] : 0;
         $team = !empty($this->_get['team']) ? $this->_get['team'] : '';
+        $rules = !empty($this->_get['rules']) ? $this->_get['rules'] : [];
 
         $model = Staff::find()
             ->where([
                 'id' => $staffId,
             ])
             ->one();
+
+        $nowRuleJson = json_decode($model->rules, true);
+        if (!empty($rules)) {
+            if (!empty($nowRuleJson)) {
+                $needRule = Staff::STAFF_RULE_SET_RULE;
+                if (in_array($needRule, $nowRuleJson)) {
+                    $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+                }
+            } else {
+                return $this->fail('您不能更改用户权限', -1000);
+            }
+        }
 
         if (empty($model)) {
             return $this->fail('用户不存在', -1000);
@@ -242,11 +263,17 @@ class StaffApi extends ApiAction
 //            $wx_id = !empty($this->_get['wx_id']) ? $this->_get['wx_id'] : '';
             $staffStatus = !empty($this->_get['staff_status']) ? $this->_get['staff_status'] : Staff::STAFF_STATUS_NORMAL;
             $team = !empty($this->_get['team']) ? $this->_get['team'] : '';
+            $rules = !empty($this->_get['rules']) ? $this->_get['rules'] : [];
+
+            if (empty($rules) && !empty(Staff::$staffRole2rule[$role])) {
+                $rules = Staff::$staffRole2rule[$role];
+            }
 
             $model->staff_name = $staffName;
             $model->role = $role;
             $model->mobile = $mobile;
             $model->team = $team;
+            $model->rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
 //            $model->wx_openid = $wx_id;
             $model->staff_status = $staffStatus;
 
@@ -267,6 +294,18 @@ class StaffApi extends ApiAction
             return $this->fail('操作失败', -1000);
         }
 
+    }
+
+    public function getRules() {
+        $rules = Staff::$staffRule2Name;
+
+        return $rules;
+    }
+
+    public function getRoleRules() {
+        $roleRules = Staff::$staffRole2rule;
+
+        return $roleRules;
     }
 
 

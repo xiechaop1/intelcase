@@ -38,6 +38,14 @@ class StaffController extends Controller
                 'class'     => 'frontend\actions\flow\StaffApi',
                 'action'    => 'update',
             ],
+            'get_rules' => [
+                'class'     => 'frontend\actions\flow\StaffApi',
+                'action'    => 'get_rules',
+            ],
+            'get_role_rules' => [
+                'class'     => 'frontend\actions\flow\StaffApi',
+                'action'    => 'get_role_rules',
+            ],
         ];
     }
 }
