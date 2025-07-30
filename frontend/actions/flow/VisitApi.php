@@ -443,9 +443,6 @@ class VisitApi extends ApiAction
         ];
         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
-        if (!empty($msgId)) {
-            Yii::$app->msg->removeBtn($msgId);
-        }
 
         return $this->success(['visit' => $model]);
 
