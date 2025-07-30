@@ -260,7 +260,7 @@ class ReportApi extends ApiAction
 //            $tagSplit = [
 //                "\n", ",", "，", "/"
 //            ];
-            $tagSplit = Report::$tagSplit;
+            $tagSplit = \common\helpers\Common::$tagSplit;
             foreach ($tagSplit as $t) {
                 if (strpos($guestMobile, $t) !== false) {
                     $guestMobiles = explode($t, $guestMobile);
