@@ -295,9 +295,10 @@ class VisitApi extends ApiAction
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $type = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_CONFIRM ? '确认' : '拒绝';
+                $title = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_CONFIRM ? '新到访' : '未到访';
                 $content = [
                     'content' => '新到访被' . $type . '，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . ', 时间：' . date('Y-m-d H:i:s') . '',
-                    'title' => '新到访状态变更',
+                    'title' => $title,
                     'btn' => [
 
                     ],
@@ -442,7 +443,9 @@ class VisitApi extends ApiAction
             ],
         ];
         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
 
         return $this->success(['visit' => $model]);
 
