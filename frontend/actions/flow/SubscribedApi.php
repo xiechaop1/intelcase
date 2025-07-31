@@ -644,6 +644,7 @@ class SubscribedApi extends ApiAction
             $buildingArea = !empty($this->_get['building_area']) ? $this->_get['building_area'] : '';
             $balancePrice = !empty($this->_get['balance_price']) ? $this->_get['balance_price'] : 0;
             $subTotalPrice = !empty($this->_get['sub_total_price']) ? $this->_get['sub_total_price'] : 0;
+            $subTotalAmount = !empty($this->_get['sub_total_amount']) ? $this->_get['sub_total_amount'] : 0;
             $payMethod = !empty($this->_get['pay_method']) ? $this->_get['pay_method'] : "";
             $owner = !empty($this->_get['owner']) ? $this->_get['owner'] : '';
             $lessor = !empty($this->_get['lessor']) ? $this->_get['lessor'] : '';
@@ -735,6 +736,12 @@ class SubscribedApi extends ApiAction
                 $depositX = !empty(Subscribed::$depositX[$payMethod]) ? Subscribed::$depositX[$payMethod] : 0;
                 $deposit = $monthlyAmount * $depositX;
                 $deposit = number_format($deposit, 2, '.', '');
+            }
+
+            if (empty($subTotalAmount) && $subType == Subscribed::SUB_TYPE_RENT) {
+                $subTotalPrice = $dailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
+            } else if (!empty($subTotalAmount) && $subType == Subscribed::SUB_TYPE_RENT) {
+                $subTotalPrice = $subTotalAmount;
             }
 
             $lastReport = Report::find()
