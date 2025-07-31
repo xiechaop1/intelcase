@@ -208,9 +208,16 @@ class PaymentApi extends ApiAction
                     $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
 
                     $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+
+                    $subGuest = !empty($sub->sub_guest) ? $sub->sub_guest : '';
+                    $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                    $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+                    $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+                    $guestInfo = \common\helpers\Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
+
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                         $content = [
-                            'content' => '项目 ' . $this->_project->project_name . ' 完成支付',
+                            'content' => $guestInfo . ' 完成支付',
                             'project_id' => $this->_projectId,
                             'title' => '完成支付',
                             'btn' => [
@@ -250,7 +257,7 @@ class PaymentApi extends ApiAction
                             }
                         }
                         $content = [
-                            'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
+                            'content' => $guestInfo . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
                             'project_id' => $this->_projectId,
                             'title' => '完成部分支付',
                             'btn' => [
@@ -489,8 +496,14 @@ class PaymentApi extends ApiAction
 
             $transaction->commit();
 
-            $paymentId = $model->getPrimaryKey();
+            $subGuest = !empty($subscribed->sub_guest) ? $subscribed->sub_guest : '';
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+            $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+            $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+            $guestInfo = \common\helpers\Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
 
+
+            $paymentId = $model->getPrimaryKey();
             if ($payType == Payment::PAYMENT_TYPE_PAY) {
                 $payments = Payment::find()
                     ->where(['project_id' => $this->_projectId])
@@ -508,7 +521,7 @@ class PaymentApi extends ApiAction
                 $roomNo = !empty($subscribed->room_no) ? $subscribed->room_no : '未知房号';
                 if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请最终确认',
+                        'content' => $guestInfo . ' 完成支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请最终确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成支付',
                         'btn' =>
@@ -527,7 +540,7 @@ class PaymentApi extends ApiAction
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 } else {
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成部分支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
+                        'content' => $guestInfo . ' 完成部分支付，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
                         'project_id' => $this->_projectId,
                         'title' => '完成部分支付',
                         'btn' => [
@@ -547,7 +560,7 @@ class PaymentApi extends ApiAction
             } else {
                 $roomNo = !empty($subscribed->room_no) ? $subscribed->room_no : '未知房号';
                 $content = [
-                    'content' => '项目 ' . $this->_project->project_name . ' 进行退款，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，退款人：' . $payer . '，退款方式：' . $amountType . '， 退款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
+                    'content' => $guestInfo . ' 进行退款，' . '房号：' . $roomNo . '，金额：' . number_format($amount, 2) . '，退款人：' . $payer . '，退款方式：' . $amountType . '， 退款时间：' . Date('Y-m-d H:i:s', $payTime) . '，请确认',
                     'project_id' => $this->_projectId,
                     'title' => '退款',
                     'btn' =>
