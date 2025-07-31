@@ -719,7 +719,7 @@ class SubscribedApi extends ApiAction
             }
 
             if (empty($alDailyAmount) || empty($alTotalAmount)) {
-                $alDailyAmount = $dailyAmount - $proRentAmount;
+                $alDailyAmount =  $proRentAmount - $dailyAmount;
                 if (!empty($rentAmount) && !empty($alDateBegin) && !empty($alDateEnd) && !empty($buildingArea)) {
                     $alTotalAmount = $alDailyAmount * (intval((strtotime($alDateEnd) - strtotime($alDateBegin)) / 86400) + 1) * $buildingArea;
                     $alTotalAmount = number_format($alTotalAmount, 2, '.', '');
