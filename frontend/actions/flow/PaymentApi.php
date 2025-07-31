@@ -200,8 +200,6 @@ class PaymentApi extends ApiAction
 
                 $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
 
-                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
-
                 $subGuest = !empty($sub->owner) ? $sub->owner : '';
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
@@ -221,8 +219,8 @@ class PaymentApi extends ApiAction
                         ->andFilterWhere(['sub_id' => $model->sub_id])
                         ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
                         ->all();
-
-
+                    $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+                    
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                         $content = [
                             'content' => $guestInfo . $guestInfo2 . ' 完成支付',
