@@ -195,7 +195,7 @@ class ReportApi extends ApiAction
                 } else {
                     $content = [
                         'content' => '有客户：' . $model->guest_name . '，项目：' . $projectName . '，手机号：' . implode(',', $guestMobiles) . '， 时间：' . date('Y-m-d H:i:s', strtotime($model->visit_time)) . '，经确认是无效报备。',
-                        'title' => '新报备',
+                        'title' => '无效报备',
                         'btn' => [
                         ],
                         'report_id' => $reportId,
