@@ -828,14 +828,14 @@ class DataApi extends ApiAction
                         $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
                         // 强制设置为文本格式，在值前加单引号
                         if (!empty($value) && is_numeric($value)) {
-                            $sheet->setCellValue($cellCoordinate, "'" . $value);
+                            $sheet->setCellValue($cellCoordinate, $value);
                         }
                     }
                 }
             }
 
             // 设置所有单元格为文本格式
-//            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
             // 创建保存目录
             $saveDir = Yii::getAlias('@frontend/web/xls');
