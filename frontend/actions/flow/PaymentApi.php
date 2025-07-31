@@ -220,7 +220,7 @@ class PaymentApi extends ApiAction
                         ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
                         ->all();
                     $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
-                    
+
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                         $content = [
                             'content' => $guestInfo . $guestInfo2 . ' 完成支付',

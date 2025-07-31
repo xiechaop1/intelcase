@@ -505,7 +505,7 @@ class SubscribedApi extends ApiAction
         }
 
         foreach ($this->_get as $key => $value) {
-            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test'])) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test', 'msg_id'])) {
                 continue;
             }
             if (!empty($value) && isset($this->_get[$key])) {
