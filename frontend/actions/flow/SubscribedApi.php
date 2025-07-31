@@ -183,6 +183,14 @@ class SubscribedApi extends ApiAction
                             'project_id' => $this->_projectId,
                             'report_id' => $this->_reportId,
                             'visit_id' => $visitId,
+                        ],
+                        [
+                            'label' => '平移时间',
+                            'type' => 'movetime_page',
+                            'sub_id' => $subId,
+                            'project_id' => $this->_projectId,
+                            'report_id' => $this->_reportId,
+                            'visit_id' => $visitId,
                         ]
                     ],
                 ];
