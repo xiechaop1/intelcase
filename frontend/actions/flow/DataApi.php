@@ -749,7 +749,7 @@ class DataApi extends ApiAction
                     $visit['visit_time'],
                     Visit::$visitStatus2Name[$visit['visit_status']] ?? '',
                     Visit::$visitConfirm2Name[$visit['visit_confirm_status']] ?? '',
-                    $visit['person_ct'],
+                    $visit['person_ct'] + 1,
                     // 认购基本信息
                     !empty($visit['sub_guest']) ? '是' : '否',
                     !empty($visit['sub_type']) ? ($visit['sub_type'] == 1 ? '全款' : '部分') : '',
@@ -802,9 +802,15 @@ class DataApi extends ApiAction
                 $data[] = $row;
             }
 
+            
             // 生成Excel文件
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
+
+            // 计算总行数和列数
+            $totalRows = count($data) + 1;
+            $totalColumns = count($headers);
+            $highestColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
 
             // 写入表头
             foreach ($headers as $key => $header) {
@@ -817,6 +823,9 @@ class DataApi extends ApiAction
                     $sheet->setCellValueByColumnAndRow($col + 1, $row + 2, $value);
                 }
             }
+
+            // 设置所有单元格为文本格式
+            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
             // 创建保存目录
             $saveDir = Yii::getAlias('@frontend/web/xls');
