@@ -209,7 +209,7 @@ class PaymentApi extends ApiAction
 
                     $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
 
-                    $subGuest = !empty($sub->sub_guest) ? $sub->sub_guest : '';
+                    $subGuest = !empty($sub->owner) ? $sub->owner : '';
                     $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                     $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
                     $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
@@ -496,7 +496,7 @@ class PaymentApi extends ApiAction
 
             $transaction->commit();
 
-            $subGuest = !empty($subscribed->sub_guest) ? $subscribed->sub_guest : '';
+            $subGuest = !empty($subscribed->owner) ? $subscribed->owner : '';
             $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
             $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';

@@ -162,7 +162,7 @@ class SubscribedApi extends ApiAction
             Yii::$app->msg->removeBtn($msgId);
         }
 
-        $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+        $subGuest = !empty($model->owner) ? $model->owner : '';
 
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
         $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
@@ -276,7 +276,7 @@ class SubscribedApi extends ApiAction
             Yii::$app->msg->removeBtn($msgId);
         }
 
-        $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+        $subGuest = !empty($model->owner) ? $model->owner : '';
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
         $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
         $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
@@ -833,7 +833,7 @@ class SubscribedApi extends ApiAction
 //                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
 //            }
 
-            $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+            $subGuest = !empty($model->owner) ? $model->owner : '';
             $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
             $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
