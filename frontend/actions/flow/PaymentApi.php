@@ -194,6 +194,27 @@ class PaymentApi extends ApiAction
             $model->pay_status = $pay_status;
             $ret = $model->save();
             if ($ret) {
+                $sub = Subscribed::find()
+                    ->where(['id' => $model->sub_id])
+                    ->one();
+
+                $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
+
+                $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+
+                $subGuest = !empty($sub->owner) ? $sub->owner : '';
+                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+                $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+                $guestInfo = \common\helpers\Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
+
+                $roomNo = !empty($sub->room_no) ? $sub->room_no : '';
+                $payer = !empty($model->payer) ? $model->payer : '';
+                $amountType = !empty($model->amount_type) ? $model->amount_type : '';
+                $payTime = !empty($model->pay_time) ? $model->pay_time : time();
+                $guestInfo2 =  '，房号：' . $roomNo . '，金额：' . number_format($recv_amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime);
+
+
                 if ($model->pay_type == Payment::PAYMENT_TYPE_PAY) {
                     $payments = Payment::find()
                         ->where(['project_id' => $this->_projectId])
@@ -201,25 +222,7 @@ class PaymentApi extends ApiAction
                         ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
                         ->all();
 
-                    $sub = Subscribed::find()
-                        ->where(['id' => $model->sub_id])
-                        ->one();
 
-                    $subTotalPrice = !empty($sub->sub_total_price) ? $sub->sub_total_price : 0;
-
-                    $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
-
-                    $subGuest = !empty($sub->owner) ? $sub->owner : '';
-                    $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
-                    $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
-                    $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
-                    $guestInfo = \common\helpers\Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
-
-                    $roomNo = !empty($sub->room_no) ? $sub->room_no : '';
-                    $payer = !empty($model->payer) ? $model->payer : '';
-                    $amountType = !empty($model->amount_type) ? $model->amount_type : '';
-                    $payTime = !empty($model->pay_time) ? $model->pay_time : time();
-                    $guestInfo2 =  '，房号：' . $roomNo . '，金额：' . number_format($recv_amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime);
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                         $content = [
                             'content' => $guestInfo . $guestInfo2 . ' 完成支付',
@@ -271,6 +274,8 @@ class PaymentApi extends ApiAction
                                     'type' => $jumpType,
                                     'project_id' => $this->_projectId,
                                     'report_id' => $this->_reportId,
+                                    'sub_id' => $model->sub_id,
+                                    'payment_id' => $model->id,
                                 ],
                             ],
                         ];
