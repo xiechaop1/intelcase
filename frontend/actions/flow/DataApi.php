@@ -835,7 +835,7 @@ class DataApi extends ApiAction
             }
 
             // 设置所有单元格为文本格式
-            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+//            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
             // 创建保存目录
             $saveDir = Yii::getAlias('@frontend/web/xls');
