@@ -215,9 +215,14 @@ class PaymentApi extends ApiAction
                     $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
                     $guestInfo = \common\helpers\Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
 
+                    $roomNo = !empty($sub->room_no) ? $sub->room_no : '';
+                    $payer = !empty($model->payer) ? $model->payer : '';
+                    $amountType = !empty($model->amount_type) ? $model->amount_type : '';
+                    $payTime = !empty($model->pay_time) ? $model->pay_time : time();
+                    $guestInfo2 =  '，房号：' . $roomNo . '，金额：' . number_format($recv_amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime);
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
                         $content = [
-                            'content' => $guestInfo . ' 完成支付',
+                            'content' => $guestInfo . $guestInfo2 . ' 完成支付',
                             'project_id' => $this->_projectId,
                             'title' => '完成支付',
                             'btn' => [
@@ -257,7 +262,7 @@ class PaymentApi extends ApiAction
                             }
                         }
                         $content = [
-                            'content' => $guestInfo . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
+                            'content' => $guestInfo . $guestInfo2 .  ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
                             'project_id' => $this->_projectId,
                             'title' => '完成部分支付',
                             'btn' => [
@@ -278,7 +283,7 @@ class PaymentApi extends ApiAction
                 } else {
                     // 退款
                     $content = [
-                        'content' => '项目 ' . $this->_project->project_name . ' 完成退款',
+                        'content' => $guestInfo . $guestInfo2 . ' 完成退款',
                         'project_id' => $this->_projectId,
                         'title' => '完成退款',
                     ];
