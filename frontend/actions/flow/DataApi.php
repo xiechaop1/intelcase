@@ -820,7 +820,17 @@ class DataApi extends ApiAction
             // 写入数据
             foreach ($data as $row => $rowData) {
                 foreach ($rowData as $col => $value) {
-                    $sheet->setCellValueByColumnAndRow($col + 1, $row + 2, $value);
+                    $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col + 1) . ($row + 2);
+                    $sheet->setCellValue($cellCoordinate, $value);
+                    
+                    // 特殊处理身份证号码字段（第16列和第42列）
+                    if ($col == 15 || $col == 41) { // 身份证号码和补充身份证号码
+                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+                        // 强制设置为文本格式，在值前加单引号
+                        if (!empty($value) && is_numeric($value)) {
+                            $sheet->setCellValue($cellCoordinate, "'" . $value);
+                        }
+                    }
                 }
             }
 
