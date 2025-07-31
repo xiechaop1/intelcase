@@ -492,6 +492,8 @@ class SubscribedApi extends ApiAction
     public function update() {
         $subId = !empty($this->_get['sub_id']) ? $this->_get['sub_id'] : 0;
 
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+
         if (empty($subId)) {
             return $this->fail('需要指定认购ID', -1000);
         }
@@ -505,7 +507,7 @@ class SubscribedApi extends ApiAction
         }
 
         foreach ($this->_get as $key => $value) {
-            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test', 'msg_id'])) {
+            if (in_array($key, ['sub_id', 'project_id', 'report_id', 'is_test', 'msg_id', 'staff_id'])) {
                 continue;
             }
             if (!empty($value) && isset($this->_get[$key])) {
@@ -514,6 +516,10 @@ class SubscribedApi extends ApiAction
         }
 
         $model->save();
+
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
 
         return $this->success();
     }
