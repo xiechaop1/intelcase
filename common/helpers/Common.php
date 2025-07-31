@@ -153,4 +153,17 @@ class Common
         return implode(',', $mobiles);
     }
 
+    public static function formatGuestInfo($projectName, $guestName, $guestMobile, $dt, $channelName = '') {
+        $guestMobiles = self::splitMobile($guestMobile);
+        $mobile = self::formatMultyMobiles($guestMobiles);
+
+        $str = '项目：' . $projectName . '，客户：' . $guestName . '，手机号：' . $mobile;
+        if (!empty($channelName)) {
+            $str .= '，渠道：' . $channelName;
+        }
+        $str .=  '，时间：' . $dt;
+
+        return $str;
+    }
+
 }

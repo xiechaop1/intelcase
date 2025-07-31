@@ -227,6 +227,7 @@ class VisitApi extends ApiAction
             return $this->fail('操作失败', -1000);
         }
 
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
         if (
             $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
             ||
@@ -246,11 +247,13 @@ class VisitApi extends ApiAction
             }
 
             $guestMobiles = \common\helpers\Common::splitMobile($model->guest_mobile);
+
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $type = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED ? '签约' : '认购';
                 $content = [
-                    'content' => '有一条新' . $type . '，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . ', 时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'content' => '有一条新' . $type . '，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)
+                                 . '，请及时处理。',
                     'title' => '新' . $type,
                     'btn' => [
                         [
@@ -297,7 +300,7 @@ class VisitApi extends ApiAction
                 $type = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_CONFIRM ? '确认' : '拒绝';
                 $title = $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_CONFIRM ? '新到访' : '未到访';
                 $content = [
-                    'content' => '新到访被' . $type . '，项目：' . $projectName . '， 客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . ', 时间：' . date('Y-m-d H:i:s') . '',
+                    'content' => '新到访被' . $type . '，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel),
                     'title' => $title,
                     'btn' => [
 
@@ -348,8 +351,11 @@ class VisitApi extends ApiAction
             $team = $this->_project->consultant_team;
         }
 
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+
         $content = [
-            'content' => '有一条转接访，项目：' . $projectName . '，客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+            'content' => '有一条转接访，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)
+                . '，请及时处理。',
             'title' => '转接访确认',
             'btn' => [
                 [
@@ -419,8 +425,11 @@ class VisitApi extends ApiAction
         $visitTime = !empty($model->visit_time) ? $model->visit_time : date('Y-m-d H:i:s');
         $reportId = !empty($this->_report->id) ? $this->_report->id : 0;
 
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+
         $content = [
-            'content' => '有一条新到访，项目：' . $projectName . '，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+            'content' => '有一条新到访，'  . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel)
+                     . '，请及时处理。',
             'report_id' => $reportId,
             'project_id' => $this->_projectId,
             'visit_id' => $visitId,
@@ -511,6 +520,7 @@ class VisitApi extends ApiAction
         }
 
         $guestMobiles = \common\helpers\Common::splitMobile($model->guest_mobile);
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
         if ($visitStatus == Visit::VISIT_STATUS_WAIT) {
             $recvId = !empty($this->_report->staff_id) ? $this->_report->staff_id : 0;
 
@@ -520,7 +530,8 @@ class VisitApi extends ApiAction
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '未到访已经被确认，项目：' . $projectName . '，客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . ', 状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '',
+                    'content' => '未到访已经被确认，'
+                        . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel),
                     'title' => '到访确认-未到访',
                     'btn' => [
                     ],
@@ -539,7 +550,8 @@ class VisitApi extends ApiAction
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条待确认的到访消息，项目：' . $projectName . '，客户：' . $model->guest_name . ', 手机号：' . implode(',', $guestMobiles) . ', 状态：' . $visitStatusName . '，时间：' . date('Y-m-d H:i:s') . '，请及时处理。',
+                    'content' => '有一条待确认的到访消息，'
+                        . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)  . '，请及时处理。',
                     'title' => '到访确认',
                     'btn' => [
                         [
@@ -754,8 +766,11 @@ class VisitApi extends ApiAction
                     $type = 'visit_info_confirm_page';
                 }
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
                 $content = [
-                    'content' => '有一条新到访，项目：' . $projectName . '，客户：' . $guestName . '，时间：' . date('Y-m-d H:i:s', strtotime($visitTime)) . '，请及时处理。',
+                    'content' => '有一条新到访，'
+                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $model->guest_mobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel)
+                            . '，请及时处理。',
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,
                     'visit_id' => $visitId,
