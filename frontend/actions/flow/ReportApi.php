@@ -143,8 +143,8 @@ class ReportApi extends ApiAction
             $content = [];
             $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
             if (!empty($recvId)) {
+                $guestMobiles = \common\helpers\Common::splitMobile($model->guest_mobile);
                 if ($reportStatus == Report::REPORT_STATUS_PASS) {
-                    $guestMobiles = \common\helpers\Common::splitMobile($model->guest_mobile);
 //                    if (!empty($model->guest_mobile)) {
 //                        $tagSplit = Report::$tagSplit;
 //                        foreach ($tagSplit as $tag) {
