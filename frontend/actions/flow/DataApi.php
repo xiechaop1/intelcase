@@ -823,19 +823,20 @@ class DataApi extends ApiAction
                     $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col + 1) . ($row + 2);
                     $sheet->setCellValue($cellCoordinate, $value);
                     
-                    // 特殊处理身份证号码字段（第16列和第42列）
+                    // 特殊处理身份证号码字段（第18列和第39列）
                     if ($col == 18 || $col == 39) { // 身份证号码和补充身份证号码
 //                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
                         // 强制设置为文本格式，在值前加单引号
-                        if (!empty($value) && is_numeric($value)) {
-                            $sheet->setCellValue($cellCoordinate, "'" . $value);
-                        }
+                        $sheet->setCellValueExplicitByColumnAndRow($col + 1, $row + 2, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+//                        if (!empty($value) && is_numeric($value)) {
+//                            $sheet->setCellValue($cellCoordinate, $value);
+//                        }
                     }
                 }
             }
 
             // 设置所有单元格为文本格式
-//            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
             // 创建保存目录
             $saveDir = Yii::getAlias('@frontend/web/xls');
