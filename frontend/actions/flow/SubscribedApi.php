@@ -164,12 +164,15 @@ class SubscribedApi extends ApiAction
 
         $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
 
+        $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+        $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
 
             if (!empty($recvId)) {
-                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -187,7 +190,7 @@ class SubscribedApi extends ApiAction
 
                 $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                 $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -219,7 +222,7 @@ class SubscribedApi extends ApiAction
 
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $content = [
-                'content' => '认购被拒绝，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                'content' => '认购被拒绝，' . $guestInfo . '，请及时处理。',
                 'project_id' => $this->_projectId,
                 'title' => '认购被拒绝',
                 'btn' => [
@@ -273,13 +276,19 @@ class SubscribedApi extends ApiAction
             Yii::$app->msg->removeBtn($msgId);
         }
 
+        $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+        $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+        $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+        $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+        $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
+
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
             $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
-                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+//                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -306,7 +315,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
                 $contentPm = [
-                    'content' => '有一条新认购，时间：' . date('Y-m-d H:i:s', time()) . '，已经发送到出纳',
+                    'content' => '有一条新认购，' . $guestInfo . '，已经发送到出纳',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -331,7 +340,7 @@ class SubscribedApi extends ApiAction
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '新认购 项目：' . $projectName . ' ' . $sub->room_no . ' 出纳已经确认！',
+                    'content' => '新认购' . $guestInfo . ' 出纳已经确认！',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -341,7 +350,7 @@ class SubscribedApi extends ApiAction
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
                 $contentPm = [
-                    'content' => '有一条新认购，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，出纳已经确认',
+                    'content' => '有一条新认购，' . $guestInfo . '，出纳已经确认',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -411,12 +420,17 @@ class SubscribedApi extends ApiAction
             if (!empty($msgId)) {
                 Yii::$app->msg->removeBtn($msgId);
             }
+            $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+            $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+            $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+            $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
 
             $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
-                    'content' => '完成了一次签约，项目：' . $projectName . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                    'content' => '完成了一次签约，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '完成签约',
 //                    'btn' => [
@@ -818,6 +832,14 @@ class SubscribedApi extends ApiAction
 //            } else {
 //                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
 //            }
+
+            $subGuest = !empty($model->sub_guest) ? $model->sub_guest : '';
+            $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+            $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
+            $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+            $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
+
+
             if ($visit->visit_confirm_status == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
                 $content = [
                     'content' => '项目 ' . $this->_project->project_name . ' 进入签约流程',
@@ -853,7 +875,7 @@ class SubscribedApi extends ApiAction
                 if (!empty($recvId)) {
                     $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                     $content = [
-                        'content' => '有一条新认购需要确认，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                        'content' => '有一条新认购需要确认，' . $guestInfo . '，请及时处理。',
                         'project_id' => $this->_projectId,
                         'title' => '新认购',
                         'btn' => [
