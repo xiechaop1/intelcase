@@ -171,6 +171,8 @@ class UserApi extends ApiAction
                     $user = new Staff();
                     if (empty($user->staff_name)) {
                         $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
+                    } else {
+                        $user->staff_name = '用户' . rand(10000,99999);
                     }
                     if (empty($user->avatar)) {
                         $user->avatar = !empty($userInfo['avatarUrl']) ? $userInfo['avatarUrl'] : '';
