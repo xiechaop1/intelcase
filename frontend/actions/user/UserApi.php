@@ -165,13 +165,10 @@ class UserApi extends ApiAction
                 $user = Staff::findOne(['mobile' => $mobile]);
 
                 // 判断用户状态（是不是在白名单里，也就是状态是"被邀请"）
-                if (empty($user)
-                    || $user->staff_status == Staff::STAFF_STATUS_DISABLE
-                ) {
-                    throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
-//                    return [];
-                } else {
-                    $userInfo = !empty($this->_get['user_info']) ? json_decode($this->_get['user_info'], true) : [];
+                $userInfo = !empty($this->_get['user_info']) ? json_decode($this->_get['user_info'], true) : [];
+                $tokenRet = Yii::$app->wechat->getToken();
+                if (empty($user)) {
+                    $user = new Staff();
                     if (empty($user->staff_name)) {
                         $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
                     }
@@ -182,12 +179,34 @@ class UserApi extends ApiAction
                     $user->wx_openid = $openId;
                     $user->wx_unionid = $unionId;
                     $user->staff_status = Staff::STAFF_STATUS_NORMAL;
+                    $user->mobile = $mobile;
+                    $user->role = Staff::STAFF_ROLE_SALES;
+                    $user->wx_token = !empty($tokenRet['access_token']) ? $tokenRet['access_token'] : '';
+                    $user->wx_token_expire_time = !empty($tokenRet['expires_in']) ? time() + $tokenRet['expires_in'] : '';
+                    $user->save();
+//                    $user->save();
+                } else if ($user->staff_status == Staff::STAFF_STATUS_DISABLE) {
+                    throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
+//                    return [];
+                } else {
+//                    $userInfo = !empty($this->_get['user_info']) ? json_decode($this->_get['user_info'], true) : [];
+                    if (empty($user->staff_name)) {
+                        $user->staff_name = !empty($userInfo['nickName']) ? $userInfo['nickName'] : '';
+                    }
+                    if (empty($user->avatar)) {
+                        $user->avatar = !empty($userInfo['avatarUrl']) ? $userInfo['avatarUrl'] : '';
+                    }
+
+                    $user->wx_openid = $openId;
+                    $user->wx_unionid = $unionId;
+                    $user->staff_status = Staff::STAFF_STATUS_NORMAL;
+//                    $tokenRet = Yii::$app->wechat->getToken();
+                    $user->wx_token = !empty($tokenRet['access_token']) ? $tokenRet['access_token'] : '';
+                    $user->wx_token_expire_time = !empty($tokenRet['expires_in']) ? time() + $tokenRet['expires_in'] : '';
+                    $user->save();
 
                 }
-                $tokenRet = Yii::$app->wechat->getToken();
-                $user->wx_token = !empty($tokenRet['access_token']) ? $tokenRet['access_token'] : '';
-                $user->wx_token_expire_time = !empty($tokenRet['expires_in']) ? time() + $tokenRet['expires_in'] : '';
-                $user->save();
+
 //                Yii::$app->oplog->write(\common\models\Log::OP_CODE_REGISTER, 1, $user->id, 0, '获取用户手机号和微信信息');
 
             }
