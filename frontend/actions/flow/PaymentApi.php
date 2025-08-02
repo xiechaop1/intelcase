@@ -66,12 +66,17 @@ class PaymentApi extends ApiAction
                 return $this->fail('需要指定报备', -1000);
             }
 
+            if ($this->action == 'get_by_id') {
+                $beginDate = date('Y-m-d 00:00:00', strtotime('-1year'));
+            } else {
+                $beginDate = date('Y-m-d 00:00:00');
+            }
             $this->_report = Report::find()
                 ->where([
                     'id' => $this->_reportId,
                 ])
                 ->andFilterWhere([
-                    'between', 'visit_time', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')
+                    'between', 'visit_time', $beginDate, date('Y-m-d 23:59:59')
                 ])
                 ->andFilterWhere([
                     'report_status' => Report::REPORT_STATUS_PASS,
