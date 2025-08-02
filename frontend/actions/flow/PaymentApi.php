@@ -66,7 +66,7 @@ class PaymentApi extends ApiAction
                 return $this->fail('需要指定报备', -1000);
             }
 
-            if ($this->action == 'get_by_id') {
+            if ($this->action == 'get_by_id' || $this->action == 'get_by_project_id') {
                 $beginDate = date('Y-m-d 00:00:00', strtotime('-1year'));
             } else {
                 $beginDate = date('Y-m-d 00:00:00');
