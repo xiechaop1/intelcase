@@ -418,29 +418,29 @@ class ReportApi extends ApiAction
                     ];
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                 }
-                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-//                    $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
-                    $recvId = $firstAdvisorId;
-                } else {
-//                    $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
-                    $recvId = $firstConsultantId;
-                }
-                $content = [];
-                if (!empty($recvId)) {
-                    $content = [
-                        'content' => '新报备' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel),
-                        'title' => '新报备',
-                        'btn' => [
-                        ],
-                        'report_id' => $reportId,
-                        'project_id' => $this->_projectId,
-                    ];
-                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-
-                    $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
-                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                }
+//                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+//                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+////                    $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
+//                    $recvId = $firstAdvisorId;
+//                } else {
+////                    $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
+//                    $recvId = $firstConsultantId;
+//                }
+//                $content = [];
+//                if (!empty($recvId)) {
+//                    $content = [
+//                        'content' => '新报备' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel),
+//                        'title' => '新报备',
+//                        'btn' => [
+//                        ],
+//                        'report_id' => $reportId,
+//                        'project_id' => $this->_projectId,
+//                    ];
+//                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//
+//                    $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+//                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+//                }
             }
 
             Yii::$app->oplog->write(Log::OP_CODE_REPORT_ADD, Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [
