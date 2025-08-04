@@ -531,7 +531,7 @@ class VisitApi extends ApiAction
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
                     'content' => '未到访已经被确认，'
-                        . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel),
+                        . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, '', date('Y-m-d H:i:s'), $guestChannel),
                     'title' => '到访确认-未到访',
                     'btn' => [
                     ],

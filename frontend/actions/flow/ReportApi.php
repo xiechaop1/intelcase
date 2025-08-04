@@ -179,7 +179,7 @@ class ReportApi extends ApiAction
                         $type = 'visit_page';
                     }
                     $content = [
-                        'content' => \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，已经确认有效，请您填写到访信息。',
+                        'content' => \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, '', date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，已经确认有效，请您填写到访信息。',
                         'title' => '新报备',
                         'btn' => [
                             [
@@ -194,7 +194,7 @@ class ReportApi extends ApiAction
                     ];
                 } else {
                     $content = [
-                        'content' => \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，经确认是无效报备。',
+                        'content' => \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, '', date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，经确认是无效报备。',
                         'title' => '无效报备',
                         'btn' => [
                         ],
@@ -403,7 +403,7 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '新报备' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，请及时处理。',
+                        'content' => '新报备' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, '', date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，请及时处理。',
                         'title' => '新报备',
                         'btn' => [
                             [

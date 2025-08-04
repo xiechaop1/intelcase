@@ -167,10 +167,10 @@ class SubscribedApi extends ApiAction
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
         $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
         $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
-        $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
 
             if (!empty($recvId)) {
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $content = [
                     'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
@@ -196,6 +196,7 @@ class SubscribedApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
                 $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                 $content = [
                     'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
@@ -228,6 +229,7 @@ class SubscribedApi extends ApiAction
             ];
             Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+            $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $content = [
                 'content' => '认购被拒绝，' . $guestInfo . '，请及时处理。',
@@ -288,13 +290,13 @@ class SubscribedApi extends ApiAction
         $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
         $guestMobile = !empty($this->_report->guest_mobile) ? $this->_report->guest_mobile : '';
         $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
-        $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
 
         if ($subStatus == Subscribed::SUBSCRIBED_STATUS_CONFIRM) {
             $recvId = !empty($this->_project->financial_staff_id) ? $this->_project->financial_staff_id : 0;
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             if (!empty($recvId)) {
 //                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $content = [
                     'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
                     'sub_id' => $subId,
@@ -322,6 +324,7 @@ class SubscribedApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
                 $contentPm = [
                     'content' => '有一条新认购，' . $guestInfo . '，已经发送到出纳',
                     'sub_id' => $subId,
@@ -346,6 +349,7 @@ class SubscribedApi extends ApiAction
                 ->where(['id' => $subId])
                 ->one();
             if (!empty($recvId)) {
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $content = [
                     'content' => '新认购' . $guestInfo . ' 出纳已经确认！',
@@ -357,6 +361,7 @@ class SubscribedApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
                 $contentPm = [
                     'content' => '有一条新认购，' . $guestInfo . '，出纳已经确认',
                     'sub_id' => $subId,
@@ -855,8 +860,9 @@ class SubscribedApi extends ApiAction
 
 
             if ($visit->visit_confirm_status == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
+                $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $content = [
-                    'content' => '项目 ' . $this->_project->project_name . ' 进入签约流程',
+                    'content' => $guestInfo . ' 进入签约流程',
                     'project_id' => $this->_projectId,
                     'title' => '签约',
                     'btn' => [
