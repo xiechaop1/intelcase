@@ -798,9 +798,11 @@ class VisitApi extends ApiAction
 
                 $pmRecvId = $this->_project->pm_staff_id;
                 if (!empty($pmRecvId)) {
+                    $mobile = !empty($model->guest_mobile) ? $model->guest_mobile : ' - ';
+
                     $content = [
                         'content' => '有一条新到访，'
-                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $model->guest_mobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
+                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $mobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
                             . '，请及时处理。',
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
