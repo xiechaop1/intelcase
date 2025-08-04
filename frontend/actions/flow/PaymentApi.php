@@ -327,16 +327,16 @@ class PaymentApi extends ApiAction
                         'content' => $guestInfo . $guestInfo2 . ' 完成退款',
                         'project_id' => $this->_projectId,
                         'title' => '完成退款',
-                        'btn' => [
-                            [
-                                'label' => '平移',
-                                'type' => 'movetime_page',
-                                'sub_id' => $model->sub_id,
-                                'project_id' => $this->_projectId,
-                                'report_id' => $this->_reportId,
-                                'payment_id' => $model->id,
-                            ],
-                        ],
+//                        'btn' => [
+//                            [
+//                                'label' => '平移',
+//                                'type' => 'movetime_page',
+//                                'sub_id' => $model->sub_id,
+//                                'project_id' => $this->_projectId,
+//                                'report_id' => $this->_reportId,
+//                                'payment_id' => $model->id,
+//                            ],
+//                        ],
                     ];
 //                    $recvId = $this->_project->advisor_staff_id;
                     $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
