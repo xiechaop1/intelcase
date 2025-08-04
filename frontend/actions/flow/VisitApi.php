@@ -767,9 +767,11 @@ class VisitApi extends ApiAction
                 }
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
+                $staffModel = Staff::find()->where(['id' => $staffId])->one();
+                $staffName = !empty($staffModel->staff_name) ? $staffModel->staff_name : '未知经纪人';
                 $content = [
                     'content' => '有一条新到访，'
-                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $model->guest_mobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel)
+                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, '',  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
                             . '，请及时处理。',
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,
@@ -793,6 +795,20 @@ class VisitApi extends ApiAction
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+                $pmRecvId = $this->_project->pm_staff_id;
+                if (!empty($pmRecvId)) {
+                    $content = [
+                        'content' => '有一条新到访，'
+                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $model->guest_mobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
+                            . '，请及时处理。',
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                        'visit_id' => $visitId,
+                        'title' => '新到访',
+                    ];
+                    Yii::$app->msg->add($pmRecvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
             }
 
             Yii::$app->oplog->write(\common\models\Log::OP_CODE_VISIT_ADD, \common\models\Log::OP_STATUS_SUCCESS, $this->_staffId, $guestMobile, [

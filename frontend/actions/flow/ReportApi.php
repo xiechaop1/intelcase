@@ -438,8 +438,8 @@ class ReportApi extends ApiAction
 //                    ];
 //                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 //
-//                    $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
-//                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                    $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 //                }
             }
 
