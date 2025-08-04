@@ -227,21 +227,40 @@ class PaymentApi extends ApiAction
                     $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
 
                     if ($payStatus == Subscribed::SUB_PAY_FULLY) {
-                        $content = [
-                            'content' => $guestInfo . $guestInfo2 . ' 完成支付',
-                            'project_id' => $this->_projectId,
-                            'title' => '完成支付',
-                            'btn' => [
-                                [
-                                    'label' => '签约',
-                                    'type' => 'sub_confirm_deal_page',
-                                    'project_id' => $this->_projectId,
-                                    'sub_id' => $model->sub_id,
-                                    'report_id' => $this->_reportId,
-                                    'payment_id' => $model->id,
+                        if (!empty($sub->sub_type) && $sub->sub_type == Subscribed::SUB_TYPE_RENT) {
+                            $content = [
+                                'content' => $guestInfo . $guestInfo2 . ' 完成支付',
+                                'project_id' => $this->_projectId,
+                                'title' => '完成支付',
+                                'btn' => [
+                                    [
+                                        'label' => '平移',
+                                        'type' => 'movetime_page',
+                                        'sub_id' => $model->sub_id,
+                                        'project_id' => $this->_projectId,
+                                        'report_id' => $this->_reportId,
+                                        'payment_id' => $model->id,
+                                    ],
                                 ],
-                            ],
-                        ];
+                            ];
+                        } else {
+                            $content = [
+                                'content' => $guestInfo . $guestInfo2 . ' 完成支付',
+                                'project_id' => $this->_projectId,
+                                'title' => '完成支付',
+                                'btn' => [
+                                    [
+                                        'label' => '签约',
+                                        'type' => 'sub_confirm_deal_page',
+                                        'project_id' => $this->_projectId,
+                                        'sub_id' => $model->sub_id,
+                                        'report_id' => $this->_reportId,
+                                        'payment_id' => $model->id,
+                                    ],
+                                ],
+                            ];
+                        }
+
 //                    $recvId = $this->_project->advisor_staff_id;
                         $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
                         if (!empty($guestAppeal)) {

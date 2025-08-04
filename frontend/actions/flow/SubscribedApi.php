@@ -184,14 +184,14 @@ class SubscribedApi extends ApiAction
                             'report_id' => $this->_reportId,
                             'visit_id' => $visitId,
                         ],
-                        [
-                            'label' => '平移',
-                            'type' => 'movetime_page',
-                            'sub_id' => $subId,
-                            'project_id' => $this->_projectId,
-                            'report_id' => $this->_reportId,
-                            'visit_id' => $visitId,
-                        ]
+//                        [
+//                            'label' => '平移',
+//                            'type' => 'movetime_page',
+//                            'sub_id' => $subId,
+//                            'project_id' => $this->_projectId,
+//                            'report_id' => $this->_reportId,
+//                            'visit_id' => $visitId,
+//                        ]
                     ],
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
