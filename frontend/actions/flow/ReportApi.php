@@ -439,6 +439,12 @@ class ReportApi extends ApiAction
 //                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 //
                     $recvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
+                $content = [
+                    'content' => '新报备' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，请及时处理。',
+                    'title' => '新报备',
+                    'report_id' => $reportId,
+                    'project_id' => $this->_projectId,
+                ];
                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 //                }
             }

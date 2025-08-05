@@ -135,10 +135,18 @@ class VisitApi extends ApiAction
             ->where(['id' => $visitId])
             ->one();
 
+
+
         $ret = $model->toArray();
         $ret['project'] = $this->_project->toArray();
         $ret['report'] = $this->_report->toArray();
         $ret['staff'] = !empty($model->staff_id) ? $model->staff->toArray() : [];
+        if (!empty($this->_report->advisor_staff_id)) {
+            $ret['advisor_staff'] = $this->_report->advisorStaff;
+        }
+        if (!empty($this->_report->consultant_staff_id)) {
+            $ret['consultant_staff'] = $this->_report->consultantStaff;
+        }
         $ret['guest_mobile'] = \common\helpers\Common::formatMultyMobiles(\common\helpers\Common::splitMobile($model->guest_mobile));
 
         if (empty($ret)) {

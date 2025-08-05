@@ -15,11 +15,13 @@ class Visit extends \common\models\gii\Visit
     const VISIT_STATUS_DEFAULT          = 0;
     const VISIT_STATUS_COMPLETED         = 1;
     const VISIT_STATUS_WAIT              = 2;
+    const VISIT_STATUS_RECHANGE_REJECT   = 11;
 
     public $visitStatus2Name = [
         self::VISIT_STATUS_DEFAULT      => '默认',
         self::VISIT_STATUS_COMPLETED    => '已到访',
         self::VISIT_STATUS_WAIT         => '未到访',
+        self::VISIT_STATUS_RECHANGE_REJECT => '转接访拒绝',
     ];
 
     const VISIT_CONFIRM_STATUS_CONFIRM  = 1;
