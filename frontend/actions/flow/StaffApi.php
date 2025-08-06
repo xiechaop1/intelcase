@@ -203,28 +203,35 @@ class StaffApi extends ApiAction
             ])
             ->one();
 
-        $admin = Staff::find()
-            ->where([
-                'id' => $adminStaffId
-            ])
-            ->one();
+        if ($adminStaffId != $staffId) {
+            $admin = Staff::find()
+                ->where([
+                    'id' => $adminStaffId
+                ])
+                ->one();
 
-        $nowRuleJson = json_decode($admin->rules, true);
-        if (!empty($rules)) {
-            if (!empty($nowRuleJson)) {
-                $needRule = Staff::STAFF_RULE_SET_RULE;
-                if (in_array($needRule, $nowRuleJson)) {
-                    if ($rules != 'clear') {
-                        $rules = \common\helpers\Common::splitMobile($rules);
-                        $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+            if (empty($admin)) {
+                return $this->fail('请您制定操作人', -1000);
+            }
+
+
+            $nowRuleJson = json_decode($admin->rules, true);
+            if (!empty($rules)) {
+                if (!empty($nowRuleJson)) {
+                    $needRule = Staff::STAFF_RULE_SET_RULE;
+                    if (in_array($needRule, $nowRuleJson)) {
+                        if ($rules != 'clear') {
+                            $rules = \common\helpers\Common::splitMobile($rules);
+                            $rules = json_encode($rules, JSON_UNESCAPED_UNICODE);
+                        } else {
+                            $rules = json_encode([], JSON_UNESCAPED_UNICODE);
+                        }
                     } else {
-                        $rules = json_encode([], JSON_UNESCAPED_UNICODE);
+                        return $this->fail('您不能更改用户权限', -1000);
                     }
                 } else {
-                    return $this->fail('您不能更改用户权限', -1000);
+                    return $this->fail('更改用户权限失败', -1000);
                 }
-            } else {
-                return $this->fail('更改用户权限失败', -1000);
             }
         }
 
