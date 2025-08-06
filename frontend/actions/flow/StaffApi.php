@@ -231,7 +231,7 @@ class StaffApi extends ApiAction
             } else {
                 return $this->fail('更改用户权限失败', -1000);
             }
-            
+
         }
 
         if (empty($model)) {

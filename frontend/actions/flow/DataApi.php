@@ -642,7 +642,12 @@ class DataApi extends ApiAction
                     // 构建匹配键：第一个字段名_最里层字段名
                     $firstKey = !empty($prevKeys) ? $prevKeys[0] : $key;
                     $lastKey = $key;
-                    $filterKey = $firstKey . '_' . $lastKey;
+                    // 用正则判断，如果lastKey是日期，firstKey就只取原来的
+                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $lastKey)) {
+                        // 如果是日期格式，lastKey就不需要了$firstKey
+                    } else {
+                        $filterKey = $firstKey . '_' . $lastKey;
+                    }
                     
                     if (in_array($filterKey, $rules)) {
                         // 如果在规则中，就记录到ret里
