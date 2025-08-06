@@ -646,6 +646,8 @@ class DataApi extends ApiAction
                     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $lastKey)) {
                         // 如果是日期格式，lastKey就不需要了$firstKey
                         $filterKey = $firstKey;
+                    } else if ($firstKey == $lastKey) {
+                        $filterKey = $firstKey;
                     } else {
                         $filterKey = $firstKey . '_' . $lastKey;
                     }
