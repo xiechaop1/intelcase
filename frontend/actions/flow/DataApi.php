@@ -608,7 +608,7 @@ class DataApi extends ApiAction
         ];
 
 //        $rule = Staff::$staffRole2rule[Staff::STAFF_ROLE_ADMIN_PART];
-        $ruleJson = $this->_staff->rule;
+        $ruleJson = $this->_staff->rules;
         if (!empty($ruleJson)) {
             $rule = json_decode($ruleJson, true);
         }
