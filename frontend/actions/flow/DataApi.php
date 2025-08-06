@@ -623,6 +623,10 @@ class DataApi extends ApiAction
 
     private function _filterByRule($data, $rules, $prevKeys = []) {
         $ret = [];
+
+        if (empty($rules)) {
+            return [];
+        }
         
         if (is_array($data)) {
             foreach ($data as $key => $item) {
