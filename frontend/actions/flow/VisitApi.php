@@ -625,6 +625,11 @@ class VisitApi extends ApiAction
 
         $model->save();
 
+        $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+        if (!empty($msgId)) {
+            Yii::$app->msg->removeBtn($msgId);
+        }
+
         return $this->success();
     }
 
