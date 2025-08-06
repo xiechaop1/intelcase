@@ -276,6 +276,7 @@ class ReportApi extends ApiAction
                     $lastReport = Report::find()
                         ->where(['project_id' => $this->_projectId])
                         ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
+                        ->andFilterWhere(['<>', 'staff_mobile', $staffMobile])
                         ->andFilterWhere([
                             '>', 'visit_time', time() - 24 * 3600
                         ])
