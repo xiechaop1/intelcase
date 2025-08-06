@@ -77,7 +77,8 @@ class Staff extends \common\models\gii\Staff
         self::STAFF_RULE_DATA_SUBSCRIBED_COUNT    => '认购数量',
         self::STAFF_RULE_DATA_SUBSCRIBED_BUILDING_AREA => '认购面积',
         self::STAFF_RULE_DATA_SUBSCRIBED_SUB_TOTAL_PRICE => '认购总额',
-        self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL    => '认购总额数据'
+        self::STAFF_RULE_DATA_SUBSCRIBED_TOTAL    => '认购总额数据',
+        self::STAFF_RULE_SET_RULE                 => '设置权限',
     ];
 
     public static $staffRole2rule = [
