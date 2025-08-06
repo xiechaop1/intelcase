@@ -607,7 +607,11 @@ class DataApi extends ApiAction
             'subscribed_data' => $subscribedData,
         ];
 
-        $rule = Staff::$staffRole2rule[Staff::STAFF_ROLE_ADMIN_PART];
+//        $rule = Staff::$staffRole2rule[Staff::STAFF_ROLE_ADMIN_PART];
+        $ruleJson = $this->_staff->rule;
+        if (!empty($ruleJson)) {
+            $rule = json_decode($ruleJson, true);
+        }
 
         $data = $this->_filterByRule($data, $rule);
 //        var_dump($data);
