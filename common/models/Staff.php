@@ -43,10 +43,10 @@ class Staff extends \common\models\gii\Staff
     ];
 
     const STAFF_RULE_DATA_REPORT_ALL        = 'report_all';            // 全部报备数
-    const STAFF_RULE_DATA_REPORT_COUNT      = 'report_count_all';        // 报备统计
+    const STAFF_RULE_DATA_REPORT_COUNT      = 'report_count';        // 报备统计
     const STAFF_RULE_DATA_REPORT_DRIFT      = 'report_drift';        // 报备变化率
     const STAFF_RULE_DATA_VISIT_ALL         = 'visit_all';              // 全部到访数
-    const STAFF_RULE_DATA_VISIT_COUNT       = 'visit_count_all';          // 到访统计
+    const STAFF_RULE_DATA_VISIT_COUNT       = 'visit_count';          // 到访统计
     const STAFF_RULE_DATA_VISIT_DRIFT       = 'visit_drift';          // 到访变化率
     const STAFF_RULE_DATA_VISIT_RATE_ALL    = 'visit_rate_all';    // 全部到访率
     const STAFF_RULE_DATA_PAYMENT_PAY       = 'payment_data_pay';      // 已付款数据
