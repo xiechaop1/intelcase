@@ -271,33 +271,120 @@ class ReportApi extends ApiAction
             }
 
             $visitCount = 0;
+            $reportStatus = Report::REPORT_STATUS_PASS;
             foreach ($guestMobiles as $tmpMobile) {
-                if (empty($lastReport)) {
-                    $lastReport = Report::find()
+                if ($reportStatus == Report::REPORT_STATUS_PASS) {
+
+                    // 如果目前报备属于有效报备
+                    // 先找到近一个月内非本人报备
+                    $reportList = Report::find()
                         ->where(['project_id' => $this->_projectId])
                         ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
                         ->andFilterWhere(['<>', 'staff_mobile', $staffMobile])
                         ->andFilterWhere([
-                            '>', 'visit_time', time() - 24 * 3600
+                            '>', 'visit_time', time() - 30 * 24 * 3600
                         ])
                         ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
                         ->orderBy('id DESC')
-                        ->one();
-                }
+                        ->all();
 
-                $reportCount = Report::find()
-                    ->select('visit_time')
-                    ->where([
-                        'project_id' => $this->_projectId,
-//                        'guest_mobile' => $tmpMobile,
-                    ])
-                    ->andFilterWhere([
-                        'like', 'guest_mobile', $tmpMobile
-                    ])
-                    ->groupBy([
-                        'visit_time'
-                    ])
-                    ->count();
+                    // 如果存在非本人报备
+                    if (!empty($reportList)) {
+                        foreach ($reportList as $report) {
+                            // 先判断，如果是当天有人报备（无论到不到访），均无效报备
+                            if ($report->visit_time > time() - 24 * 3600) {
+                                $reportStatus = Report::REPORT_STATUS_INVALID;
+                                break;
+                            }
+                            // 当天没有，如果之前有报备且到访，则无效（一个月内）
+                            $checkVisit = Visit::find()
+                                ->where(['report_id' => $report->id])
+                                ->andFilterWhere([
+                                    'visit_status' => Visit::VISIT_STATUS_COMPLETED
+                                ])
+                                ->orderBy(['id' => SORT_DESC])
+                                ->one();
+
+                            if (!empty($checkVisit)) {
+                                $reportStatus = Report::REPORT_STATUS_INVALID;
+                                break;
+                            }
+                        }
+                    }
+
+
+//                    $checkVisits = Visit::find()
+//                        ->where(['project_id' => $this->_projectId])
+//                        ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
+//                        ->andFilterWhere([
+//                            '>', 'visit_time', time() - 24 * 3600 * 30
+//                        ])
+////                        ->andFilterWhere(['visit_status' => Visit::VISIT_STATUS_COMPLETED])
+//                        ->orderBy('id DESC')
+//                        ->limit(30)
+//                        ->all();
+//
+//                    if (!empty($checkVisits)) {
+//                        foreach ($checkVisits as $checkVisit) {
+//                            if ($checkVisit->visit_status == Visit::VISIT_STATUS_COMPLETED) {
+//                                if (!empty($checkVisit->report)) {
+//                                    if ($checkVisit->report->staff_mobile != $staffMobile) {
+//                                        $reportStatus = Report::REPORT_STATUS_INVALID;
+//                                        break;
+//                                    }
+//                                }
+//                            } else {
+//                                if (!empty($checkVisit->report)) {
+//                                    if ($checkVisit->report->staff_mobile != $staffMobile
+//                                    && $checkVisit->report->visit_time > (time() - 24 * 3600)
+//                                    ) {
+//                                        $reportStatus = Report::REPORT_STATUS_INVALID;
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        $lastReport = Report::find()
+//                            ->where(['project_id' => $this->_projectId])
+//                            ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
+//                            ->andFilterWhere(['<>', 'staff_mobile', $staffMobile])
+//                            ->andFilterWhere([
+//                                '>', 'visit_time', time() - 24 * 3600
+//                            ])
+//                            ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+//                            ->orderBy('id DESC')
+//                            ->one();
+//
+//                        if (!empty($lastReport)) {
+//                            $reportStatus = Report::REPORT_STATUS_INVALID;
+//                        }
+//                    }
+                }
+//                if (empty($lastReport)) {
+//                    $lastReport = Report::find()
+//                        ->where(['project_id' => $this->_projectId])
+//                        ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
+//                        ->andFilterWhere(['<>', 'staff_mobile', $staffMobile])
+//                        ->andFilterWhere([
+//                            '>', 'visit_time', time() - 24 * 3600
+//                        ])
+//                        ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+//                        ->orderBy('id DESC')
+//                        ->one();
+
+//                    $checkReport = Report::find()
+//                        ->where(['project_id' => $this->_projectId])
+//                        ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
+//                        ->andFilterWhere([
+//                            '>', 'visit_time', time() - 24 * 3600 * 30
+//                        ])
+//                        ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
+//                        ->orderBy('id DESC')
+//                        ->one();
+
+
+//                }
 
                 $firstReport = Report::find()
                     ->where(['project_id' => $this->_projectId])
@@ -320,11 +407,11 @@ class ReportApi extends ApiAction
 
             $visitType = empty($visitCount) ? 0 : $visitCount + 1;
 
-            if (!empty($lastReport)) {
-                $reportStatus = Report::REPORT_STATUS_INVALID;
-            } else {
-                $reportStatus = Report::REPORT_STATUS_PASS;
-            }
+//            if (!empty($lastReport)) {
+//                $reportStatus = Report::REPORT_STATUS_INVALID;
+//            } else {
+//                $reportStatus = Report::REPORT_STATUS_PASS;
+//            }
 
 //            $staff = Staff::find()
 //                ->where(['mobile' => $staffMobile])
