@@ -206,6 +206,8 @@ class DataApi extends ApiAction
                     }
                     break;
                 case Staff::STAFF_ROLE_ADMIN:
+                case Staff::STAFF_ROLE_ADMIN_PART:
+                case Staff::STAFF_ROLE_ADMIN_CHILD:
                 case Staff::STAFF_ROLE_FINANCE:
                     break;
                 default:
