@@ -48,7 +48,8 @@ class Staff extends \common\models\gii\Staff
     const STAFF_RULE_DATA_VISIT_ALL         = 'visit_all';              // 全部到访数
     const STAFF_RULE_DATA_VISIT_COUNT       = 'visit_count';          // 到访统计
     const STAFF_RULE_DATA_VISIT_DRIFT       = 'visit_drift';          // 到访变化率
-    const STAFF_RULE_DATA_VISIT_RATE_ALL    = 'visit_rate';             // 全部到访率
+    const STAFF_RULE_DATA_VISIT_RATE_ALL    = 'visit_rate_all';         // 整体到访率
+    const STAFF_RULE_DATA_VISIT_RATE        = 'visit_rate';             // 到访率
     const STAFF_RULE_DATA_VISIT_RATE_DRIFT = 'visit_rate_drift';        // 到访率变化率
     const STAFF_RULE_DATA_PAYMENT_PAY       = 'payment_data_pay';      // 已付款数据
     const STAFF_RULE_DATA_PAYMENT_WAITPAY   = 'payment_data_wait_pay'; // 付款待付款数据
@@ -69,7 +70,8 @@ class Staff extends \common\models\gii\Staff
         self::STAFF_RULE_DATA_VISIT_COUNT         => '到访统计',
         self::STAFF_RULE_DATA_VISIT_DRIFT         => '到访变化率',
         self::STAFF_RULE_DATA_VISIT_RATE_DRIFT    => '到访率变化率',
-        self::STAFF_RULE_DATA_VISIT_RATE_ALL      => '全部到访率',
+        self::STAFF_RULE_DATA_VISIT_RATE_ALL      => '到访率',
+        self::STAFF_RULE_DATA_VISIT_RATE          => '整体到访率',
         self::STAFF_RULE_DATA_PAYMENT_PAY         => '已付款数据',
         self::STAFF_RULE_DATA_PAYMENT_WAITPAY     => '付款待付款数据',
         self::STAFF_RULE_DATA_PAYMENT_REFUND      => '退款数据',
@@ -90,6 +92,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_COUNT,
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
@@ -110,6 +113,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
@@ -124,6 +128,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_REPORT_COUNT,
             self::STAFF_RULE_DATA_REPORT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_VISIT_COUNT,
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
@@ -146,6 +151,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
@@ -164,6 +170,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
@@ -182,6 +189,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
@@ -200,6 +208,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
@@ -218,6 +227,7 @@ class Staff extends \common\models\gii\Staff
             self::STAFF_RULE_DATA_VISIT_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_DRIFT,
             self::STAFF_RULE_DATA_VISIT_RATE_ALL,
+            self::STAFF_RULE_DATA_VISIT_RATE,
             self::STAFF_RULE_DATA_PAYMENT_PAY,
             self::STAFF_RULE_DATA_PAYMENT_WAITPAY,
             self::STAFF_RULE_DATA_PAYMENT_REFUND,
