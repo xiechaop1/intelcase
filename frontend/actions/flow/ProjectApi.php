@@ -146,6 +146,7 @@ class ProjectApi extends ApiAction
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
+            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : 0;
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
@@ -170,6 +171,9 @@ class ProjectApi extends ApiAction
             }
             if (!empty($pmStaffId)) {
                 $model->pm_staff_id = $pmStaffId;
+            }
+            if (!empty($seniorPmStaffId)) {
+                $model->senior_pm_staff_id = $seniorPmStaffId;
             }
             if (!empty($consultantStaffId)) {
                 $model->consultant_staff_id = $consultantStaffId;
@@ -225,6 +229,7 @@ class ProjectApi extends ApiAction
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
+            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : 0;
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
@@ -238,6 +243,7 @@ class ProjectApi extends ApiAction
             $model->target_product = $targetProduct;
             $model->staff_id = $staffId;
             $model->pm_staff_id = $pmStaffId;
+            $model->senior_pm_staff_id = $seniorPmStaffId;
             $model->consultant_staff_id = $consultantStaffId;
             $model->advisor_staff_id = $advisorStaffId;
             $model->consultant_team = $consultantTeam;
