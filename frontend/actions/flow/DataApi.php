@@ -169,6 +169,18 @@ class DataApi extends ApiAction
                         $projectId = [-1];
                     }
                     break;
+                case Staff::STAFF_ROLE_ADMIN_PART:
+                    $projects = Project::find()
+                        ->where(['senior_pm_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
                 case Staff::STAFF_ROLE_SALES:
                     $projects = Report::find()
                         ->where(['staff_id' => $this->_staffId])
@@ -206,7 +218,7 @@ class DataApi extends ApiAction
                     }
                     break;
                 case Staff::STAFF_ROLE_ADMIN:
-                case Staff::STAFF_ROLE_ADMIN_PART:
+//                case Staff::STAFF_ROLE_ADMIN_PART:
                 case Staff::STAFF_ROLE_ADMIN_CHILD:
                 case Staff::STAFF_ROLE_FINANCE:
                     break;
