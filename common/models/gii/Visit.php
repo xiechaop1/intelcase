@@ -27,7 +27,7 @@ class Visit extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['guest_name', 'guest_mobile', 'guest_appeal', 'location', 'budget', 'staff_mobile', 'visit_status_comment', ], 'string'],
+            [['guest_name', 'guest_mobile', 'guest_appeal', 'location', 'budget', 'staff_mobile', 'visit_status_comment', 'guest_type' ], 'string'],
             [['staff_id', 'report_id', 'project_id', 'adv_staff_id', 'person_ct', ], 'integer'],
             [[
 //                'visit_time',

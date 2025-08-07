@@ -473,6 +473,7 @@ class VisitApi extends ApiAction
 //        $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : Visit::VISIT_CONFIRM_STATUS_CONFIRM;
         $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : Visit::VISIT_STATUS_DEFAULT;
         $visitStatusComment = !empty($this->_get['visit_status_comment']) ? $this->_get['visit_status_comment'] : '';
+        $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
         $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
         Yii::$app->privilege->checkByUser($this->_user, Privilege::VISIT_INFO_CONFIRM);
@@ -492,6 +493,7 @@ class VisitApi extends ApiAction
 //        $model->visit_confirm_status = $visitConfirmStatus;
         $model->visit_status = $visitStatus;
         $model->visit_status_comment = $visitStatusComment;
+        $model->guest_type = $guestType;
         try {
             $ret = $model->save();
             if ($ret === false) {
