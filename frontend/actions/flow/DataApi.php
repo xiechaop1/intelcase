@@ -698,7 +698,7 @@ class DataApi extends ApiAction
                 ->select([
                     'o_visit.*',
                     'o_project.project_name as project_name',
-                    'o_subscribed.*'
+                    'o_subscribed.*',
                 ])
                 ->joinWith('project')
                 ->joinWith('subscribed');
@@ -722,7 +722,9 @@ class DataApi extends ApiAction
                 '确认状态',
                 '到访人数',
                 // 认购基本信息
-                '是否认购',
+                '所属渠道',
+                '经纪人姓名',
+                '经纪人手机号',
                 '认购类型',
                 '认购人',
                 '房间号',
@@ -773,6 +775,7 @@ class DataApi extends ApiAction
 
             foreach ($visits as $visit) {
                 $project = Project::find()->where(['id' => $visit['project_id']])->one();
+                $report = $visit->report;
                 $row = [
                     // 访客基本信息
                     $visit['guest_name'],
@@ -784,7 +787,9 @@ class DataApi extends ApiAction
                     Visit::$visitConfirm2Name[$visit['visit_confirm_status']] ?? '',
                     $visit['person_ct'] + 1,
                     // 认购基本信息
-                    !empty($visit['sub_guest']) ? '是' : '否',
+                    $report->guest_channel ?? '',
+                    $report->staff->staff_name ?? '',
+                    $report->staff_mobile ?? '',
                     !empty($visit['sub_type']) ? ($visit['sub_type'] == 1 ? '全款' : '部分') : '',
                     $visit['sub_guest'] ?? '',
                     $visit['room_no'] ?? '',
