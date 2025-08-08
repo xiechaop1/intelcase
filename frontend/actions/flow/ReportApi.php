@@ -97,7 +97,10 @@ class ReportApi extends ApiAction
             ->one();
 
         $ret = $model->toArray();
-        $ret['staff'] = $model->staff;
+        $ret['staff'] = $model->staff->toArray();
+        if (!empty($ret['staff_name'])) {
+            $ret['staff']['staff_name'] = $ret['staff_name'];
+        }
         $ret['consultant_staff'] = $model->consultantStaff;
         $ret['advisor_staff'] = $model->adviorStaff;
         $ret['project'] = $model->project;
@@ -252,6 +255,7 @@ class ReportApi extends ApiAction
             $guestChannel = !empty($this->_get['guest_channel']) ? $this->_get['guest_channel'] : '';
             $guestAppeal = !empty($this->_get['guest_appeal']) ? $this->_get['guest_appeal'] : '';
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
+            $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d H:i:s');
 //            $visitTime = !empty($this->_get['created']) ? $this->_get['created'] : $visitTime;
@@ -445,6 +449,7 @@ class ReportApi extends ApiAction
             $model->guest_channel = $guestChannel;
             $model->guest_appeal = $guestAppeal;
             $model->staff_mobile = $staffMobile;
+            $model->staff_name = $staffName;
             $model->staff_id = $staffId;
             $model->advisor_staff_id = !empty($firstAdvisorId) ? $firstAdvisorId : 0;
             $model->consultant_staff_id = !empty($firstConsultantId) ? $firstConsultantId : 0;

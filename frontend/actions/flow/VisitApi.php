@@ -782,8 +782,12 @@ class VisitApi extends ApiAction
                 }
                 $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
-                $staffModel = Staff::find()->where(['id' => $staffId])->one();
-                $staffName = !empty($staffModel->staff_name) ? $staffModel->staff_name : '未知经纪人';
+                if (!empty($this->_report->staff_name)) {
+                    $staffName = $this->_report->staff_name;
+                } else {
+                    $staffModel = Staff::find()->where(['id' => $staffId])->one();
+                    $staffName = !empty($staffModel->staff_name) ? $staffModel->staff_name : '未知经纪人';
+                }
                 $content = [
                     'content' => '有一条新到访，'
                             . \common\helpers\Common::formatGuestInfo($projectName, $guestName, '',  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
