@@ -704,7 +704,7 @@ class DataApi extends ApiAction
                 ->joinWith('subscribed');
 
             if (!empty($projectId)) {
-                $query->andWhere(['project_id' => $projectId]);
+                $query->andWhere(['o_visit.project_id' => $projectId]);
             }
 
             $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();

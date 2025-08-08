@@ -60,7 +60,7 @@ class Visit extends \common\models\gii\Visit
 
     public function getSubscribed()
     {
-        return $this->hasMany(Subscribed::className(), ['id' => 'visit_id']);
+        return $this->hasMany(Subscribed::className(), ['visit_id' => 'id']);
     }
 
     public function getProject()
