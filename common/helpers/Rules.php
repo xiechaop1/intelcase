@@ -25,7 +25,7 @@ class Rules
         }
 
         if (empty(self::$ruleList[$ruleTag])) {
-            // 没有定位权限，就开放权限
+            // 没有定义权限，就开放权限
             return true;
         }
 
@@ -41,12 +41,12 @@ class Rules
         return false;
     }
 
-    public static function hasRule($rule, $ruleTag) {
-        if (empty($rule)) {
+    public static function hasRule($ruleTag, $rules) {
+        if (empty($rules)) {
             return false;
         }
 
-        if (isset(self::$ruleList[$ruleTag]) && in_array($rule, self::$ruleList[$ruleTag])) {
+        if (isset(self::$ruleList[$ruleTag]) && in_array(self::$ruleList[$ruleTag], $rules)) {
             return true;
         }
 
