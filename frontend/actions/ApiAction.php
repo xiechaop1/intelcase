@@ -9,6 +9,7 @@
 namespace frontend\actions;
 
 
+use common\helpers\Rules;
 use yii\base\Action;
 use yii;
 
@@ -42,6 +43,13 @@ class ApiAction extends \liyifei\base\actions\ApiAction
             throw new yii\db\Exception('token验证无效');
         }
 
+        return true;
+    }
+
+    public function checkRule($ruleTag, $staff) {
+        if (!Rules::checkStaffRule($staff, $ruleTag)) {
+            throw new \Exception('没有权限');
+        }
         return true;
     }
 

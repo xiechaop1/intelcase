@@ -53,6 +53,9 @@ class DataApi extends ApiAction
             }
 
             $this->valToken();
+
+            $this->checkRule($this->action, $this->_staff);
+
             switch ($this->action) {
                 case 'get_data':
                     $ret = $this->getData();
