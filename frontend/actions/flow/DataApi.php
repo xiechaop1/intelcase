@@ -793,7 +793,7 @@ class DataApi extends ApiAction
                 $project = Project::find()->where(['id' => $visit['project_id']])->one();
                 $report = Report::find()->where(['id' => $visit['report_id']])->one();
                 $sub = Subscribed::find()->where(['visit_id' => $visit['id']])->one();
-                $payments = $sub->payments;
+                $payments = !empty($sub->payments) ? $sub->payments : [];
 
 //                if (!empty($visit['guest_mobile'])) {
 //                    $guestMobiles = \common\helpers\Common::splitMobile($visit['guest_mobile']);
