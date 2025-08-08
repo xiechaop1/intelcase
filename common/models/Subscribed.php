@@ -83,5 +83,9 @@ class Subscribed extends \common\models\gii\Subscribed
         return $this->hasOne(Project::class, ['id' => 'project_id']);
     }
 
+    public function getPayments() {
+        return $this->hasMany(Payment::class, ['sub_id' => 'id']);
+    }
+
 
 }

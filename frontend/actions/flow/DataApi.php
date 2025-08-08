@@ -694,17 +694,17 @@ class DataApi extends ApiAction
             $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
 
             // 使用 join 查询获取所有需要的数据
-            $query = Visit::find()
-                ->select([
-                    'o_visit.*',
+            $query = Visit::find();
+//                ->select([
+//                    'o_visit.*',
 //                    'o_project.project_name as project_name',
-                    'o_subscribed.*'
-                ])
+//                    'o_subscribed.*'
+//                ])
 //                ->joinWith('project')
-                ->joinWith('subscribed');
+//                ->joinWith('subscribed');
 
             if (!empty($projectId)) {
-                $query->andWhere(['o_visit.project_id' => $projectId]);
+                $query->andWhere(['project_id' => $projectId]);
             }
 
             $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();
@@ -771,6 +771,20 @@ class DataApi extends ApiAction
                 '招商顾问',
                 '投资顾问',
                 '财务',
+                // 支付信息
+                '付款人',
+                '付款类型',
+                '付款时间',
+                '支付方式',
+                '付款金额',
+                '款项性质',
+                '付款账户',
+                '收款户名',
+                '收据编号',
+                '到账金额',
+                '手续费',
+                '到账时间',
+                '付款状态',
                 
             ];
 
@@ -778,8 +792,8 @@ class DataApi extends ApiAction
             foreach ($visits as $visit) {
                 $project = Project::find()->where(['id' => $visit['project_id']])->one();
                 $report = Report::find()->where(['id' => $visit['report_id']])->one();
-
-//                $payments = Payment::find()->where(['sub_id' => $visit['']])
+                $sub = Subscribed::find()->where(['visit_id' => $visit['id']])->one();
+                $payments = $sub->payments;
 
 //                if (!empty($visit['guest_mobile'])) {
 //                    $guestMobiles = \common\helpers\Common::splitMobile($visit['guest_mobile']);
@@ -804,44 +818,43 @@ class DataApi extends ApiAction
                     $report->guest_channel ?? '',
                     $report->staff->staff_name ?? '',
                     $report->staff_mobile ?? '',
-                    !empty($visit['sub_type']) ? ($visit['sub_type'] == 1 ? '全款' : '部分') : '',
-                    $visit['sub_guest'] ?? '',
-                    $visit['room_no'] ?? '',
-                    $visit['building_area'] ?? '',
-                    $visit['sub_total_price'] ?? '',
-                    $visit['pay_method'] ?? '',
-                    !empty($visit['sub_status']) ? Subscribed::$subscribedStatus2Name[$visit['sub_status']] ?? '' : '',
-//                    !empty($visit['pay_status']) ? Subscribed::$subscribedStatus2Name[$visit['pay_status']] ?? '' : '',
+                    !empty($sub->sub_type) ? ($sub->sub_type == 1 ? '全款' : '部分') : '',
+                    $sub->sub_guest ?? '',
+                    $sub->room_no ?? '',
+                    $sub->building_area ?? '',
+                    $sub->sub_total_price ?? '',
+                    $sub->pay_method ?? '',
+                    !empty($sub->sub_status) ? Subscribed::$subscribedStatus2Name[$sub->sub_status] ?? '' : '',
                     // 身份证信息
-                    $visit['id_type'] ?? '',
-                    $visit['id_no'] ?? '',
+                    $sub->id_type ?? '',
+                    $sub->id_no ?? '',
                     // 业主信息
-                    $visit['owner'] ?? '',
-                    $visit['lessor'] ?? '',
-                    $visit['lessor_detail'] ?? '',
+                    $sub->owner ?? '',
+                    $sub->lessor ?? '',
+                    $sub->lessor_detail ?? '',
                     // 租赁信息
-                    $visit['rent_date_begin'] ?? '',
-                    $visit['rent_date_end'] ?? '',
-                    $visit['free_rent_date'] ?? '',
-                    $visit['increase_date'] ?? '',
-                    $visit['increase_rate'] ?? '',
-                    $visit['deposit'] ?? '',
+                    $sub->rent_date_begin ?? '',
+                    $sub->rent_date_end ?? '',
+                    $sub->free_rent_date ?? '',
+                    $sub->increase_date ?? '',
+                    $sub->increase_rate ?? '',
+                    $sub->deposit ?? '',
                     // 租金信息
-                    $visit['daily_amount'] ?? '',
-                    $visit['monthly_amount'] ?? '',
-                    $visit['yearly_amount'] ?? '',
-                    $visit['rent_amount'] ?? '',
-                    $visit['pro_rent_amount'] ?? '',
-                    $visit['al_daily_amount'] ?? '',
-                    $visit['al_amount'] ?? '',
-                    $visit['al_other'] ?? '',
-                    $visit['al_total_amount'] ?? '',
+                    $sub->daily_amount ?? '',
+                    $sub->monthly_amount ?? '',
+                    $sub->yearly_amount ?? '',
+                    $sub->rent_amount ?? '',
+                    $sub->pro_rent_amount ?? '',
+                    $sub->al_daily_amount ?? '',
+                    $sub->al_amount ?? '',
+                    $sub->al_other ?? '',
+                    $sub->al_total_amount ?? '',
                     // 补充信息
-                    $visit['supply_sub_guest'] ?? '',
-                    $visit['supply_guest_id_type'] ?? '',
-                    $visit['supply_guest_id_no'] ?? '',
-                    $visit['supply_guest_mobile'] ?? '',
-                    $visit['supply_total_price'] ?? '',
+                    $sub->supply_sub_guest ?? '',
+                    $sub->supply_guest_id_type ?? '',
+                    $sub->supply_guest_id_no ?? '',
+                    $sub->supply_guest_mobile ?? '',
+                    $sub->supply_total_price ?? '',
                     // 项目信息
                     $project->project_name ?? '',
                     // 员工信息
@@ -851,7 +864,27 @@ class DataApi extends ApiAction
                     $project->financialStaff->staff_name ?? '',
                     
                 ];
-                $data[] = $row;
+                if (!empty($payments)) {
+                    foreach ($payments as $pay) {
+                        $tmp = $row;
+                        $tmp[] = $pay->payer ?? '';
+                        $tmp[] = !empty(Payment::$paymentType2Name[$pay->pay_type]) ? Payment::$paymentType2Name[$pay->pay_type] : '';
+                        $tmp[] = $pay->pay_time ? date('Y-m-d H:i:s', $pay->pay_time) : '';
+                        $tmp[] = !empty(Payment::$paymentWay2Name[$pay->pay_way]) ? Payment::$paymentWay2Name[$pay->pay_way] : '';
+                        $tmp[] = $pay->amount ?? '';
+                        $tmp[] = $pay->amount_type ?? '';
+                        $tmp[] = $pay->pay_account ?? '';
+                        $tmp[] = $pay->recv_account ?? '';
+                        $tmp[] = $pay->receipt_no ?? '';
+                        $tmp[] = $pay->recv_amount ?? '';
+                        $tmp[] = $pay->fee ?? '';
+                        $tmp[] = $pay->recv_time ? date('Y-m-d H:i:s', $pay->recv_time) : '';
+                        $tmp[] = !empty(Payment::$paymentStatus2Name[$pay->status]) ? Payment::$paymentStatus2Name[$pay->status] : '';
+                    }
+                    $data[] = $tmp;
+                } else {
+                    $data[] = $row;
+                }
             }
 
             

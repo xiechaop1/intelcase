@@ -15,7 +15,7 @@ class Payment extends \common\models\gii\Payment
     const PAYMENT_STATUS_WAIT           = 1;
     const PAYMENT_STATUS_COMPLETED      = 10;
 
-    public $paymentStatus2Name = [
+    public static $paymentStatus2Name = [
         self::PAYMENT_STATUS_WAIT         => '待支付',
         self::PAYMENT_STATUS_COMPLETED    => '已支付',
     ];
