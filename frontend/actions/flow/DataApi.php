@@ -697,21 +697,22 @@ class DataApi extends ApiAction
             $query = Visit::find()
                 ->select([
                     'o_visit.*',
-                    'o_project.project_name as project_name',
-                    'o_subscribed.*',
+//                    'o_project.project_name as project_name',
+                    'o_subscribed.*'
                 ])
-                ->joinWith('project')
+//                ->joinWith('project')
                 ->joinWith('subscribed');
 
             if (!empty($projectId)) {
-                $query->andWhere(['o_visit.project_id' => $projectId]);
+                $query->andWhere(['project_id' => $projectId]);
             }
 
-            $visits = $query->orderBy(['o_visit.created_at' => SORT_DESC])->asArray()->all();
+            $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();
 
             // 准备Excel数据
             $data = [];
             $headers = [
+                '序号',
                 // 访客基本信息
                 '访客姓名',
                 '访客手机号',
@@ -732,7 +733,7 @@ class DataApi extends ApiAction
                 '认购总价',
                 '支付方式',
                 '认购状态',
-                '支付状态',
+//                '支付状态',
                 // 身份证信息
                 '证件类型',
                 '证件号码',
@@ -773,10 +774,23 @@ class DataApi extends ApiAction
                 
             ];
 
+            $i = 0;
             foreach ($visits as $visit) {
                 $project = Project::find()->where(['id' => $visit['project_id']])->one();
                 $report = Report::find()->where(['id' => $visit['report_id']])->one();
+
+//                $payments = Payment::find()->where(['sub_id' => $visit['']])
+
+//                if (!empty($visit['guest_mobile'])) {
+//                    $guestMobiles = \common\helpers\Common::splitMobile($visit['guest_mobile']);
+//                    if (!empty($guestMobiles)) {
+//                        foreach ($guestMobiles as $guestMobile) {
+//                            $sub = Subscribed::find()->where(['mobile' => $guestMobile])->all();
+//                        }
+//                    }
+//                }
                 $row = [
+                    $i++,
                     // 访客基本信息
                     $visit['guest_name'],
                     $visit['guest_mobile'],
@@ -797,7 +811,7 @@ class DataApi extends ApiAction
                     $visit['sub_total_price'] ?? '',
                     $visit['pay_method'] ?? '',
                     !empty($visit['sub_status']) ? Subscribed::$subscribedStatus2Name[$visit['sub_status']] ?? '' : '',
-                    !empty($visit['pay_status']) ? Subscribed::$subscribedStatus2Name[$visit['pay_status']] ?? '' : '',
+//                    !empty($visit['pay_status']) ? Subscribed::$subscribedStatus2Name[$visit['pay_status']] ?? '' : '',
                     // 身份证信息
                     $visit['id_type'] ?? '',
                     $visit['id_no'] ?? '',

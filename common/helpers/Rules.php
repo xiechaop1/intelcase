@@ -15,7 +15,8 @@ class Rules
 {
 
     public static $ruleList = [
-        'report_list' => Staff::STAFF_RULE_DATA_REPORT_ALL
+        'report_list' => Staff::STAFF_RULE_DATA_REPORT_ALL,
+        'guest_list' => Staff::STAFF_RULE_DATA_VISIT_ALL,
 
     ];
 
