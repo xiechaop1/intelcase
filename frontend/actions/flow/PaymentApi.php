@@ -585,6 +585,7 @@ class PaymentApi extends ApiAction
                             [
                                 'label' => '最终确认',
                                 'type' => 'payment_confirm_page',
+                                'sub_type' => 1,        // 付款
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
@@ -603,6 +604,7 @@ class PaymentApi extends ApiAction
                             [
                                 'label' => '确认',
                                 'type' => 'payment_confirm_page',
+                                'sub_type' => 1,        // 付款
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
@@ -623,7 +625,8 @@ class PaymentApi extends ApiAction
                         [
                             [
                                 'label' => '确认',
-                                'type' => 'pay_refund_page',
+                                'type' => 'payment_confirm_page',
+                                'sub_type' => 2,        // 退款
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
