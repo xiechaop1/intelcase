@@ -287,7 +287,19 @@ class VisitApi extends ApiAction
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
 
+                $recvStaffId = $this->_report->staff_id;
+                $content = [
+                    'content' => '新' . $type . '，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)
+                                    . '已经被复核',
+                    'title' => '新' . $type . '被复核',
+                    'visit_id' => $visitId,
+                    'project_id' => $this->_projectId,
+                ];
+
+                Yii::$app->msg->add($recvStaffId, $content, Msg::MSG_SENDER_SYSTEM);
+
             }
+
         } else {
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
                 || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
@@ -317,6 +329,17 @@ class VisitApi extends ApiAction
                     'project_id' => $this->_projectId,
                 ];
                 Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+
+                $recvStaffId = $this->_report->staff_id;
+                $content = [
+                    'content' => '新到访，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)
+                        . '状态：' . $type . '，已经被复核',
+                    'title' => $title . '被复核',
+                    'visit_id' => $visitId,
+                    'project_id' => $this->_projectId,
+                ];
+
+                Yii::$app->msg->add($recvStaffId, $content, Msg::MSG_SENDER_SYSTEM);
 
             }
         }
@@ -562,10 +585,10 @@ class VisitApi extends ApiAction
                 $content = [
                     'content' => '有一条待确认的到访消息，'
                         . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s'), $guestChannel)  . '，请及时处理。',
-                    'title' => '到访确认',
+                    'title' => '到访复核',
                     'btn' => [
                         [
-                            'label' => '确认',
+                            'label' => '复核',
                             'type' => 'visit_confirm_page',
                             'visit_id' => $visitId,
                             'report_id' => $this->_reportId,

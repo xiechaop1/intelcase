@@ -722,6 +722,7 @@ class DataApi extends ApiAction
                 '到访状态',
                 '确认状态',
                 '到访人数',
+                '客户描摹',
                 // 认购基本信息
                 '所属渠道',
                 '经纪人姓名',
@@ -814,9 +815,10 @@ class DataApi extends ApiAction
                     Visit::$visitStatus2Name[$visit['visit_status']] ?? '',
                     Visit::$visitConfirm2Name[$visit['visit_confirm_status']] ?? '',
                     $visit['person_ct'] + 1,
+                    $visit['visit_status_comment'],
                     // 认购基本信息
                     $report->guest_channel ?? '',
-                    $report->staff->staff_name ?? '',
+                    $report->staff_name ?? '',
                     $report->staff_mobile ?? '',
                     !empty($sub->sub_type) ? ($sub->sub_type == 1 ? '全款' : '部分') : '',
                     $sub->sub_guest ?? '',

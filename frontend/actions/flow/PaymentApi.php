@@ -623,7 +623,7 @@ class PaymentApi extends ApiAction
                         [
                             [
                                 'label' => '确认',
-                                'type' => 'payment_confirm_page',
+                                'type' => 'pay_refund_page',
                                 'project_id' => $this->_projectId,
                                 'payment_id' => $paymentId,
                                 'report_id' => $this->_reportId,
