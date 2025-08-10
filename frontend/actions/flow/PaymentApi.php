@@ -134,6 +134,10 @@ class PaymentApi extends ApiAction
             ])
             ->one();
 
+        if (empty($model)) {
+            return $this->fail('没有找到支付内容', -1000);
+        }
+
         $ret = $model->toArray();
         $ret['pay_time_str'] = !empty($ret['pay_time']) ? date('Y-m-d H:i:s', $ret['pay_time']) : '';
 
