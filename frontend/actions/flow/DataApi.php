@@ -692,6 +692,8 @@ class DataApi extends ApiAction
     {
         try {
             $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+            $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
+            $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
 
             // 使用 join 查询获取所有需要的数据
             $query = Visit::find();
@@ -705,6 +707,12 @@ class DataApi extends ApiAction
 
             if (!empty($projectId)) {
                 $query->andWhere(['project_id' => $projectId]);
+            }
+            if (!empty($beginTime)) {
+                $query->andFilterWhere(['>', 'visit_time', $beginTime]);
+            }
+            if (!empty($endTime)) {
+                $query->andFilterWhere(['<', 'visit_time', $endTime]);
             }
 
             $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();
