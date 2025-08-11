@@ -813,7 +813,7 @@ class DataApi extends ApiAction
 //                    }
 //                }
                 $row = [
-                    $i++,
+                    ++$i,
                     // 访客基本信息
                     $visit['guest_name'],
                     $visit['guest_mobile'],
@@ -869,8 +869,8 @@ class DataApi extends ApiAction
                     $project->project_name ?? '',
                     // 员工信息
                     $project->pmStaff->staff_name ?? '',
-                    $project->consultantStaff->staff_name ?? '',
-                    $project->advisorStaff->staff_name ?? '',
+                    $report->consultantStaff->staff_name ?? '',
+                    $report->advisorStaff->staff_name ?? '',
                     $project->financialStaff->staff_name ?? '',
                     
                 ];
