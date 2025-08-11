@@ -174,7 +174,7 @@ class DataApi extends ApiAction
                     break;
                 case Staff::STAFF_ROLE_ADMIN_PART:
                     $projects = Project::find()
-                        ->where(['senior_pm_staff_id' => $this->_staffId])
+                        ->where(['like', 'senior_pm_staff_id', ',' . $this->_staffId . ','])
                         ->all();
                     if (!empty($projects)) {
                         foreach ($projects as $pro) {

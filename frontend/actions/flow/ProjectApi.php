@@ -146,13 +146,17 @@ class ProjectApi extends ApiAction
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
-            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : 0;
+            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : '';
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
             $advisorTeam = !empty($this->_get['advisor_team']) ? $this->_get['advisor_team'] : '';
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
             $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
+
+            if (!empty($seniorPmStaffId)) {
+                $seniorPmStaffId = ',' . $seniorPmStaffId . ',';
+            }
 
             if (!empty($projectName)) {
                 $model->project_name = $projectName;
@@ -173,6 +177,9 @@ class ProjectApi extends ApiAction
                 $model->pm_staff_id = $pmStaffId;
             }
             if (!empty($seniorPmStaffId)) {
+                if ($seniorPmStaffId == ',clear,') {
+                    $seniorPmStaffId = '';
+                }
                 $model->senior_pm_staff_id = $seniorPmStaffId;
             }
             if (!empty($consultantStaffId)) {
@@ -229,13 +236,17 @@ class ProjectApi extends ApiAction
             $targetProduct = !empty($this->_get['target_product']) ? $this->_get['target_product'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $pmStaffId = !empty($this->_get['pm_staff_id']) ? $this->_get['pm_staff_id'] : 0;
-            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : 0;
+            $seniorPmStaffId = !empty($this->_get['senior_pm_staff_id']) ? $this->_get['senior_pm_staff_id'] : '';
             $consultantStaffId = !empty($this->_get['consultant_staff_id']) ? $this->_get['consultant_staff_id'] : 0;
             $advisorStaffId = !empty($this->_get['advisor_staff_id']) ? $this->_get['advisor_staff_id'] : 0;
             $consultantTeam = !empty($this->_get['consultant_team']) ? $this->_get['consultant_team'] : '';
             $advisorTeam = !empty($this->_get['advisor_team']) ? $this->_get['advisor_team'] : '';
             $financialStaffId = !empty($this->_get['financial_staff_id']) ? $this->_get['financial_staff_id'] : 0;
             $qrFile = !empty($this->_get['qr_file']) ? $this->_get['qr_file'] : '';
+
+            if (!empty($seniorPmStaffId)) {
+                $seniorPmStaffId = ',' . $seniorPmStaffId . ',';
+            }
 
             $model->project_name = $projectName;
             $model->opts = $opts;
