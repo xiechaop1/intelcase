@@ -480,10 +480,10 @@ class PaymentApi extends ApiAction
             $payer = !empty($this->_get['payer']) ? $this->_get['payer'] : '';
             $payType = !empty($this->_get['pay_type']) ? $this->_get['pay_type'] : Payment::PAYMENT_TYPE_PAY;
             $payTime = !empty($this->_get['pay_time']) ? $this->_get['pay_time'] : time();
-            $payWay = !empty($this->_get['pay_way']) ? $this->_get['pay_way'] : 0;
+            $payWay = !empty($this->_get['pay_way']) ? $this->_get['pay_way'] : '';
             $payStatus = !empty($this->_get['pay_status']) ? $this->_get['pay_status'] : 0;
             $amount = !empty($this->_get['amount']) ? $this->_get['amount'] : 0;
-            $amountType = !empty($this->_get['amount_type']) ? $this->_get['amount_type'] : 0;
+            $amountType = !empty($this->_get['amount_type']) ? $this->_get['amount_type'] : '';
             $payAccount = !empty($this->_get['pay_account']) ? $this->_get['pay_account'] : '';
             $recvAccount = !empty($this->_get['recv_account']) ? $this->_get['recv_account'] : '';
             $receiptNo = !empty($this->_get['receipt_no']) ? $this->_get['receipt_no'] : '';
