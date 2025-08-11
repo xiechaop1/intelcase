@@ -490,6 +490,7 @@ class PaymentApi extends ApiAction
             $recvAmount = !empty($this->_get['recv_amount']) ? $this->_get['recv_amount'] : 0;
             $fee = !empty($this->_get['fee']) ? $this->_get['fee'] : 0;
             $recvTime = !empty($this->_get['recv_time']) ? $this->_get['recv_time'] : 0;
+            $desc = !empty($this->_get['reason']) ? $this->_get['reason'] : '';
 
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
@@ -547,6 +548,7 @@ class PaymentApi extends ApiAction
             $model->recv_amount = $recvAmount;
             $model->fee = $fee;
             $model->recv_time = $recvTime;
+            $model->desc = $desc;
 
 
             $ret = $model->save();
