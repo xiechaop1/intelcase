@@ -682,6 +682,7 @@ class VisitApi extends ApiAction
             $guestAppeal = !empty($this->_get['guest_appeal']) ? $this->_get['guest_appeal'] : '';
             $budget = !empty($this->_get['budget']) ? $this->_get['budget'] : '';
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
+            $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
             $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d H:i:s');
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
@@ -768,6 +769,7 @@ class VisitApi extends ApiAction
             $model->budget = $budget;
             $model->location = $location;
             $model->staff_mobile = $staffMobile;
+            $model->staff_name = $staffName;
             $model->staff_id = intval($staffId);
             $model->visit_time = $visitTime;
             $model->visit_type = $visitType;

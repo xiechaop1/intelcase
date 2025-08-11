@@ -721,6 +721,12 @@ class SubscribedApi extends ApiAction
                     $mobileTag = True;
                     break;
                 }
+                // 把mobile留下前三后四，中间替换成*
+                $mobileReplace = substr($mobile, 0, 3) . str_repeat('*', strlen($mobile) - 7) . substr($mobile, -4);
+                if (strpos($reportMobiles, $mobileReplace) !== false) {
+                    $mobileTag = True;
+                    break;
+                }
             }
             if (!$mobileTag) {
                 return $this->fail('请填写报备客户手机号', -1000);
