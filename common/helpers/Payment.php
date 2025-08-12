@@ -21,18 +21,18 @@ class Payment
         if (!empty($payments)) {
             foreach ($payments as $pay) {
                 if ($pay->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
-                    $payTotal += $pay->recv_amount;
+                    $payTotal += $pay->recv_amount + $pay->fee;
                 } else {
-                    $payTotal -= $pay->recv_amount;
+                    $payTotal -= $pay->recv_amount - $pay->fee;
                 }
             }
         }
 
         if (!empty($nowPayment)) {
             if ($nowPayment->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
-                $payTotal += $nowPayment->amount;
+                $payTotal += $nowPayment->amount + $pay->fee;
             } else {
-                $payTotal -= $nowPayment->amount;
+                $payTotal -= $nowPayment->amount - $pay->fee;
             }
         }
 
