@@ -713,6 +713,7 @@ class VisitApi extends ApiAction
 //            }
 
             $mobileTag = False;
+            $shortMobile = [];
             if (!empty($guestMobiles)) {
                 foreach ($guestMobiles as $mobile) {
                     $mobile = trim($mobile);
@@ -721,6 +722,19 @@ class VisitApi extends ApiAction
                         $mobileTag = True;
                         break;
                     }
+
+                    $visitCount = Visit::find()
+                        ->select('visit_time')
+                        ->where(['project_id' => $this->_projectId])
+                        ->andFilterWhere(['guest_mobile' => $mobile])
+                        ->groupBy([
+                            'visit_time'
+                        ])
+                        ->count();
+
+                    $shortMobile[] = substr($mobile, -4);
+
+                    $visitType = empty($visitCount) ? 0 : $visitCount + 1;
                 }
             }
             if (!$mobileTag) {
@@ -748,16 +762,16 @@ class VisitApi extends ApiAction
                 ])
                 ->count();
 
-            $visitCount = Visit::find()
-                ->select('visit_time')
-                ->where(['project_id' => $this->_projectId])
-                ->andFilterWhere(['guest_mobile' => $guestMobile])
-                ->groupBy([
-                    'visit_time'
-                ])
-                ->count();
-
-            $visitType = empty($visitCount) ? 0 : $visitCount + 1;
+//            $visitCount = Visit::find()
+//                ->select('visit_time')
+//                ->where(['project_id' => $this->_projectId])
+//                ->andFilterWhere(['guest_mobile' => $guestMobile])
+//                ->groupBy([
+//                    'visit_time'
+//                ])
+//                ->count();
+//
+//            $visitType = empty($visitCount) ? 0 : $visitCount + 1;
 
 //            $visitType = empty($reportCount) ? 0 : $reportCount + 1;
 
@@ -815,7 +829,7 @@ class VisitApi extends ApiAction
                 }
                 $content = [
                     'content' => '有一条新到访，'
-                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, '',  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
+                            . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $shortMobile,  date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel, $staffName)
                             . '，请及时处理。',
                     'report_id' => $reportId,
                     'project_id' => $this->_projectId,

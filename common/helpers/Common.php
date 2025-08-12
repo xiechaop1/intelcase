@@ -154,7 +154,11 @@ class Common
     }
 
     public static function formatGuestInfo($projectName, $guestName, $guestMobile, $dt, $channelName = '', $staffName = '') {
-        $guestMobiles = self::splitMobile($guestMobile);
+        if (!is_array($guestMobile)) {
+            $guestMobiles = self::splitMobile($guestMobile);
+        } else {
+            $guestMobiles = $guestMobile;
+        }
         $mobile = self::formatMultyMobiles($guestMobiles);
 
         $str = '项目：' . $projectName . '，客户：' . $guestName;
