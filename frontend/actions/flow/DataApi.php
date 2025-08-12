@@ -1161,6 +1161,7 @@ class DataApi extends ApiAction
     }
 
     private function _getRoleProduct($oldProjectId = []) {
+        $projectId = [];
         if (!empty($this->_staff)) {
             $staffRole = $this->_staff->role;
 
@@ -1240,7 +1241,7 @@ class DataApi extends ApiAction
             $projectId = [-1];
         }
 
-        if (!empty($oldProjectId)) {
+        if (!empty($oldProjectId) && !empty($projectId)) {
             $projectId = array_intersect($oldProjectId, $projectId);
         }
 
