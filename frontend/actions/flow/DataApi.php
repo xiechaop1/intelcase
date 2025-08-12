@@ -1242,14 +1242,16 @@ class DataApi extends ApiAction
         }
 
         if (!empty($oldProjectId) && !empty($projectId)) {
-            if (is_array($oldProjectId) > 0 && $oldProjectId[0] != 0) {
+            if (is_array($oldProjectId) && sizeof($oldProjectId) == 1 && $oldProjectId[0] != 0) {
                 $projectId = array_intersect($oldProjectId, $projectId);
                 if (empty($projectId)) {
                     $projectId = [-1];
                 }
             }
         } else if (!empty($oldProjectId) && empty($projectId)) {
-            $projectId = $oldProjectId;
+            if (is_array($oldProjectId) && sizeof($oldProjectId) == 1 && $oldProjectId[0] != 0) {
+                $projectId = $oldProjectId;
+            }
         }
 
 
