@@ -1230,7 +1230,6 @@ class DataApi extends ApiAction
 //                case Staff::STAFF_ROLE_ADMIN_PART:
                 case Staff::STAFF_ROLE_ADMIN_CHILD:
                 case Staff::STAFF_ROLE_FINANCE:
-                    $projectId = [0];
                     break;
                 default:
                     $projectId = [-1];
@@ -1245,14 +1244,14 @@ class DataApi extends ApiAction
         if (!empty($oldProjectId) && !empty($projectId)) {
             if (is_array($oldProjectId) > 0 && $oldProjectId[0] != 0) {
                 $projectId = array_intersect($oldProjectId, $projectId);
+                if (empty($projectId)) {
+                    $projectId = [-1];
+                }
             }
+        } else if (!empty($oldProjectId) && empty($projectId)) {
+            $projectId = $oldProjectId;
         }
-        if (empty($projectId)) {
-            $projectId = [-1];
-        } elseif (is_array($projectId) && sizeof($projectId) == 1 && $projectId[0] = 0) {
-            $projectId = [];
 
-        }
 
         return $projectId;
     }
