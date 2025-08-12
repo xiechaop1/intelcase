@@ -30,9 +30,9 @@ class Payment
 
         if (!empty($nowPayment)) {
             if ($nowPayment->pay_type == \common\models\Payment::PAYMENT_TYPE_PAY) {
-                $payTotal += $nowPayment->amount + $pay->fee;
+                $payTotal += $nowPayment->amount + $nowPayment->fee;
             } else {
-                $payTotal -= $nowPayment->amount - $pay->fee;
+                $payTotal -= $nowPayment->amount - $nowPayment->fee;
             }
         }
 
