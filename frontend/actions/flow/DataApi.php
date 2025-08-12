@@ -154,6 +154,8 @@ class DataApi extends ApiAction
 
         if (strpos($projectId, ',') !== false) {
             $projectId = explode(',', $projectId);
+        } else {
+            $projectId = [$projectId];
         }
 
         if (!empty($this->_staff)) {
