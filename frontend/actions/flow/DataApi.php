@@ -720,6 +720,13 @@ class DataApi extends ApiAction
             if (!empty($endTime)) {
                 $query->andFilterWhere(['<', 'visit_time', $endTime]);
             }
+            switch ($this->_staff->role) {
+                case Staff::STAFF_ROLE_SALES:
+                    $query->andFilterWhere(['staff_id' => $this->_staff->id]);
+                    break;
+                default:
+                    break;
+            }
 
             $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();
 
@@ -807,8 +814,14 @@ class DataApi extends ApiAction
             foreach ($visits as $visit) {
                 $project = Project::find()->where(['id' => $visit['project_id']])->one();
                 $report = Report::find()->where(['id' => $visit['report_id']])->one();
-                $sub = Subscribed::find()->where(['visit_id' => $visit['id']])->one();
-                $payments = !empty($sub->payments) ? $sub->payments : [];
+                switch ($this->_staff->role) {
+                    case Staff::STAFF_ROLE_SALES:
+                        break;
+                    default:
+                        $sub = Subscribed::find()->where(['visit_id' => $visit['id']])->one();
+                        $payments = !empty($sub->payments) ? $sub->payments : [];
+                        break;
+                }
 
 //                if (!empty($visit['guest_mobile'])) {
 //                    $guestMobiles = \common\helpers\Common::splitMobile($visit['guest_mobile']);
