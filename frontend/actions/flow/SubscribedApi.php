@@ -172,7 +172,7 @@ class SubscribedApi extends ApiAction
             if (!empty($recvId)) {
                 $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $content = [
-                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
+                    'content' => '有一条新认购，房号：' . $model->room_no . '，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -199,7 +199,7 @@ class SubscribedApi extends ApiAction
                 $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
                 $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
                 $content = [
-                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
+                    'content' => '有一条新认购，房号：' . $model->room_no . '，' . $guestInfo . '，请及时处理。',
                     'project_id' => $this->_projectId,
                     'title' => '新认购',
                     'btn' => [
@@ -213,7 +213,7 @@ class SubscribedApi extends ApiAction
 
 
             $content = [
-                'content' => '您提交的认购被拒绝，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
+                'content' => '您提交的认购被拒绝，房号：' . $model->room_no . '，项目：' . $projectName . '，客户：' . $subGuest . '，时间：' . date('Y-m-d H:i:s', time()) . '，请及时处理。',
                 'project_id' => $this->_projectId,
                 'title' => '认购被拒绝',
                 'btn' => [
@@ -232,7 +232,7 @@ class SubscribedApi extends ApiAction
             $guestInfo = Common::formatGuestInfo($projectName, $subGuest, $guestMobile, date('Y-m-d H:i:s', time()), $guestChannel);
             $pmRecvId = !empty($this->_project->pm_staff_id) ? $this->_project->pm_staff_id : 0;
             $content = [
-                'content' => '认购被拒绝，' . $guestInfo . '，请及时处理。',
+                'content' => '认购被拒绝，房号：' . $model->room_no . '，' . $guestInfo . '，请及时处理。',
                 'project_id' => $this->_projectId,
                 'title' => '认购被拒绝',
                 'btn' => [
@@ -298,7 +298,7 @@ class SubscribedApi extends ApiAction
 //                $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                 $guestInfo = Common::formatGuestInfo($projectName, $subGuest, '', date('Y-m-d H:i:s', time()), $guestChannel);
                 $content = [
-                    'content' => '有一条新认购，' . $guestInfo . '，请及时处理。',
+                    'content' => '有一条新认购，房号：' . $model->room_no . '，' . $guestInfo . '，请及时处理。',
                     'sub_id' => $subId,
                     'title' => '新认购',
                     'btn' => [
@@ -903,7 +903,7 @@ class SubscribedApi extends ApiAction
                 if (!empty($recvId)) {
                     $projectName = !empty($this->_project->project_name) ? $this->_project->project_name : '未知项目';
                     $content = [
-                        'content' => '有一条新认购需要确认，' . $guestInfo . '，请及时处理。',
+                        'content' => '有一条新认购需要确认，房号：' . $model->room_no . '，' . $guestInfo . '，请及时处理。',
                         'project_id' => $this->_projectId,
                         'title' => '新认购',
                         'btn' => [
