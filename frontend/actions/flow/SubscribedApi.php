@@ -549,6 +549,8 @@ class SubscribedApi extends ApiAction
             $tmp = $model->toArray();
             $tmpIdNos = Common::splitMobile($model->id_no);
             $tmp['id_no'] = Common::formatMultyMobiles($tmpIdNos);
+            $tmp['balance_price'] = number_format($model->balance_price, 2);
+            $tmp['sub_total_price'] = number_format($model->sub_total_price, 2);
             $ret = $tmp;
         }
 
