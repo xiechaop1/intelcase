@@ -159,84 +159,86 @@ class DataApi extends ApiAction
             $projectId = [$projectId];
         }
 
-        if (!empty($this->_staff)) {
-            $staffRole = $this->_staff->role;
-
-            switch ($staffRole) {
-                case Staff::STAFF_ROLE_PM:
-                    $projects = Project::find()
-                        ->where(['pm_staff_id' => $this->_staffId])
-                        ->all();
-                    if (!empty($projects)) {
-                        foreach ($projects as $pro) {
-                            $projectId[] = $pro->id;
-                        }
-                    } else {
-                        $projectId = [-1];
-                    }
-                    break;
-                case Staff::STAFF_ROLE_ADMIN_PART:
-                    $projects = Project::find()
-                        ->where(['like', 'senior_pm_staff_id', ',' . $this->_staffId . ','])
-                        ->all();
-                    if (!empty($projects)) {
-                        foreach ($projects as $pro) {
-                            $projectId[] = $pro->id;
-                        }
-                    } else {
-                        $projectId = [-1];
-                    }
-                    break;
-                case Staff::STAFF_ROLE_SALES:
-                    $projects = Report::find()
-                        ->where(['staff_id' => $this->_staffId])
-                        ->all();
-                    if (!empty($projects)) {
-                        foreach ($projects as $pro) {
-                            $projectId[] = $pro->project_id;
-                        }
-                    } else {
-                        $projectId = [-1];
-                    }
-                    break;
-                case Staff::STAFF_ROLE_ADVISOR:
-                    $projects = Report::find()
-                        ->where(['advisor_staff_id' => $this->_staffId])
-                        ->all();
-                    if (!empty($projects)) {
-                        foreach ($projects as $pro) {
-                            $projectId[] = $pro->project_id;
-                        }
-                    } else {
-                        $projectId = [-1];
-                    }
-                    break;
-                case Staff::STAFF_ROLE_CONSULTANT:
-                    $projects = Report::find()
-                        ->where(['consultant_staff_id' => $this->_staffId])
-                        ->all();
-                    if (!empty($projects)) {
-                        foreach ($projects as $pro) {
-                            $projectId[] = $pro->project_id;
-                        }
-                    } else {
-                        $projectId = [-1];
-                    }
-                    break;
-                case Staff::STAFF_ROLE_ADMIN:
+//        if (!empty($this->_staff)) {
+//            $staffRole = $this->_staff->role;
+//
+//            switch ($staffRole) {
+//                case Staff::STAFF_ROLE_PM:
+//                    $projects = Project::find()
+//                        ->where(['pm_staff_id' => $this->_staffId])
+//                        ->all();
+//                    if (!empty($projects)) {
+//                        foreach ($projects as $pro) {
+//                            $projectId[] = $pro->id;
+//                        }
+//                    } else {
+//                        $projectId = [-1];
+//                    }
+//                    break;
 //                case Staff::STAFF_ROLE_ADMIN_PART:
-                case Staff::STAFF_ROLE_ADMIN_CHILD:
-                case Staff::STAFF_ROLE_FINANCE:
-                    break;
-                default:
-                    $projectId = [-1];
-                    break;
-            }
+//                    $projects = Project::find()
+//                        ->where(['like', 'senior_pm_staff_id', ',' . $this->_staffId . ','])
+//                        ->all();
+//                    if (!empty($projects)) {
+//                        foreach ($projects as $pro) {
+//                            $projectId[] = $pro->id;
+//                        }
+//                    } else {
+//                        $projectId = [-1];
+//                    }
+//                    break;
+//                case Staff::STAFF_ROLE_SALES:
+//                    $projects = Report::find()
+//                        ->where(['staff_id' => $this->_staffId])
+//                        ->all();
+//                    if (!empty($projects)) {
+//                        foreach ($projects as $pro) {
+//                            $projectId[] = $pro->project_id;
+//                        }
+//                    } else {
+//                        $projectId = [-1];
+//                    }
+//                    break;
+//                case Staff::STAFF_ROLE_ADVISOR:
+//                    $projects = Report::find()
+//                        ->where(['advisor_staff_id' => $this->_staffId])
+//                        ->all();
+//                    if (!empty($projects)) {
+//                        foreach ($projects as $pro) {
+//                            $projectId[] = $pro->project_id;
+//                        }
+//                    } else {
+//                        $projectId = [-1];
+//                    }
+//                    break;
+//                case Staff::STAFF_ROLE_CONSULTANT:
+//                    $projects = Report::find()
+//                        ->where(['consultant_staff_id' => $this->_staffId])
+//                        ->all();
+//                    if (!empty($projects)) {
+//                        foreach ($projects as $pro) {
+//                            $projectId[] = $pro->project_id;
+//                        }
+//                    } else {
+//                        $projectId = [-1];
+//                    }
+//                    break;
+//                case Staff::STAFF_ROLE_ADMIN:
+////                case Staff::STAFF_ROLE_ADMIN_PART:
+//                case Staff::STAFF_ROLE_ADMIN_CHILD:
+//                case Staff::STAFF_ROLE_FINANCE:
+//                    break;
+//                default:
+//                    $projectId = [-1];
+//                    break;
+//            }
+//
+//
+//        } else {
+//            $projectId = [-1];
+//        }
 
-
-        } else {
-            $projectId = [-1];
-        }
+        $projectId = $this->_getRoleProduct($projectId);
 
         $reportIds = [];
         if (!empty($reportChannel)) {
@@ -990,7 +992,28 @@ class DataApi extends ApiAction
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
         $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
 
+        if (strpos($projectId, ',') !== false) {
+            $projectId = explode(',', $projectId);
+        } else {
+            $projectId = [$projectId];
+        }
+        $projectId = $this->_getRoleProduct($projectId);
+
+
         $reportList = Report::find();
+        switch ($this->_staff->role) {
+            case Staff::STAFF_ROLE_SALES:
+                $reportList->andFilterWhere(['staff_id' => $this->_staff->id]);
+                break;
+            case Staff::STAFF_ROLE_ADVISOR:
+                $reportList->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                break;
+            case Staff::STAFF_ROLE_CONSULTANT:
+                $reportList->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                break;
+            default:
+                break;
+        }
         if (!empty($guestMobile)) {
             $reportList->andFilterWhere(['guest_mobile' => $guestMobile]);
         }
@@ -1053,6 +1076,40 @@ class DataApi extends ApiAction
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
         $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
 
+        if (strpos($projectId, ',') !== false) {
+            $projectId = explode(',', $projectId);
+        } else {
+            $projectId = [$projectId];
+        }
+        $projectId = $this->_getRoleProduct($projectId);
+
+
+        $reportList = Report::find();
+        switch ($this->_staff->role) {
+            case Staff::STAFF_ROLE_SALES:
+                $reportList->andFilterWhere(['staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_ADVISOR:
+                $reportList->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_CONSULTANT:
+                $reportList->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            default:
+                $repTag = 0;
+                break;
+        }
+        $reportList = $reportList->all();
+
+        if (!empty($reportList) && $repTag == 1) {
+            foreach ($reportList as $rep) {
+                $reportIds[] = $rep->id;
+            }
+        }
+
         $visitList = Visit::find();
         if (!empty($guestMobile)) {
             $visitList->andFilterWhere(['guest_mobile' => $guestMobile]);
@@ -1060,8 +1117,11 @@ class DataApi extends ApiAction
         if (!empty($projectId)) {
             $visitList->andFilterWhere(['project_id' => $projectId]);
         }
-        if (!empty($advStaffId)) {
-            $visitList->andFilterWhere(['adv_staff_id' => $advStaffId]);
+//        if (!empty($advStaffId)) {
+//            $visitList->andFilterWhere(['adv_staff_id' => $advStaffId]);
+//        }
+        if (!empty($reportIds)) {
+            $visitList->andFilterWhere(['report_id' => $reportIds]);
         }
         if (!empty($beginTime)) {
             $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
@@ -1098,6 +1158,93 @@ class DataApi extends ApiAction
             'page_size' => $pageSize,
         ]);
 
+    }
+
+    private function _getRoleProduct($oldProjectId = []) {
+        if (!empty($this->_staff)) {
+            $staffRole = $this->_staff->role;
+
+            switch ($staffRole) {
+                case Staff::STAFF_ROLE_PM:
+                    $projects = Project::find()
+                        ->where(['pm_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
+                case Staff::STAFF_ROLE_ADMIN_PART:
+                    $projects = Project::find()
+                        ->where(['like', 'senior_pm_staff_id', ',' . $this->_staffId . ','])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
+                case Staff::STAFF_ROLE_SALES:
+                    $projects = Report::find()
+                        ->where(['staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
+                case Staff::STAFF_ROLE_ADVISOR:
+                    $projects = Report::find()
+                        ->where(['advisor_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
+                case Staff::STAFF_ROLE_CONSULTANT:
+                    $projects = Report::find()
+                        ->where(['consultant_staff_id' => $this->_staffId])
+                        ->all();
+                    if (!empty($projects)) {
+                        foreach ($projects as $pro) {
+                            $projectId[] = $pro->project_id;
+                        }
+                    } else {
+                        $projectId = [-1];
+                    }
+                    break;
+                case Staff::STAFF_ROLE_ADMIN:
+//                case Staff::STAFF_ROLE_ADMIN_PART:
+                case Staff::STAFF_ROLE_ADMIN_CHILD:
+                case Staff::STAFF_ROLE_FINANCE:
+                    break;
+                default:
+                    $projectId = [-1];
+                    break;
+            }
+
+
+        } else {
+            $projectId = [-1];
+        }
+
+        if (!empty($oldProjectId)) {
+            $projectId = array_intersect($oldProjectId, $projectId);
+        }
+
+        return $projectId;
     }
 
 
