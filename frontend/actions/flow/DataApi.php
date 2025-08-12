@@ -151,6 +151,7 @@ class DataApi extends ApiAction
         $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
 
         $reportChannel = !empty($this->_get['report_channel']) ? $this->_get['report_channel'] : '';
+        $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
 
         if (strpos($projectId, ',') !== false) {
             $projectId = explode(',', $projectId);
@@ -299,6 +300,9 @@ class DataApi extends ApiAction
         }
         if (!empty($visitStatus)) {
             $visitCount->andFilterWhere(['visit_status' => $visitStatus]);
+        }
+        if (!empty($guestType)) {
+            $visitCount->andFilterWhere(['guest_type' => $guestType]);
         }
 
         $reportTemp = [];
