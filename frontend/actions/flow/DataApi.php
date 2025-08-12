@@ -1242,7 +1242,12 @@ class DataApi extends ApiAction
         }
 
         if (!empty($oldProjectId) && !empty($projectId)) {
-            $projectId = array_intersect($oldProjectId, $projectId);
+            if (is_array($oldProjectId) > 0 && $oldProjectId[0] != 0) {
+                $projectId = array_intersect($oldProjectId, $projectId);
+            }
+        }
+        if (empty($projectId)) {
+            $projectId = [-1];
         }
 
         return $projectId;
