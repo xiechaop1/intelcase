@@ -241,19 +241,37 @@ class DataApi extends ApiAction
         $projectId = $this->_getRoleProduct($projectId);
 
         $reportIds = [];
+        $reportTmps = Report::find();
+        $repTag = 0;
         if (!empty($reportChannel)) {
-            $reportTmps = Report::find()
-                ->where([
-                    'guest_channel' => $reportChannel,
-                ])
-                ->all();
-
-            if (!empty($reportTmps)) {
-                foreach ($reportTmps as $rt) {
-                    $reportIds[] = $rt->id;
-                }
+            $reportTmps->where([
+                'guest_channel' => $reportChannel
+            ]);
+            $repTag = 1;
+        }
+        switch ($this->_staff->role) {
+            case Staff::STAFF_ROLE_SALES:
+                $reportTmps->andFilterWhere(['staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_ADVISOR:
+                $reportTmps->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_CONSULTANT:
+                $reportTmps->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            default:
+                break;
+        }
+        $reportTmps = $reportTmps->all();
+        if (!empty($reportTmps) && $repTag == 1) {
+            foreach ($reportTmps as $rt) {
+                $reportIds[] = $rt->id;
             }
         }
+
 
         if ($inter == 'daily') {
             $reportCount = Report::find()->select('DATE(visit_time) as dt, count(*) as ct');
@@ -703,6 +721,8 @@ class DataApi extends ApiAction
             $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
             $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
 
+            $reportIds = [];
+
             // 使用 join 查询获取所有需要的数据
             $query = Visit::find();
 //                ->select([
@@ -713,8 +733,43 @@ class DataApi extends ApiAction
 //                ->joinWith('project')
 //                ->joinWith('subscribed');
 
+            $reportIds = [];
+            $reportTmps = Report::find();
+            $repTag = 0;
+//            if (!empty($reportChannel)) {
+//                $reportTmps->where([
+//                    'guest_channel' => $reportChannel
+//                ]);
+//                $repTag = 1;
+//            }
+            switch ($this->_staff->role) {
+                case Staff::STAFF_ROLE_SALES:
+                    $reportTmps->andFilterWhere(['staff_id' => $this->_staff->id]);
+                    $repTag = 1;
+                    break;
+                case Staff::STAFF_ROLE_ADVISOR:
+                    $reportTmps->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                    $repTag = 1;
+                    break;
+                case Staff::STAFF_ROLE_CONSULTANT:
+                    $reportTmps->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                    $repTag = 1;
+                    break;
+                default:
+                    break;
+            }
+            $reportTmps = $reportTmps->all();
+            if (!empty($reportTmps) && $repTag == 1) {
+                foreach ($reportTmps as $rt) {
+                    $reportIds[] = $rt->id;
+                }
+            }
+
             if (!empty($projectId)) {
-                $query->andWhere(['project_id' => $projectId]);
+                $query->andFilterWhere(['project_id' => $projectId]);
+            }
+            if (!empty($reportIds)) {
+                $query->andFilterWhere(['report_id' => $reportIds]);
             }
             if (!empty($beginTime)) {
                 $query->andFilterWhere(['>', 'visit_time', $beginTime]);
