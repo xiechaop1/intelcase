@@ -459,7 +459,7 @@ class VisitApi extends ApiAction
         $guestChannel = !empty($this->_report->guest_channel) ? $this->_report->guest_channel : '';
 
         $content = [
-            'content' => '有一条新到访，'  . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel)
+            'content' => '有一条新到访，'  . \common\helpers\Common::formatGuestInfo($projectName, $guestName, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($visitTime)), $guestChannel)
                      . '，请及时处理。',
             'report_id' => $reportId,
             'project_id' => $this->_projectId,
@@ -700,6 +700,7 @@ class VisitApi extends ApiAction
             foreach ($tagSplit as $t) {
                 if (strpos($guestMobile, $t) !== false) {
                     $guestMobiles = explode($t, $guestMobile);
+                    break;
                 }
             }
             if (empty($guestMobiles)) {
@@ -720,7 +721,7 @@ class VisitApi extends ApiAction
                     $reportMobiles = $this->_report->guest_mobile;
                     if (strpos($reportMobiles, $mobile) !== false) {
                         $mobileTag = True;
-                        break;
+//                        break;
                     }
 
                     $visitCount = Visit::find()
@@ -732,7 +733,7 @@ class VisitApi extends ApiAction
                         ])
                         ->count();
 
-                    $shortMobile[] = substr($mobile, -4);
+                    $shortMobile[] = str_repeat('*', strlen($mobile) - 4) . substr($mobile, -4);
 
                     $visitType = empty($visitCount) ? 0 : $visitCount + 1;
                 }
@@ -826,6 +827,9 @@ class VisitApi extends ApiAction
                 } else {
                     $staffModel = Staff::find()->where(['id' => $staffId])->one();
                     $staffName = !empty($staffModel->staff_name) ? $staffModel->staff_name : '未知经纪人';
+                }
+                if (!empty($this->_report->staff_mobile)) {
+                    $staffName .= ' (' . $this->_report->staff_mobile . ')';
                 }
                 $content = [
                     'content' => '有一条新到访，'
