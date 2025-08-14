@@ -429,17 +429,25 @@ class ReportApi extends ApiAction
 //                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
                 $team = !empty($this->_project->advisor_team) ? $this->_project->advisor_team : '';
                 $firstAdvisorId = !empty($firstReport->advisor_staff_id) ? $firstReport->advisor_staff_id : 0;
-                if (empty($firstAdvisorId) || !Yii::$app->privilege->checkStaffTeam($firstAdvisorId, $team)) {
-                    $randAdvisor = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_ADVISOR);
-                    $firstAdvisorId = !empty($randAdvisor) ? $randAdvisor->id : 0;
+                if ( !empty($this->_user) && in_array($this->_user->role, [Staff::STAFF_ROLE_CONSULTANT, Staff::STAFF_ROLE_ADVISOR])) {
+                    $firstAdvisorId = $randAdvisor = $this->_user->staffId;
+                } else {
+                    if (empty($firstAdvisorId) || !Yii::$app->privilege->checkStaffTeam($firstAdvisorId, $team)) {
+                        $randAdvisor = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_ADVISOR);
+                        $firstAdvisorId = !empty($randAdvisor) ? $randAdvisor->id : 0;
+                    }
                 }
             } else {
 //                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
                 $team = !empty($this->_project->consultant_team) ? $this->_project->consultant_team : '';
                 $firstConsultantId = !empty($firstReport->consultant_staff_id) ? $firstReport->consultant_staff_id : 0;
-                if (empty($firstConsultantId) || !Yii::$app->privilege->checkStaffTeam($firstConsultantId, $team)) {
-                    $randConsultant = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_CONSULTANT);
-                    $firstConsultantId = !empty($randConsultant) ? $randConsultant->id : 0;
+                if ( !empty($this->_user) && in_array($this->_user->role, [Staff::STAFF_ROLE_CONSULTANT, Staff::STAFF_ROLE_ADVISOR])) {
+                    $firstConsultantId = $randConsultant = $this->_user->staffId;
+                } else {
+                    if (empty($firstConsultantId) || !Yii::$app->privilege->checkStaffTeam($firstConsultantId, $team)) {
+                        $randConsultant = Yii::$app->privilege->getTeamStaff($team, Staff::STAFF_ROLE_CONSULTANT);
+                        $firstConsultantId = !empty($randConsultant) ? $randConsultant->id : 0;
+                    }
                 }
             }
 
