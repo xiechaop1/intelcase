@@ -684,6 +684,9 @@ class VisitApi extends ApiAction
             $staffMobile = !empty($this->_get['staff_mobile']) ? $this->_get['staff_mobile'] : '';
             $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
             $staffId = !empty($this->_get['staff_id']) ? $this->_get['staff_id'] : 0;
+
+            $nextStaffId = !empty($this->_get['next_staff_id']) ? $this->_get['next_staff_id'] : 0;
+
             $visitTime = !empty($this->_get['visit_time']) ? $this->_get['visit_time'] : Date('Y-m-d H:i:s');
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
             $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
@@ -693,6 +696,8 @@ class VisitApi extends ApiAction
             $visitCt = !empty($this->_get['visit_ct']) ? $this->_get['visit_ct'] : 0;
             $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
             $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
+
+
 
             $tagSplit = [
                 "\n", ",", "，", "/"
@@ -808,12 +813,30 @@ class VisitApi extends ApiAction
 
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
                 || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+
+                if (empty($this->_report->advisor_staff_id)) {
+                    $this->_report->advisor_staff_id = $nextStaffId;
+                    $recvId = $nextStaffId;
+                    $this->_report->save();
+                } else {
+                    $recvId = $this->_report->advisor_staff_id;
+                }
+
+//                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
 //                $recvId = !empty($this->_project->advisor_staff_id) ? $this->_project->advisor_staff_id : 0;
             } else {
-                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                if (empty($this->_report->consultant_staff_id)) {
+                    $this->_report->consultant_staff_id = $nextStaffId;
+                    $recvId = $nextStaffId;
+                    $this->_report->save();
+                } else {
+                    $recvId = $this->_report->advisor_staff_id;
+                }
+//                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+
 //                $recvId = !empty($this->_project->consultant_staff_id) ? $this->_project->consultant_staff_id : 0;
             }
+
             if (!empty($recvId)) {
                 if ($visitType > 1) {
                     $type = 'visit_repeat_info_confirm_page';

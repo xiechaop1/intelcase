@@ -83,6 +83,9 @@ class StaffApi extends ApiAction
             $query->select('team');
         }
         if (!empty($role)) {
+            if (strpos($role, ',')) {
+                $role = explode(',', $role);
+            }
             $query = $query->where([
                 'role' => [$role, Staff::STAFF_ROLE_ADMIN],
             ]);
