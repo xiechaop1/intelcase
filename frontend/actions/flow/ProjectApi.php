@@ -183,15 +183,19 @@ class ProjectApi extends ApiAction
                 $model->senior_pm_staff_id = $seniorPmStaffId;
             }
             if (!empty($consultantStaffId)) {
+                $consultantStaffId = $consultantStaffId == 'clear' ? '' : $consultantStaffId;
                 $model->consultant_staff_id = $consultantStaffId;
             }
             if (!empty($advisorStaffId)) {
+                $advisorStaffId = $advisorStaffId == 'clear' ? '' : $advisorStaffId;
                 $model->advisor_staff_id = $advisorStaffId;
             }
             if (!empty($consultantTeam)) {
+                $consultantTeam = $consultantTeam == 'clear' ? '' : $consultantTeam;
                 $model->consultant_team = $consultantTeam;
             }
             if (!empty($advisorTeam)) {
+                $advisorTeam = $advisorTeam == 'clear' ? '' : $advisorTeam;
                 $model->advisor_team = $advisorTeam;
             }
             if (!empty($financialStaffId)) {
