@@ -90,6 +90,7 @@ class ProjectApi extends ApiAction
 
         $models = $query->offset($offset)
             ->limit($pageSize)
+            ->orderBy(['id' => SORT_DESC])
             ->all();
 
         return $this->success([
