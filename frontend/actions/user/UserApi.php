@@ -129,23 +129,24 @@ class UserApi extends ApiAction
             $ret = Yii::$app->wechat->getSession($code);
 
             $openId = $ret['openid'];
-            $user = Staff::findOne(['wx_openid' => $openId
-//                , 'staff_status' => Staff::STAFF_STATUS_NORMAL
-            ]);
-//            if (!empty($user)
-//                && $user->staff_status == Staff::STAFF_STATUS_DISABLE
-//            ) {
-//                throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
+//            $user = Staff::findOne(['wx_openid' => $openId
+////                , 'staff_status' => Staff::STAFF_STATUS_NORMAL
+//            ]);
+////            if (!empty($user)
+////                && $user->staff_status == Staff::STAFF_STATUS_DISABLE
+////            ) {
+////                throw new \Exception('很抱歉，非授权用户暂不支持登录', -1001);
+////            }
+//            if (!empty($user['id'])) {
+//                $this->_get['user_id'] = $user['id'];
+//                $tokenRet = $this->getToken();
+//                $user['wx_token'] = $tokenRet['token'];
+//                $user['wx_token_expire_time'] = $tokenRet['expire_time'];
+//
+////                Yii::$app->oplog->write(\common\models\Log::OP_CODE_LOGIN, 1, $user['id'], 0, '用户登录');
 //            }
-            if (!empty($user['id'])) {
-                $this->_get['user_id'] = $user['id'];
-                $tokenRet = $this->getToken();
-                $user['wx_token'] = $tokenRet['token'];
-                $user['wx_token_expire_time'] = $tokenRet['expire_time'];
-
-//                Yii::$app->oplog->write(\common\models\Log::OP_CODE_LOGIN, 1, $user['id'], 0, '用户登录');
-            }
-            $ret['user'] = $user;
+//            $ret['user'] = $user;
+            $ret['user'] = [];
 
             return $ret;
         } catch (\Exception $e) {
