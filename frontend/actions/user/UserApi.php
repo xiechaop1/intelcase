@@ -160,6 +160,7 @@ class UserApi extends ApiAction
         $unionId = !empty($this->_get['union_id']) ? $this->_get['union_id'] : '';
         try {
             $mobile = Yii::$app->wechat->getMobile($code);
+            Yii::info('User mobile:' . $mobile . ' login!');
             $user = null;
             if (!empty($mobile)) {
                 $user = Staff::findOne(['mobile' => $mobile]);
