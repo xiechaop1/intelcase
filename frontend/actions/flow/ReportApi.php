@@ -261,6 +261,8 @@ class ReportApi extends ApiAction
 //            $visitTime = !empty($this->_get['created']) ? $this->_get['created'] : $visitTime;
             $visitType = !empty($this->_get['visit_type']) ? $this->_get['visit_type'] : 0;
 
+            $guestMobile = str_replace('-', '****', $guestMobile);
+
 //            $tagSplit = [
 //                "\n", ",", "，", "/"
 //            ];
