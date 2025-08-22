@@ -59,5 +59,9 @@ class Report extends \common\models\gii\Report
         return $this->hasOne(Staff::className(), ['id' => 'advisor_staff_id']);
     }
 
+    public function getVisit() {
+        return $this->hasOne('common\models\Visit', ['report_id' => 'id']);
+    }
+
 
 }

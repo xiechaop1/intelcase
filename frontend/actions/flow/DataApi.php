@@ -717,11 +717,13 @@ class DataApi extends ApiAction
     public function exportGuestList()
     {
         try {
-            $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+            $projectIds = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
             $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
             $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
 
             $reportIds = [];
+
+            $projectId = \common\helpers\Common::splitMobile($projectIds);
 
             // 使用 join 查询获取所有需要的数据
             $query = Visit::find();
@@ -785,7 +787,7 @@ class DataApi extends ApiAction
                     break;
             }
 
-            $visits = $query->orderBy(['created_at' => SORT_DESC])->asArray()->all();
+            $visits = $query->orderBy(['project_id' => SORT_ASC, 'created_at' => SORT_DESC])->asArray()->all();
 
             // 准备Excel数据
             $data = [];

@@ -399,14 +399,25 @@ class ReportApi extends ApiAction
                     ->orderBy('id ASC')
                     ->one();
 
-                $vCountTmp = Visit::find()
-                    ->select('visit_time')
+                $vCountRet = Visit::find()
+//                    ->select('visit_time')
                     ->where(['project_id' => $this->_projectId])
                     ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
-                    ->groupBy([
-                        'visit_time'
-                    ])
-                    ->count();
+//                    ->groupBy([
+//                        'visit_time'
+//                    ])
+//                    ->count();
+                    ->all();
+
+                $vCountTmp = 0;
+                if (!empty($vCountRet)) {
+                    foreach ($vCountRet as $vcrow) {
+                        if (!empty($vcrow->visit)
+                            && $vcrow->visit->visit_status == Visit::VISIT_STATUS_COMPLETED) {
+                            $vCountTmp += 1;
+                        }
+                    }
+                }
 
                 $visitCount += $vCountTmp;
             }
