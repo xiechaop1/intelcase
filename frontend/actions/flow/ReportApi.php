@@ -493,16 +493,27 @@ class ReportApi extends ApiAction
                 $content = [];
                 if (!empty($recvId)) {
                     $content = [
-                        'content' => '有一条新报备，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，系统检测无效报备，请您确认。',
-                        'title' => '新报备',
+                        'content' => '有一条新报备，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，系统检测无效报备。',
+                        'title' => '无效报备',
                         'btn' => [
-                            [
-                                'label' => '确认',
-                                'type'  => 'report_confirm_page',
-                                'report_id' => $reportId,
-                                'project_id' => $this->_projectId,
-                            ],
+//                            [
+//                                'label' => '确认',
+//                                'type'  => 'report_confirm_page',
+//                                'report_id' => $reportId,
+//                                'project_id' => $this->_projectId,
+//                            ],
                         ],
+                        'report_id' => $reportId,
+                        'project_id' => $this->_projectId,
+                    ];
+                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                }
+                $recvId = !empty($staffId) ? $staffId : 0;
+                $content = [];
+                if (!empty($recvId)) {
+                    $content = [
+                        'content' => '有一条新报备，' . \common\helpers\Common::formatGuestInfo($projectName, $model->guest_name, $model->guest_mobile, date('Y-m-d H:i:s', strtotime($model->visit_time)), $model->guest_channel) . '，系统检测无效报备。',
+                        'title' => '无效报备',
                         'report_id' => $reportId,
                         'project_id' => $this->_projectId,
                     ];
