@@ -81,7 +81,7 @@ class VisitApi extends ApiAction
                     'id' => SORT_DESC
                 ])
                 ->one();
-            
+
             if ( ! in_array($this->action, ['get_by_id'] ) ) {
 
 
@@ -143,7 +143,7 @@ class VisitApi extends ApiAction
 
         $ret = $model->toArray();
         $ret['project'] = $this->_project->toArray();
-        $ret['report'] = $this->_report->toArray();
+        $ret['report'] = !empty($this->_report) ? $this->_report->toArray() : [];
         $ret['staff'] = !empty($model->staff_id) ? $model->staff->toArray() : [];
         if (!empty($this->_report->advisor_staff_id)) {
             $ret['advisor_staff'] = $this->_report->advisorStaff;
