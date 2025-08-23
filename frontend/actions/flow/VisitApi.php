@@ -63,27 +63,30 @@ class VisitApi extends ApiAction
                 ->where(['id' => $this->_projectId])
                 ->one();
 
-            if (empty($this->_reportId)) {
-                return $this->fail('需要指定报备', -1000);
-            }
+            if ( ! in_array($this->action, ['get_by_id'] ) ) {
 
-            $this->_report = Report::find()
-                ->where([
-                    'id' => $this->_reportId,
-                ])
-                ->andFilterWhere([
-                    'between', 'visit_time', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')
-                ])
-                ->andFilterWhere([
-                    'report_status' => Report::REPORT_STATUS_PASS,
-                ])
-                ->orderBy([
-                    'id' => SORT_DESC
-                ])
-                ->one();
+                if (empty($this->_reportId)) {
+                    return $this->fail('需要指定报备', -1000);
+                }
 
-            if (empty($this->_report)) {
-                return $this->fail('请做一次有效报备', -1000);
+                $this->_report = Report::find()
+                    ->where([
+                        'id' => $this->_reportId,
+                    ])
+                    ->andFilterWhere([
+                        'between', 'visit_time', date('Y-m-d 00:00:00'), date('Y-m-d 23:59:59')
+                    ])
+                    ->andFilterWhere([
+                        'report_status' => Report::REPORT_STATUS_PASS,
+                    ])
+                    ->orderBy([
+                        'id' => SORT_DESC
+                    ])
+                    ->one();
+
+                if (empty($this->_report)) {
+                    return $this->fail('请做一次有效报备', -1000);
+                }
             }
 
             $this->valToken();
