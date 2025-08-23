@@ -102,7 +102,7 @@ class ReportApi extends ApiAction
             $ret['staff']['staff_name'] = $ret['staff_name'];
         }
         $ret['consultant_staff'] = $model->consultantStaff;
-        $ret['advisor_staff'] = $model->adviorStaff;
+        $ret['advisor_staff'] = $model->advisorStaff;
         $ret['project'] = $model->project;
         $ret['guest_mobile'] = \common\helpers\Common::formatMultyMobiles(\common\helpers\Common::splitMobile($model->guest_mobile));
         $ret['created_at'] = Date('Y-m-d H:i:s', $ret['created_at']);
