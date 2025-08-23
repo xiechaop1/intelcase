@@ -875,10 +875,12 @@ class DataApi extends ApiAction
                 $report = Report::find()->where(['id' => $visit['report_id']])->one();
                 switch ($this->_staff->role) {
                     case Staff::STAFF_ROLE_SALES:
+                        $visitStatusComment = '';
                         break;
                     default:
                         $sub = Subscribed::find()->where(['visit_id' => $visit['id']])->one();
                         $payments = !empty($sub->payments) ? $sub->payments : [];
+                        $visitStatusComment = $visit['visit_status_comment'] ?? '';
                         break;
                 }
 
@@ -901,7 +903,7 @@ class DataApi extends ApiAction
                     Visit::$visitStatus2Name[$visit['visit_status']] ?? '',
                     Visit::$visitConfirm2Name[$visit['visit_confirm_status']] ?? '',
                     $visit['person_ct'] + 1,
-                    $visit['visit_status_comment'],
+                    $visitStatusComment,
                     // 认购基本信息
                     $report->guest_channel ?? '',
                     $report->staff_name ?? '',
