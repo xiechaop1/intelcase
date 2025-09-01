@@ -288,7 +288,7 @@ class ReportApi extends ApiAction
                         ->andFilterWhere(['like', 'guest_mobile', $tmpMobile])
                         ->andFilterWhere(['<>', 'staff_mobile', $staffMobile])
                         ->andFilterWhere([
-                            '>', 'visit_time', time() - 30 * 24 * 3600
+                            '>', 'visit_time', Date('Y-m-d H:i:s', time() - 30 * 24 * 3600)
                         ])
                         ->andFilterWhere(['report_status' => Report::REPORT_STATUS_PASS])
                         ->orderBy('id DESC')
@@ -298,7 +298,7 @@ class ReportApi extends ApiAction
                     if (!empty($reportList)) {
                         foreach ($reportList as $report) {
                             // 先判断，如果是当天有人报备（无论到不到访），均无效报备
-                            if ($report->visit_time > time() - 24 * 3600) {
+                            if (strtotime($report->visit_time) > time() - 24 * 3600) {
                                 $reportStatus = Report::REPORT_STATUS_INVALID;
                                 break;
                             }
