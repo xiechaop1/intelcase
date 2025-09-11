@@ -14,10 +14,12 @@ class Payment extends \common\models\gii\Payment
 
     const PAYMENT_STATUS_WAIT           = 1;
     const PAYMENT_STATUS_COMPLETED      = 10;
+    const PAYMENT_STATUS_REFUSED        = 20; // 拒绝支付
 
     public static $paymentStatus2Name = [
         self::PAYMENT_STATUS_WAIT         => '待支付',
         self::PAYMENT_STATUS_COMPLETED    => '已支付',
+        self::PAYMENT_STATUS_REFUSED      => '拒绝支付',
     ];
 
     const PAYMENT_TYPE_PAY          = 1; // 支付

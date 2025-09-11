@@ -221,126 +221,23 @@ class PaymentApi extends ApiAction
                 $payTime = !empty($model->pay_time) ? $model->pay_time : time();
                 $guestInfo2 =  '，房号：' . $roomNo . '，金额：' . number_format($recv_amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime);
 
-
-                if ($model->pay_type == Payment::PAYMENT_TYPE_PAY) {
-                    $payments = Payment::find()
-                        ->where(['project_id' => $this->_projectId])
-                        ->andFilterWhere(['sub_id' => $model->sub_id])
-                        ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
-                        ->all();
-                    $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
-
-                    if (!empty($sub->sub_type) && $sub->sub_type == Subscribed::SUB_TYPE_RENT) {
-                        $content = [
-                            'content' => $guestInfo . $guestInfo2 . ' 完成支付',
-                            'project_id' => $this->_projectId,
-                            'title' => '完成支付',
-                            'btn' => [
-                                [
-                                    'label' => '平移',
-                                    'type' => 'movetime_page',
-                                    'sub_id' => $model->sub_id,
-                                    'project_id' => $this->_projectId,
-                                    'report_id' => $this->_reportId,
-                                    'payment_id' => $model->id,
-                                ],
-                            ],
-                        ];
-                        $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                        if (!empty($guestAppeal)) {
-                            if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                                || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
-                            } else {
-                                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
-                            }
-                        }
-                        if (!empty($recvId)) {
-                            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                        }
-                    } else {
-                        if ($payStatus == Subscribed::SUB_PAY_FULLY) {
-
-                            $content = [
-                                'content' => $guestInfo . $guestInfo2 . ' 完成支付',
-                                'project_id' => $this->_projectId,
-                                'title' => '完成支付',
-                                'btn' => [
-                                    [
-                                        'label' => '签约',
-                                        'type' => 'sub_confirm_deal_page',
-                                        'project_id' => $this->_projectId,
-                                        'sub_id' => $model->sub_id,
-                                        'report_id' => $this->_reportId,
-                                        'payment_id' => $model->id,
-                                    ],
-                                ],
-                            ];
-
-
-    //                    $recvId = $this->_project->advisor_staff_id;
-                            $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                            if (!empty($guestAppeal)) {
-                                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                                    $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
-                                } else {
-                                    $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
-                                }
-                            }
-                            if (!empty($recvId)) {
-                                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                            }
-                        } else {
-                            $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                            if (!empty($guestAppeal)) {
-                                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                                    $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
-                                    $jumpType = 'sub_buy_page';
-                                } else {
-                                    $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
-                                    $jumpType = 'sub_rent_page';
-                                }
-                            }
-                            $content = [
-                                'content' => $guestInfo . $guestInfo2 . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
-                                'project_id' => $this->_projectId,
-                                'title' => '完成部分支付',
-                                'btn' => [
-                                    [
-                                        'label' => '再次支付',
-                                        'type' => $jumpType,
-                                        'project_id' => $this->_projectId,
-                                        'report_id' => $this->_reportId,
-                                        'sub_id' => $model->sub_id,
-                                        'payment_id' => $model->id,
-                                    ],
-                                ],
-                            ];
-//                    $recvId = $this->_project->advisor_staff_id;
-
-                            if (!empty($recvId)) {
-                                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                            }
-                        }
-                    }
-                } else {
-                    // 退款
+                if ($pay_status == Payment::PAYMENT_STATUS_REFUSED) {
+                    // 拒绝
                     $content = [
-                        'content' => $guestInfo . $guestInfo2 . ' 完成退款',
+                        'content' => $guestInfo . $guestInfo2 . ' 支付被拒绝，请您重新提交',
                         'project_id' => $this->_projectId,
-                        'title' => '完成退款',
-//                        'btn' => [
-//                            [
-//                                'label' => '平移',
-//                                'type' => 'movetime_page',
-//                                'sub_id' => $model->sub_id,
-//                                'project_id' => $this->_projectId,
-//                                'report_id' => $this->_reportId,
-//                                'payment_id' => $model->id,
-//                            ],
-//                        ],
+                        'title' => '支付拒绝',
+                        'btn' => [
+                            [
+                                'label' => '支付',
+                                'type' => 'payment_page',
+                                'sub_id' => $model->sub_id,
+                                'project_id' => $this->_projectId,
+                                'report_id' => $this->_reportId,
+                                'visit_id' => $sub->visit_id,
+                                'payment_id' => $model->id,
+                            ],
+                        ],
                     ];
 //                    $recvId = $this->_project->advisor_staff_id;
                     $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
@@ -354,6 +251,142 @@ class PaymentApi extends ApiAction
                     }
                     if (!empty($recvId)) {
                         Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                    }
+                } else {
+
+                    if ($model->pay_type == Payment::PAYMENT_TYPE_PAY) {
+                        $payments = Payment::find()
+                            ->where(['project_id' => $this->_projectId])
+                            ->andFilterWhere(['sub_id' => $model->sub_id])
+                            ->andFilterWhere(['pay_status' => Payment::PAYMENT_STATUS_COMPLETED])
+                            ->all();
+                        $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
+
+                        if (!empty($sub->sub_type) && $sub->sub_type == Subscribed::SUB_TYPE_RENT) {
+                            $content = [
+                                'content' => $guestInfo . $guestInfo2 . ' 完成支付',
+                                'project_id' => $this->_projectId,
+                                'title' => '完成支付',
+                                'btn' => [
+                                    [
+                                        'label' => '平移',
+                                        'type' => 'movetime_page',
+                                        'sub_id' => $model->sub_id,
+                                        'project_id' => $this->_projectId,
+                                        'report_id' => $this->_reportId,
+                                        'payment_id' => $model->id,
+                                    ],
+                                ],
+                            ];
+                            $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                            if (!empty($guestAppeal)) {
+                                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                    $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                } else {
+                                    $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                }
+                            }
+                            if (!empty($recvId)) {
+                                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                            }
+                        } else {
+                            if ($payStatus == Subscribed::SUB_PAY_FULLY) {
+
+                                $content = [
+                                    'content' => $guestInfo . $guestInfo2 . ' 完成支付',
+                                    'project_id' => $this->_projectId,
+                                    'title' => '完成支付',
+                                    'btn' => [
+                                        [
+                                            'label' => '签约',
+                                            'type' => 'sub_confirm_deal_page',
+                                            'project_id' => $this->_projectId,
+                                            'sub_id' => $model->sub_id,
+                                            'report_id' => $this->_reportId,
+                                            'payment_id' => $model->id,
+                                        ],
+                                    ],
+                                ];
+
+
+                                //                    $recvId = $this->_project->advisor_staff_id;
+                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                if (!empty($guestAppeal)) {
+                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                    } else {
+                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                    }
+                                }
+                                if (!empty($recvId)) {
+                                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                                }
+                            } else {
+                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                if (!empty($guestAppeal)) {
+                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                        $jumpType = 'sub_buy_page';
+                                    } else {
+                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                        $jumpType = 'sub_rent_page';
+                                    }
+                                }
+                                $content = [
+                                    'content' => $guestInfo . $guestInfo2 . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
+                                    'project_id' => $this->_projectId,
+                                    'title' => '完成部分支付',
+                                    'btn' => [
+                                        [
+                                            'label' => '再次支付',
+                                            'type' => $jumpType,
+                                            'project_id' => $this->_projectId,
+                                            'report_id' => $this->_reportId,
+                                            'sub_id' => $model->sub_id,
+                                            'payment_id' => $model->id,
+                                        ],
+                                    ],
+                                ];
+//                    $recvId = $this->_project->advisor_staff_id;
+
+                                if (!empty($recvId)) {
+                                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                                }
+                            }
+                        }
+                    } else {
+                        // 退款
+                        $content = [
+                            'content' => $guestInfo . $guestInfo2 . ' 完成退款',
+                            'project_id' => $this->_projectId,
+                            'title' => '完成退款',
+//                        'btn' => [
+//                            [
+//                                'label' => '平移',
+//                                'type' => 'movetime_page',
+//                                'sub_id' => $model->sub_id,
+//                                'project_id' => $this->_projectId,
+//                                'report_id' => $this->_reportId,
+//                                'payment_id' => $model->id,
+//                            ],
+//                        ],
+                        ];
+//                    $recvId = $this->_project->advisor_staff_id;
+                        $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                        if (!empty($guestAppeal)) {
+                            if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                            } else {
+                                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                            }
+                        }
+                        if (!empty($recvId)) {
+                            Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                        }
                     }
                 }
 
