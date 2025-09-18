@@ -957,8 +957,8 @@ class DataApi extends ApiAction
                     
                 ];
                 if (!empty($payments)) {
+                    $tmp = $row;
                     foreach ($payments as $pay) {
-                        $tmp = $row;
                         $tmp[] = $pay->payer ?? '';
                         $tmp[] = !empty(Payment::$paymentType2Name[$pay->pay_type]) ? Payment::$paymentType2Name[$pay->pay_type] : '';
                         $tmp[] = $pay->pay_time ? date('Y-m-d H:i:s', $pay->pay_time) : '';
