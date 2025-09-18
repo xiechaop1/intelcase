@@ -999,7 +999,7 @@ class DataApi extends ApiAction
                     $sheet->setCellValue($cellCoordinate, $value);
                     
                     // 特殊处理身份证号码字段（第18列和第39列）
-                    if ($col == 18 || $col == 39) { // 身份证号码和补充身份证号码
+                    if ($col == 21 || $col == 42) { // 身份证号码和补充身份证号码
 //                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
                         // 强制设置为文本格式，在值前加单引号
                         $sheet->setCellValueExplicitByColumnAndRow($col + 1, $row + 2, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
