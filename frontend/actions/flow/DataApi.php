@@ -980,7 +980,8 @@ class DataApi extends ApiAction
             }
 
             if ($isDebug == 1) {
-                var_dump($data);exit;
+//                var_dump($data);exit;
+                echo json_encode($data, JSON_UNESCAPED_UNICODE);exit;
             }
             
             // 生成Excel文件
