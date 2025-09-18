@@ -723,6 +723,8 @@ class DataApi extends ApiAction
 
             $reportIds = [];
 
+            $isDebug = !empty($this->_get['is_debug']) ? $this->_get['is_debug'] : 0;
+
             $projectId = \common\helpers\Common::splitMobile($projectIds);
 
             // 使用 join 查询获取所有需要的数据
@@ -977,6 +979,9 @@ class DataApi extends ApiAction
                 }
             }
 
+            if ($isDebug == 1) {
+                var_dump($data);exit;
+            }
             
             // 生成Excel文件
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
