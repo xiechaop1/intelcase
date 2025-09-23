@@ -56,5 +56,10 @@ class Payment extends \common\models\gii\Payment
         return $this->hasOne(Project::class, ['id' => 'project_id']);
     }
 
+    public function getSubscribed()
+    {
+        return $this->hasOne(Subscribed::class, ['id' => 'sub_id']);
+    }
+
 
 }

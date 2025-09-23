@@ -140,6 +140,7 @@ class PaymentApi extends ApiAction
 
         $ret = $model->toArray();
         $ret['pay_time_str'] = !empty($ret['pay_time']) ? date('Y-m-d H:i:s', $ret['pay_time']) : '';
+        $ret['room_num'] = !empty($model->subscribed->room_no) ? $model->subscribed->room_no : '';
 
         if (empty($ret)) {
             return $this->fail('支付不存在', -1000);
