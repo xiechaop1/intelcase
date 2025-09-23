@@ -222,23 +222,42 @@ class PaymentApi extends ApiAction
                 $guestInfo2 =  '，房号：' . $roomNo . '，金额：' . number_format($recv_amount, 2) . '，付款人：' . $payer . '，付款方式：' . $amountType . '， 付款时间：' . Date('Y-m-d H:i:s', $payTime);
 
                 if ($pay_status == Payment::PAYMENT_STATUS_REFUSED) {
-                    // 拒绝
-                    $content = [
-                        'content' => $guestInfo . $guestInfo2 . ' 支付被拒绝，请您重新提交',
-                        'project_id' => $this->_projectId,
-                        'title' => '支付拒绝',
-                        'btn' => [
-                            [
-                                'label' => '支付',
-                                'type' => 'payment_page',
-                                'sub_id' => $model->sub_id,
-                                'project_id' => $this->_projectId,
-                                'report_id' => $this->_reportId,
-                                'visit_id' => $sub->visit_id,
-                                'payment_id' => $model->id,
+                    if ($model->pay_type == Payment::PAYMENT_TYPE_REFUND) {
+                        $content = [
+                            'content' => $guestInfo . $guestInfo2 . ' 退款被拒绝，请您重新提交',
+                            'project_id' => $this->_projectId,
+                            'title' => '退款拒绝',
+                            'btn' => [
+                                [
+                                    'label' => '退款',
+                                    'type' => 'pay_refund_page',
+                                    'sub_id' => $model->sub_id,
+                                    'project_id' => $this->_projectId,
+                                    'report_id' => $this->_reportId,
+                                    'visit_id' => $sub->visit_id,
+                                    'payment_id' => $model->id,
+                                ],
                             ],
-                        ],
-                    ];
+                        ];
+                    } else {
+                        // 拒绝
+                        $content = [
+                            'content' => $guestInfo . $guestInfo2 . ' 支付被拒绝，请您重新提交',
+                            'project_id' => $this->_projectId,
+                            'title' => '支付拒绝',
+                            'btn' => [
+                                [
+                                    'label' => '支付',
+                                    'type' => 'payment_page',
+                                    'sub_id' => $model->sub_id,
+                                    'project_id' => $this->_projectId,
+                                    'report_id' => $this->_reportId,
+                                    'visit_id' => $sub->visit_id,
+                                    'payment_id' => $model->id,
+                                ],
+                            ],
+                        ];
+                    }
 //                    $recvId = $this->_project->advisor_staff_id;
                     $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
                     if (!empty($guestAppeal)) {
