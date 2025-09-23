@@ -586,6 +586,9 @@ class SubscribedApi extends ApiAction
 
             $payments = Payment::find()
                 ->where(['sub_id' => $subId])
+                ->andFilterWhere([
+                    'pay_status' => Payment::PAYMENT_STATUS_COMPLETED
+                ])
                 ->all();
 
             $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $model->sub_total_price);
@@ -608,6 +611,9 @@ class SubscribedApi extends ApiAction
 
         $payments = Payment::find()
             ->where(['sub_id' => $subId])
+            ->andFilterWhere([
+                'pay_status' => Payment::PAYMENT_STATUS_COMPLETED
+            ])
             ->all();
 
         $payTotal = 0;
