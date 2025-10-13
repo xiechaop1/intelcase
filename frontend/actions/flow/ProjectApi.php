@@ -161,6 +161,13 @@ class ProjectApi extends ApiAction
 
             if (!empty($projectName)) {
                 $model->project_name = $projectName;
+                $url = Yii::$app->request->hostInfo . '/project/' . $projectId;
+                $qrCode = Yii::$app->common->generateQrCode($url, $projectName);
+
+//            $qrFile = '/img/' . md5($qrCode) . '.png';
+//            file_put_contents(Yii::getAlias('@webroot') . $qrFile, $qrCode);
+
+                $model->qr_code = $qrCode;
             }
             if (!empty($opts)) {
                 $model->opts = $opts;
