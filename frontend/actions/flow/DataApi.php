@@ -721,6 +721,8 @@ class DataApi extends ApiAction
             $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
             $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
 
+            $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
+
             $reportIds = [];
 
             $isDebug = !empty($this->_get['is_debug']) ? $this->_get['is_debug'] : 0;
@@ -774,6 +776,9 @@ class DataApi extends ApiAction
             }
             if (!empty($reportIds)) {
                 $query->andFilterWhere(['report_id' => $reportIds]);
+            }
+            if (!empty($visitConfirmStatus)) {
+                $query->andFilterWhere(['visit_confirm_status' => $visitConfirmStatus]);
             }
             if (!empty($beginTime)) {
                 $query->andFilterWhere(['>', 'visit_time', $beginTime]);
