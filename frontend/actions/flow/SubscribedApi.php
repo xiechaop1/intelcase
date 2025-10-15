@@ -679,6 +679,7 @@ class SubscribedApi extends ApiAction
             $subType = !empty($this->_get['sub_type']) ? $this->_get['sub_type'] : 0;
             $subGuest = !empty($this->_get['sub_guest']) ? $this->_get['sub_guest'] : '';
             $roomNo = !empty($this->_get['room_no']) ? $this->_get['room_no'] : '';
+            $company = !empty($this->_get['company']) ? $this->_get['company'] : '';
             $idType = !empty($this->_get['id_type']) ? $this->_get['id_type'] : "";
             $idNo = !empty($this->_get['id_no']) ? $this->_get['id_no'] : '';
             $guestMobile = $mobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
@@ -807,6 +808,7 @@ class SubscribedApi extends ApiAction
             $model->sub_type = $subType;
             $model->sub_guest = $subGuest;
             $model->room_no = $roomNo;
+            $model->company = $company;
             $model->id_type = $idType;
             $model->id_no = $idNo;
             $model->mobile = $mobile;
