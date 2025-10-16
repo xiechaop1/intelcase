@@ -721,7 +721,7 @@ class DataApi extends ApiAction
             $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
             $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
 
-            $visitConfirmStatus = !empty($this->_get['visit_confirm_status']) ? $this->_get['visit_confirm_status'] : 0;
+            $visitConfirmStatus = !empty($this->_get['visit_confirm_status_id']) ? $this->_get['visit_confirm_status_id'] : 0;
 
             $reportIds = [];
 
