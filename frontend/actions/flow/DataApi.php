@@ -269,9 +269,9 @@ class DataApi extends ApiAction
 
         foreach ($subAppeal as $subA) {
             foreach ($dtRange as $dt) {
-                $arrivedCt[$subA][$dt] = 0;
+                $arrivedCt[$subA][$dt]['all'] = 0;
             }
-            $arrivedCt[$subA]['curr_week'] = 0;
+            $arrivedCt[$subA]['curr_week']['all'] = 0;
         }
 
         if (!empty($visitList)) {
@@ -336,8 +336,8 @@ class DataApi extends ApiAction
         foreach ($dtRange as $dt) {
             foreach ($subType as $subT) {
                 foreach ($subAppeal as $subA) {
-                    $subCt[$subA]['buy'][$subT][$dt] = 0;
-                    $subCt[$subA]['sign'][$subT][$dt] = 0;
+                    $subCt[$subA]['buy'][$subT][$dt]['all'] = 0;
+                    $subCt[$subA]['sign'][$subT][$dt]['all'] = 0;
                 }
             }
         }
