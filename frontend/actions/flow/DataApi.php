@@ -319,7 +319,7 @@ class DataApi extends ApiAction
                     if ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_BUY) {
                         $parType = 'buy';
 
-                        $subCt = $this->_computSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek);
+                        $subCt = $this->_computeSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek);
                         $subTotalAmount += floatval($sub->sub_total_price);
 
 //                        if (empty($subCt[$parType]['ct']['total'] )) {
@@ -381,7 +381,7 @@ class DataApi extends ApiAction
                     } elseif ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
                         $parType = 'sign';
 
-                        $subCt = $this->_computSubCt($parType, $subCt, $sub, $currWeek);
+                        $subCt = $this->_computeSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek);
 //                        if (empty($subCt[$parType]['ct']['total'] )) {
 //                            $subCt[$parType]['ct']['total']  = 1;
 //                        } else {
@@ -495,7 +495,7 @@ class DataApi extends ApiAction
         return $parAppeal;
     }
 
-    private function _computSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek) {
+    private function _computeSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek) {
 
         $parAppeal = 'default';
         if (!empty($visitAppealIds[$sub->visit_id])) {
