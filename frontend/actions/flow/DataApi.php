@@ -524,14 +524,14 @@ class DataApi extends ApiAction
         if (empty($subCt[$parAppeal][$parType]['yearly_amount']['total'])) {
             $subCt[$parAppeal][$parType]['yearly_amount']['total'] = floatval($sub->yearly_amount);
             if (!empty($subCt[$parAppeal][$parType]['area']['total'])) {
-                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = floatval($subCt[$parAppeal][$parType]['yearly_amount']['total']) / $subCt[$parAppeal][$parType]['area']['total'] / 365;
+                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount']['total']) * 100) / ($subCt[$parAppeal][$parType]['area']['total'] * 100) / 365, 2);
             } else {
                 $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = 0;
             }
         } else {
             $subCt[$parAppeal][$parType]['yearly_amount']['total'] += floatval($sub->yearly_amount);
             if (!empty($subCt[$parAppeal][$parType]['area']['total'])) {
-                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = floatval($subCt[$parAppeal][$parType]['yearly_amount']['total']) / $subCt[$parAppeal][$parType]['area']['total'] / 365;
+                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount']['total']) * 100) / ($subCt[$parAppeal][$parType]['area']['total'] * 100) / 365, 2);
             } else {
                 $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = 0;
             }
@@ -558,16 +558,16 @@ class DataApi extends ApiAction
         if (empty($subCt[$parAppeal][$parType]['yearly_amount'][$currDt])) {
             $subCt[$parAppeal][$parType]['yearly_amount'][$currDt] = floatval($sub->yearly_amount);
             if (!empty($subCt[$parAppeal][$parType]['area'][$currDt])) {
-                $subCt[$parAppeal][$parType]['daily_amount_per_area'][$currDt] = floatval($subCt[$parAppeal][$parType]['yearly_amount'][$currDt]) / $subCt[$parAppeal][$parType]['area'][$currDt] / 365;
+                $subCt[$parAppeal][$parType]['daily_amount_per_area'][$currDt] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount'][$currDt]) * 100) / ($subCt[$parAppeal][$parType]['area'][$currDt] * 100) / 365, 2);
             } else {
                 $subCt[$parAppeal][$parType]['daily_amount_per_area'][$currDt] = 0;
             }
         } else {
-            $subCt[$parAppeal][$parType]['yearly_amount']['total'] += floatval($sub->yearly_amount);
-            if (!empty($subCt[$parAppeal][$parType]['area']['total'])) {
-                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = floatval($subCt[$parAppeal][$parType]['yearly_amount']['total']) / $subCt[$parAppeal][$parType]['area']['total'] / 365;
+            $subCt[$parAppeal][$parType]['yearly_amount'][$currDt] += floatval($sub->yearly_amount);
+            if (!empty($subCt[$parAppeal][$parType]['area'][$currDt])) {
+                $subCt[$parAppeal][$parType]['daily_amount_per_area'][$currDt] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount'][$currDt]) * 100) / ($subCt[$parAppeal][$parType]['area'][$currDt] * 100) / 365, 2);
             } else {
-                $subCt[$parAppeal][$parType]['daily_amount_per_area']['total'] = 0;
+                $subCt[$parAppeal][$parType]['daily_amount_per_area'][$currDt] = 0;
             }
         }
 
@@ -593,14 +593,14 @@ class DataApi extends ApiAction
             if (empty($subCt[$parAppeal][$parType]['yearly_amount']['curr_week'])) {
                 $subCt[$parAppeal][$parType]['yearly_amount']['curr_week'] = floatval($sub->yearly_amount);
                 if (!empty($subCt[$parAppeal][$parType]['area']['curr_week'])) {
-                    $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = floatval($subCt[$parAppeal][$parType]['yearly_amount']['curr_week']) / $subCt[$parAppeal][$parType]['area']['curr_week'] / 365;
+                    $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount']['curr_week']) * 100) / ($subCt[$parAppeal][$parType]['area']['curr_week'] * 100) / 365, 2);
                 } else {
                     $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = 0;
                 }
             } else {
                 $subCt[$parAppeal][$parType]['yearly_amount']['curr_week'] += floatval($sub->yearly_amount);
                 if (!empty($subCt[$parAppeal][$parType]['area']['curr_week'])) {
-                    $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = floatval($subCt[$parAppeal][$parType]['yearly_amount']['curr_week']) / $subCt[$parAppeal][$parType]['area']['curr_week'] / 365;
+                    $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = number_format((floatval($subCt[$parAppeal][$parType]['yearly_amount']['curr_week']) * 100) / ($subCt[$parAppeal][$parType]['area']['curr_week'] * 100) / 365, 2);
                 } else {
                     $subCt[$parAppeal][$parType]['daily_amount_per_area']['curr_week'] = 0;
                 }
