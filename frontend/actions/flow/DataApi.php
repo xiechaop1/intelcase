@@ -160,6 +160,23 @@ class DataApi extends ApiAction
 
         $reportList = Report::find();
 
+        switch ($this->_staff->role) {
+            case Staff::STAFF_ROLE_SALES:
+                $reportList->andFilterWhere(['staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_ADVISOR:
+                $reportList->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            case Staff::STAFF_ROLE_CONSULTANT:
+                $reportList->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                $repTag = 1;
+                break;
+            default:
+                break;
+        }
+
         if (strpos($projectId, ',') !== false) {
             $projectId = explode(',', $projectId);
         } else {
