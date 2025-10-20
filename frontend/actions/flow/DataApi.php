@@ -152,6 +152,14 @@ class DataApi extends ApiAction
         $reportAppeal = !empty($this->_get['report_appeal']) ? $this->_get['report_appeal'] : '';
         $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
 
+        if (!is_int($beginTime)) {
+            $beginTime = strtotime($beginTime);
+        }
+
+        if (!is_int($endTime)) {
+            $endTime = strtotime($endTime);
+        }
+
         $currDay = strtotime(Date('Y-m-d'));
         $currWeek = [
             strtotime($currDay) - (Date('N') - 1) * 86400,
