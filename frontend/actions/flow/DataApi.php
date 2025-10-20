@@ -251,6 +251,14 @@ class DataApi extends ApiAction
         for ($i = strtotime($beginTime); $i <= strtotime($endTime); $i += 86400) {
             $dtRange[] = Date('Y-m-d', $i);
         }
+        $subType = ['ct', 'amount', 'area'];
+        $subAppeal = ['default', 'investment', 'rent'];
+
+        foreach ($dtRange as $dt) {
+            foreach ($subAppeal as $subA) {
+                $arrivedCt[$subA][$dt] = 0;
+            }
+        }
 
         if (!empty($visitList)) {
             foreach ($visitList as $vis) {
@@ -297,8 +305,6 @@ class DataApi extends ApiAction
 
         $subIds = [];
         $subCt = [];
-        $subType = ['ct', 'amount', 'area'];
-        $subAppeal = ['default', 'investment', 'rent'];
         $subTotalAmount = 0;
 
         foreach ($dtRange as $dt) {
