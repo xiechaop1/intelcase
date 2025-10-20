@@ -38,6 +38,10 @@ class DataController extends Controller
                 'class'     => 'frontend\actions\flow\DataApi',
                 'action'    => 'get_logs',
             ],
+            'get_data_new' => [
+                'class'     => 'frontend\actions\flow\DataApi',
+                'action'    => 'get_data_new',
+            ],
             
         ];
     }
