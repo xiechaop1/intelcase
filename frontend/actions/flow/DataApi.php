@@ -320,7 +320,7 @@ class DataApi extends ApiAction
                         $parType = 'buy';
 
                         $subCt = $this->_computSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek);
-                        $subTotalAmount += flotval($sub->sub_total_price);
+                        $subTotalAmount += floatval($sub->sub_total_price);
 
 //                        if (empty($subCt[$parType]['ct']['total'] )) {
 //                            $subCt[$parType]['ct']['total']  = 1;
