@@ -152,18 +152,18 @@ class DataApi extends ApiAction
         $reportAppeal = !empty($this->_get['report_appeal']) ? $this->_get['report_appeal'] : '';
         $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
 
-        if (!is_int($beginTime)) {
-            $beginTime = strtotime($beginTime);
-        }
-
-        if (!is_int($endTime)) {
-            $endTime = strtotime($endTime);
-        }
+//        if (!is_int($beginTime)) {
+//            $beginTime = strtotime($beginTime);
+//        }
+//
+//        if (!is_int($endTime)) {
+//            $endTime = strtotime($endTime);
+//        }
 
         $currDay = strtotime(Date('Y-m-d'));
         $currWeek = [
             strtotime($currDay) - (Date('N') - 1) * 86400,
-                strtotime($currDay) + (7 - Date('N')) * 86400
+            strtotime($currDay) + (7 - Date('N')) * 86400
         ];
 
         $reportList = Report::find();
@@ -248,7 +248,7 @@ class DataApi extends ApiAction
         $visitAppealIds = [];
 
         $dtRange = ['total'];
-        for ($i = $beginTime; $i <= $endTime; $i += 86400) {
+        for ($i = strtotime($beginTime); $i <= strtotime($endTime); $i += 86400) {
             $dtRange[] = Date('Y-m-d', $i);
         }
 
