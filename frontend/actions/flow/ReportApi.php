@@ -90,7 +90,7 @@ class ReportApi extends ApiAction
 
     public function getGuestChannel() {
         $model = Report::find()
-            ->select('guest_column')
+            ->select('guest_channel')
             ->distinct()
             ->all();
 
