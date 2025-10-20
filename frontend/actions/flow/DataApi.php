@@ -187,10 +187,12 @@ class DataApi extends ApiAction
                 break;
         }
 
-        if (strpos($projectId, ',') !== false) {
-            $projectId = explode(',', $projectId);
-        } else {
-            $projectId = [$projectId];
+        if (!empty($projectId)) {
+            if (strpos($projectId, ',') !== false) {
+                $projectId = explode(',', $projectId);
+            } else {
+                $projectId = [$projectId];
+            }
         }
 
         if (strpos($reportAppeal, ',') !== false) {
