@@ -268,10 +268,22 @@ class DataApi extends ApiAction
                     if (!empty($visitAppealIds[$vis->id])) {
                         $parAppeal = $this->_switchAppeal($visitAppealIds[$vis->id]);
                     }
-                    $arrivedCt[$parAppeal]['total'] += 1;
-                    $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))] += 1;
+                    if (empty($arrivedCt[$parAppeal]['total'])) {
+                        $arrivedCt[$parAppeal]['total'] = 1;
+                    } else {
+                        $arrivedCt[$parAppeal]['total'] += 1;
+                    }
+                    if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))])) {
+                        $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))] = 1;
+                    } else {
+                        $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))] += 1;
+                    }
                     if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
-                        $arrivedCt[$parAppeal]['curr_week'] += 1;
+                        if (empty($arrivedCt[$parAppeal]['curr_week'])) {
+                            $arrivedCt[$parAppeal]['curr_week'] = 1;
+                        } else {
+                            $arrivedCt[$parAppeal]['curr_week'] += 1;
+                        }
                     }
                 }
             }
