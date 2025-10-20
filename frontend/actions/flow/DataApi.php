@@ -254,10 +254,11 @@ class DataApi extends ApiAction
         $subType = ['ct', 'amount', 'area'];
         $subAppeal = ['default', 'investment', 'rent'];
 
-        foreach ($dtRange as $dt) {
-            foreach ($subAppeal as $subA) {
+        foreach ($subAppeal as $subA) {
+            foreach ($dtRange as $dt) {
                 $arrivedCt[$subA][$dt] = 0;
             }
+            $arrivedCt[$subA]['curr_week'] = 0;
         }
 
         if (!empty($visitList)) {
