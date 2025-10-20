@@ -94,7 +94,14 @@ class ReportApi extends ApiAction
             ->distinct()
             ->all();
 
-        return $this->success($model);
+        $ret = [];
+        if (!empty($model)) {
+            foreach ($model as $m) {
+                $ret[] = $m->guest_channel;
+            }
+        }
+
+        return $this->success($ret);
     }
 
     public function getById() {
