@@ -63,6 +63,10 @@ class ReportController extends Controller
                 'class'     => 'frontend\actions\flow\ReportApi',
                 'action'    => 'confirm',
             ],
+            'get_guest_channel' => [
+                'class'     => 'frontend\actions\flow\ReportApi',
+                'action'    => 'get_guest_channel',
+            ],
         ];
     }
 }

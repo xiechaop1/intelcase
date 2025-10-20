@@ -73,6 +73,9 @@ class ReportApi extends ApiAction
                 case 'confirm':
                     $ret = $this->confirm();
                     break;
+                case 'get_guest_channel':
+                    $ret = $this->getGuestChannel();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -83,6 +86,14 @@ class ReportApi extends ApiAction
         }
 
         return $ret;
+    }
+
+    public function getGuestChannel() {
+        $model = Report::find()
+            ->select('distinct guest_column')
+            ->all();
+
+        return $this->success($model);
     }
 
     public function getById() {

@@ -135,6 +135,367 @@ class DataApi extends ApiAction
         ]);
     }
 
+    public function getDataNew() {
+        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : '';
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : '';
+
+        $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
+        $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+        $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
+        $visitStatus = !empty($this->_get['visit_status']) ? $this->_get['visit_status'] : 0;
+        $inter = !empty($this->_get['inter']) ? $this->_get['inter'] : 'daily';
+
+        $reportChannel = !empty($this->_get['report_channel']) ? $this->_get['report_channel'] : '';
+        $reportAppeal = !empty($this->_get['report_appeal']) ? $this->_get['report_appeal'] : '';
+        $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
+
+        $currDay = strtotime(Date('Y-m-d'));
+        $currWeek = [
+            strtotime($currDay) - (Date('N') - 1) * 86400,
+                strtotime($currDay) + (7 - Date('N')) * 86400
+        ];
+
+        $reportList = Report::find();
+
+        if (strpos($projectId, ',') !== false) {
+            $projectId = explode(',', $projectId);
+        } else {
+            $projectId = [$projectId];
+        }
+
+        if (strpos($reportAppeal, ',') !== false) {
+            $reportAppeal = explode(',', $reportAppeal);
+        }
+
+        if (!empty($beginTime)) {
+            $reportList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+        }
+
+        if (!empty($endTime)) {
+            $reportList->andFilterWhere(['<=', 'visit_time', $endTime]);
+        }
+
+        if (!empty($projectId)) {
+            $reportList->andFilterWhere(['project_id' => $projectId]);
+        }
+        if (!empty($reportAppeal)) {
+            $reportList->andFilterWhere(['guest_appeal' => $reportAppeal]);
+        }
+
+        $reportList = $reportList->all();
+
+        $reportIds = [];
+        $reportAppealIds = [];
+        if (!empty($reportList)) {
+            foreach ($reportList as $rep) {
+                $reportIds[] = $rep->id;
+                $reportAppealIds[$rep->id] = $rep->guest_appeal;
+            }
+        }
+
+        if (!empty($reportIds)) {
+            $visitList = Visit::find();
+            $visitList->andFilterWhere(['report_id' => $reportIds]);
+            $visitList = $visitList->all();
+        } else {
+            $visitList = Visit::find();
+            if (!empty($beginTime)) {
+                $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+            }
+            if (!empty($endTime)) {
+                $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
+            }
+            if (!empty($projectId)) {
+                $visitList->andFilterWhere(['project_id' => $projectId]);
+            }
+            if (!empty($reportAppeal)) {
+                $visitList->andFilterWhere(['guest_appeal' => $reportAppeal]);
+            }
+            $visitList = $visitList->all();
+        }
+
+        $visitIds = [];
+        $arrivedCt = [];
+        $visitConfirmStatus = [];
+        $visitAppealIds = [];
+
+        $dtRange = ['total'];
+        for ($i = $beginTime; $i <= $endTime; $i += 86400) {
+            $dtRange[] = Date('Y-m-d', $i);
+        }
+
+        if (!empty($visitList)) {
+            foreach ($visitList as $vis) {
+                $visitIds[] = $vis->id;
+
+                $visitConfirmStatus[$vis->id] = $vis->visit_confirm_status;
+                if (!empty($reportAppealIds[$vis->report_id])) {
+                    $visitAppealIds[$vis->id] = $reportAppealIds[$vis->report_id];
+                } else {
+                    $visitAppealIds[$vis->id] = $vis->guest_appeal;
+                }
+
+                if ($vis->visit_status == Visit::VISIT_STATUS_COMPLETED) {
+                    $parAppeal = 'default';
+                    if (!empty($visitAppealIds[$vis->id])) {
+                        $parAppeal = $this->_switchAppeal($visitAppealIds[$vis->id]);
+                    }
+                    $arrivedCt[$parAppeal]['total'] += 1;
+                    $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))] += 1;
+                    if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
+                        $arrivedCt[$parAppeal]['curr_week'] += 1;
+                    }
+                }
+            }
+        }
+
+        if (!empty($visitIds)) {
+            $subscribedList = Subscribed::find();
+            $subscribedList->andFilterWhere(['visit_id' => $visitIds]);
+            $subscribedList = $subscribedList->all();
+        }
+
+        $subIds = [];
+        $subCt = [];
+        $subType = ['ct', 'amount', 'area'];
+        $subAppeal = ['default', 'investment', 'rent'];
+
+        foreach ($dtRange as $dt) {
+            foreach ($subType as $subT) {
+                foreach ($subAppeal as $subA) {
+                    $subCt[$subA]['buy'][$subT][$dt] = 0;
+                    $subCt[$subA]['sign'][$subT][$dt] = 0;
+                }
+            }
+        }
+
+        if (!empty($subscribedList)) {
+            foreach ($subscribedList as $sub) {
+                $subIds[] = $sub->id;
+
+                if (!empty($visitConfirmStatus[$sub->visit_id])) {
+                    $currDt = Date('Y-m-d', $sub->created_at);
+                    if ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_BUY) {
+                        $parType = 'buy';
+
+                        $subCt = $this->_computSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek);
+
+//                        if (empty($subCt[$parType]['ct']['total'] )) {
+//                            $subCt[$parType]['ct']['total']  = 1;
+//                        } else {
+//                            $subCt[$parType]['ct']['total'] += 1;
+//                        }
+//
+//                        if (empty($subCt[$parType]['amount']['total'])) {
+//                            $subCt[$parType]['amount']['total'] = $sub->sub_total_price;
+//                        } else {
+//                            $subCt[$parType]['amount']['total'] += $sub->sub_total_price;
+//                        }
+//
+//                        if ($subCt[$parType]['area']['total']) {
+//                            $subCt[$parType]['area']['total'] = floatval($sub->building_area);
+//                        } else {
+//                            $subCt[$parType]['area']['total'] += floatval($sub->building_area);
+//                        }
+//
+//                        if (empty($subCt[$parType]['ct'][$currDt] )) {
+//                            $subCt[$parType]['ct'][$currDt]  = 1;
+//                        } else {
+//                            $subCt[$parType]['ct'][$currDt] += 1;
+//                        }
+//
+//                        if (empty($subCt[$parType]['amount'][$currDt])) {
+//                            $subCt[$parType]['amount'][$currDt] = $sub->sub_total_price;
+//                        } else {
+//                            $subCt[$parType]['amount'][$currDt] += $sub->sub_total_price;
+//                        }
+//
+//                        if ($subCt[$parType]['area'][$currDt]) {
+//                            $subCt[$parType]['area'][$currDt] = floatval($sub->building_area);
+//                        } else {
+//                            $subCt[$parType]['area'][$currDt] += floatval($sub->building_area);
+//                        }
+//
+//                        if (strtotime($sub->created_at) >= $currWeek[0] && strtotime($sub->created_at) < $currWeek[1]) {
+//                            if (empty($subCt[$parType]['ct']['curr_week'] )) {
+//                                $subCt[$parType]['ct']['curr_week']  = 1;
+//                            } else {
+//                                $subCt[$parType]['ct']['curr_week'] += 1;
+//                            }
+//
+//                            if (empty($subCt[$parType]['amount']['curr_week'])) {
+//                                $subCt[$parType]['amount']['curr_week'] = $sub->sub_total_price;
+//                            } else {
+//                                $subCt[$parType]['amount']['curr_week'] += $sub->sub_total_price;
+//                            }
+//
+//                            if ($subCt[$parType]['area']['curr_week']) {
+//                                $subCt[$parType]['area']['curr_week'] = floatval($sub->building_area);
+//                            } else {
+//                                $subCt[$parType]['area']['curr_week'] += floatval($sub->building_area);
+//                            }
+//                        }
+//                        $subscribedCt['buy'] += 1;
+                    } elseif ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_SIGNED) {
+                        $parType = 'sign';
+
+                        $subCt = $this->_computSubCt($parType, $subCt, $sub, $currWeek);
+//                        if (empty($subCt[$parType]['ct']['total'] )) {
+//                            $subCt[$parType]['ct']['total']  = 1;
+//                        } else {
+//                            $subCt[$parType]['ct']['total'] += 1;
+//                        }
+//
+//                        if (empty($subCt[$parType]['amount']['total'])) {
+//                            $subCt[$parType]['amount']['total'] = $sub->sub_total_price;
+//                        } else {
+//                            $subCt[$parType]['amount']['total'] += $sub->sub_total_price;
+//                        }
+//
+//                        if ($subCt[$parType]['area']['total']) {
+//                            $subCt[$parType]['area']['total'] = floatval($sub->building_area);
+//                        } else {
+//                            $subCt[$parType]['area']['total'] += floatval($sub->building_area);
+//                        }
+//
+//                        if (empty($subCt[$parType]['ct'][$currDt] )) {
+//                            $subCt[$parType]['ct'][$currDt]  = 1;
+//                        } else {
+//                            $subCt[$parType]['ct'][$currDt] += 1;
+//                        }
+//
+//                        if (empty($subCt[$parType]['amount'][$currDt])) {
+//                            $subCt[$parType]['amount'][$currDt] = $sub->sub_total_price;
+//                        } else {
+//                            $subCt[$parType]['amount'][$currDt] += $sub->sub_total_price;
+//                        }
+//
+//                        if ($subCt[$parType]['area'][$currDt]) {
+//                            $subCt[$parType]['area'][$currDt] = floatval($sub->building_area);
+//                        } else {
+//                            $subCt[$parType]['area'][$currDt] += floatval($sub->building_area);
+//                        }
+//
+//                        if (strtotime($sub->created_at) >= $currWeek[0] && strtotime($sub->created_at) < $currWeek[1]) {
+//                            if (empty($subCt[$parType]['ct']['curr_week'] )) {
+//                                $subCt[$parType]['ct']['curr_week']  = 1;
+//                            } else {
+//                                $subCt[$parType]['ct']['curr_week'] += 1;
+//                            }
+//
+//                            if (empty($subCt[$parType]['amount']['curr_week'])) {
+//                                $subCt[$parType]['amount']['curr_week'] = $sub->sub_total_price;
+//                            } else {
+//                                $subCt[$parType]['amount']['curr_week'] += $sub->sub_total_price;
+//                            }
+//
+//                            if ($subCt[$parType]['area']['curr_week']) {
+//                                $subCt[$parType]['area']['curr_week'] = floatval($sub->building_area);
+//                            } else {
+//                                $subCt[$parType]['area']['curr_week'] += floatval($sub->building_area);
+//                            }
+//                        }
+//                        $subscribedCt['signed'] += 1;
+                    }
+                }
+            }
+        }
+
+        if (!empty($subIds)) {
+            $paymentList = Payment::find();
+            $paymentList->andFilterWhere(['sub_id' => $subIds]);
+            $paymentList = $paymentList->all();
+        }
+
+
+
+
+    }
+
+    private function _switchAppeal($appeal) {
+        switch ($appeal) {
+            case Visit::VISIT_GUEST_APPEAL_RENT:
+                $parAppeal = 'rent';
+                break;
+            case Visit::VISIT_GUEST_APPEAL_INVESTMENT:
+            case Visit::VISIT_GUEST_APPEAL_SELF_USE:
+                $parAppeal = 'investment';
+                break;
+            default:
+                $parAppeal = 'default';
+                break;
+        }
+
+        return $parAppeal;
+    }
+
+    private function _computSubCt($subCt, $parType, $visitAppealIds, $sub, $currWeek) {
+
+        $parAppeal = 'default';
+        if (!empty($visitAppealIds[$sub->visit_id])) {
+            $parAppeal = $this->_switchAppeal($visitAppealIds[$sub->visit_id]);
+        }
+
+        $currDt = Date('Y-m-d', $sub->created_at);
+        if (empty($subCt[$parType]['ct']['total'] )) {
+            $subCt[$parAppeal][$parType]['ct']['total']  = 1;
+        } else {
+            $subCt[$parAppeal][$parType]['ct']['total'] += 1;
+        }
+
+        if (empty($subCt[$parAppeal][$parType]['amount']['total'])) {
+            $subCt[$parAppeal][$parType]['amount']['total'] = $sub->sub_total_price;
+        } else {
+            $subCt[$parAppeal][$parType]['amount']['total'] += $sub->sub_total_price;
+        }
+
+        if ($subCt[$parAppeal][$parType]['area']['total']) {
+            $subCt[$parAppeal][$parType]['area']['total'] = floatval($sub->building_area);
+        } else {
+            $subCt[$parAppeal][$parType]['area']['total'] += floatval($sub->building_area);
+        }
+
+        if (empty($subCt[$parAppeal][$parType]['ct'][$currDt] )) {
+            $subCt[$parAppeal][$parType]['ct'][$currDt]  = 1;
+        } else {
+            $subCt[$parAppeal][$parType]['ct'][$currDt] += 1;
+        }
+
+        if (empty($subCt[$parType]['amount'][$currDt])) {
+            $subCt[$parAppeal][$parType]['amount'][$currDt] = $sub->sub_total_price;
+        } else {
+            $subCt[$parAppeal][$parType]['amount'][$currDt] += $sub->sub_total_price;
+        }
+
+        if ($subCt[$parAppeal][$parType]['area'][$currDt]) {
+            $subCt[$parAppeal][$parType]['area'][$currDt] = floatval($sub->building_area);
+        } else {
+            $subCt[$parAppeal][$parType]['area'][$currDt] += floatval($sub->building_area);
+        }
+
+        if (strtotime($sub->created_at) >= $currWeek[0] && strtotime($sub->created_at) < $currWeek[1]) {
+            if (empty($subCt[$parAppeal][$parType]['ct']['curr_week'] )) {
+                $subCt[$parAppeal][$parType]['ct']['curr_week']  = 1;
+            } else {
+                $subCt[$parAppeal][$parType]['ct']['curr_week'] += 1;
+            }
+
+            if (empty($subCt[$parAppeal][$parType]['amount']['curr_week'])) {
+                $subCt[$parAppeal][$parType]['amount']['curr_week'] = $sub->sub_total_price;
+            } else {
+                $subCt[$parAppeal][$parType]['amount']['curr_week'] += $sub->sub_total_price;
+            }
+
+            if ($subCt[$parAppeal][$parType]['area']['curr_week']) {
+                $subCt[$parAppeal][$parType]['area']['curr_week'] = floatval($sub->building_area);
+            } else {
+                $subCt[$parAppeal][$parType]['area']['curr_week'] += floatval($sub->building_area);
+            }
+        }
+
+        return $subCt;
+    }
+
     public function getData()
     {
 //        $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d 00:00:00', strtotime('-7 days'));
