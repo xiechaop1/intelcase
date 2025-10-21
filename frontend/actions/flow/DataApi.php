@@ -274,8 +274,8 @@ class DataApi extends ApiAction
             foreach ($dtRange as $dt) {
                 $arrivedCt[$subA][$dt]['all'] = 0;
             }
-            $arrivedCt[$subA]['curr_week']['all'] = 0;
-            $arrivedCt[$subA]['today']['all'] = 0;
+//            $arrivedCt[$subA]['curr_week']['all'] = 0;
+//            $arrivedCt[$subA]['today']['all'] = 0;
         }
 
         if (!empty($visitList)) {
