@@ -89,10 +89,17 @@ class ReportApi extends ApiAction
     }
 
     public function getGuestChannel() {
+        $channel = !empty($this->_get['channel']) ? $this->_get['channel'] : '';
+
         $model = Report::find()
             ->select('guest_channel')
-            ->distinct()
-            ->all();
+            ->distinct();
+
+        if (!empty($channel)) {
+            $model->where(['like', 'guest_channel', $channel]);
+        }
+
+        $model = $model->all();
 
         $ret = [];
         if (!empty($model)) {
