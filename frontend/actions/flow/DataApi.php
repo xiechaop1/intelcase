@@ -163,6 +163,7 @@ class DataApi extends ApiAction
 //        }
 
         $currDay = strtotime(Date('Y-m-d'));
+        $currDayStr = Date('Y-m-d');
         $currWeek = [
             strtotime($currDay) - (Date('N') - 1) * 86400,
             strtotime($currDay) + (7 - Date('N')) * 86400
@@ -322,6 +323,10 @@ class DataApi extends ApiAction
                             }
                         }
                     }
+
+                    if (!empty($arrivedCt[$parAppeal][Date('Y-m-d', $currDay)])) {
+                        $arrivedCt[$parAppeal]['today'] = $arrivedCt[$parAppeal][Date('Y-m-d', $currDay)];
+                    }
                 }
             }
         }
@@ -476,6 +481,17 @@ class DataApi extends ApiAction
                     }
                 }
             }
+
+            foreach ($subType as $subT) {
+                foreach ($subAppeal as $subA) {
+                    if (!empty($subCt[$subA]['buy'][$subT][$currDayStr])) {
+                        $subCt[$subA]['buy'][$subT]['today'] = $subCt[$subA]['buy'][$subT][$currDayStr];
+                    }
+                    if (!empty($subCt[$subA]['sign'][$subT][$currDayStr])) {
+                        $subCt[$subA]['sign'][$subT]['today'] = $subCt[$subA]['sign'][$subT][$currDayStr];
+                    }
+                }
+            }
         }
 
         if (!empty($subIds)) {
@@ -500,6 +516,9 @@ class DataApi extends ApiAction
         }
         $payCt['total'] = $payTotalAmount;
         $payCt['wait'] = $subTotalAmount - $payTotalAmount;
+        if (!empty($payCt[$currDayStr])) {
+            $payCt['today'] = $payCt[$currDayStr];
+        }
 
         $ret = [
             'subscribed' => $subCt,
