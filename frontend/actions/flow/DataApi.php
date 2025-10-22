@@ -165,8 +165,8 @@ class DataApi extends ApiAction
         $currDay = strtotime(Date('Y-m-d'));
         $currDayStr = Date('Y-m-d');
         $currWeek = [
-            strtotime($currDay) - (Date('N') - 1) * 86400,
-            strtotime($currDay) + (7 - Date('N')) * 86400
+            $currDay - (Date('N') - 1) * 86400,
+            $currDay + (7 - Date('N')) * 86400
         ];
 
         $reportList = Report::find();
