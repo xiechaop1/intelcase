@@ -98,7 +98,7 @@ class StaffApi extends ApiAction
             ]);
         } else {
             $query = $query->andFilterWhere([
-               'in', 'id', Staff::find()->select('id')->groupBy('mobile')->orderBy(['id' => SORT_ASC])
+               'in', 'id', Staff::find()->select('id')->min()->groupBy('mobile')
             ]);
         }
         $query = $query->andWhere([
