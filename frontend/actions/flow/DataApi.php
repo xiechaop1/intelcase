@@ -263,7 +263,7 @@ class DataApi extends ApiAction
         $visitAppealIds = [];
         $visitChannelList = [];
 
-        $dtRange = ['total'];
+        $dtRange = ['total', 'curr_week', 'today'];
         for ($i = strtotime($beginTime); $i <= strtotime($endTime); $i += 86400) {
             $dtRange[] = Date('Y-m-d', $i);
         }
@@ -314,6 +314,9 @@ class DataApi extends ApiAction
                             $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
                         } else {
                             $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] += 1;
+                        }
+                        if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
+                            $arrivedCt[$parAppeal]['curr_week'][$ch] = 0;
                         }
                         if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
                             if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
@@ -515,7 +518,9 @@ class DataApi extends ApiAction
             }
         }
         $payCt['total'] = $payTotalAmount;
+        $payCt['curr_week'] = 0;
         $payCt['wait'] = $subTotalAmount - $payTotalAmount;
+        $payCt['toady'] = 0;
         if (!empty($payCt[$currDayStr])) {
             $payCt['today'] = $payCt[$currDayStr];
         }
