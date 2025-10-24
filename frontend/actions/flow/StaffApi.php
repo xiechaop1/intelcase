@@ -251,29 +251,34 @@ class StaffApi extends ApiAction
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if (!empty($staffName)) {
-                $model->staff_name = $staffName;
-            }
-            if (!empty($role)) {
-                $model->role = $role;
-            }
-            if (!empty($staffStatus)) {
-                $model->staff_status = $staffStatus;
-            }
-            if (!empty($mobile)) {
-                $model->mobile = $mobile;
-            }
+            if ($staffStatus == Staff::STAFF_STATUS_REMOVE) {
+                $model->delete();
+            } else {
+
+                if (!empty($staffName)) {
+                    $model->staff_name = $staffName;
+                }
+                if (!empty($role)) {
+                    $model->role = $role;
+                }
+                if (!empty($staffStatus)) {
+                    $model->staff_status = $staffStatus;
+                }
+                if (!empty($mobile)) {
+                    $model->mobile = $mobile;
+                }
 //            if (!empty($team)) {
                 $model->team = $team;
 //            }
-            if (!empty($wx_id)) {
-                $model->wx_id = $wx_id;
+                if (!empty($wx_id)) {
+                    $model->wx_id = $wx_id;
+                }
+                if (!empty($rules)) {
+                    $model->rules = $rules;
+                }
+                
+                $model->save();
             }
-            if (!empty($rules)) {
-                $model->rules = $rules;
-            }
-
-            $model->save();
 
             $transaction->commit();
 

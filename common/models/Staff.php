@@ -25,6 +25,7 @@ class Staff extends \common\models\gii\Staff
 
     const STAFF_STATUS_NORMAL       = 0;      // 正常
     const STAFF_STATUS_DISABLE      = 1;      // 禁用
+    const STAFF_STATUS_REMOVE       = 2;        // 删除
 
     public static $staffRole2Name = [
         self::STAFF_ROLE_SALES         => '经纪人',
@@ -40,6 +41,7 @@ class Staff extends \common\models\gii\Staff
     public static $staffStatus2Name = [
         self::STAFF_STATUS_NORMAL       => '正常',
         self::STAFF_STATUS_DISABLE      => '禁用',
+        self::STAFF_STATUS_REMOVE       => '删除',
     ];
 
     const STAFF_RULE_DATA_REPORT_ALL        = 'report_all';            // 全部报备数
