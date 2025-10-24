@@ -263,9 +263,9 @@ class StaffApi extends ApiAction
             if (!empty($mobile)) {
                 $model->mobile = $mobile;
             }
-            if (!empty($team)) {
+//            if (!empty($team)) {
                 $model->team = $team;
-            }
+//            }
             if (!empty($wx_id)) {
                 $model->wx_id = $wx_id;
             }
