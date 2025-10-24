@@ -140,7 +140,7 @@ class DataApi extends ApiAction
 
     public function getDataNew() {
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d', strtotime('-7days'));
-        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d');
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d', strtotime('+1day'));
 
         $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
