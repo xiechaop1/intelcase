@@ -96,10 +96,15 @@ class StaffApi extends ApiAction
             $query = $query->andWhere([
                 'team' => $team,
             ]);
+        } else {
+            $query = $query->andFilterWhere([
+               'in', 'id', Staff::find()->select('id')->groupBy('mobile')->orderBy(['id' => ASC])
+            ]);
         }
         $query = $query->andWhere([
             '<>', 'staff_status', Staff::STAFF_STATUS_DISABLE,
         ]);
+
         if ($isTeam == 1) {
             $query = $query->groupBy('team');
             $count = $query->count();
