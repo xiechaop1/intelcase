@@ -137,16 +137,21 @@ class StaffApi extends ApiAction
     public function getByName() {
 
         $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
 
-        if (empty($staffName)) {
-            return $this->fail('需要指定用户', -1000);
-        }
 
-        $model = Staff::find()
-            ->where([
+//        if (empty($staffName)) {
+//            return $this->fail('需要指定用户', -1000);
+//        }
+
+        $model = Staff::find();
+        if (!empty($staffName)) {
+            $model->where([
                 'like', 'staff_name', $staffName,
-            ])
-            ->all();
+            ]);
+        }
+        $model = $model->offset(($page-1) * $pageSize)->limit($pageSize)->all();
 
         if (empty($model)) {
             return $this->fail('用户不存在', -1000);
@@ -276,7 +281,7 @@ class StaffApi extends ApiAction
                 if (!empty($rules)) {
                     $model->rules = $rules;
                 }
-                
+
                 $model->save();
             }
 
