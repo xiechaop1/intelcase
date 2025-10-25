@@ -153,9 +153,9 @@ class StaffApi extends ApiAction
         }
         $model = $model->offset(($page-1) * $pageSize)->limit($pageSize)->all();
 
-        if (empty($model)) {
-            return $this->fail('用户不存在', -1000);
-        }
+//        if (empty($model)) {
+//            return $this->fail('用户不存在', -1000);
+//        }
 
         $ret = [];
         if (!empty($model)) {
