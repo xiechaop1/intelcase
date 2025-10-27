@@ -243,22 +243,23 @@ class DataApi extends ApiAction
             $visitList = Visit::find();
             $visitList->andFilterWhere(['report_id' => $reportIds]);
             $visitList = $visitList->all();
-        } else {
-            $visitList = Visit::find();
-            if (!empty($beginTime)) {
-                $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
-            }
-            if (!empty($endTime)) {
-                $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
-            }
-            if (!empty($projectId)) {
-                $visitList->andFilterWhere(['project_id' => $projectId]);
-            }
-            if (!empty($reportAppeal)) {
-                $visitList->andFilterWhere(['guest_appeal' => $reportAppeal]);
-            }
-            $visitList = $visitList->all();
         }
+//        else {
+//            $visitList = Visit::find();
+//            if (!empty($beginTime)) {
+//                $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+//            }
+//            if (!empty($endTime)) {
+//                $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
+//            }
+//            if (!empty($projectId)) {
+//                $visitList->andFilterWhere(['project_id' => $projectId]);
+//            }
+//            if (!empty($reportAppeal)) {
+//                $visitList->andFilterWhere(['guest_appeal' => $reportAppeal]);
+//            }
+//            $visitList = $visitList->all();
+//        }
 
         $visitIds = [];
         $arrivedCt = [];
