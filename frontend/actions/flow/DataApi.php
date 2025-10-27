@@ -1325,8 +1325,8 @@ class DataApi extends ApiAction
                 $row[] = $report->guest_appeal ?? '';
                 $row[] = $report->staff_name ?? ' - ';
                 $row[] = $report->staff_mobile ?? ' - ';
-                $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->name : ' - ';
-                $row[] = !empty($report->consultantStaff) ? $report->consultantStaff->name : ' - ';
+                $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->staff_name : ' - ';
+                $row[] = !empty($report->consultantStaff) ? $report->consultantStaff->staff_name : ' - ';
                 $row[] = $report->visit_time ?? '';
                 $row[] = !empty(Report::$reportStatus2Name[$report->report_status]) ? Report::$reportStatus2Name[$report->report_status] : '未知';
 
