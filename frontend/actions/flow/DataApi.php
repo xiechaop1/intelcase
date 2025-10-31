@@ -228,7 +228,7 @@ class DataApi extends ApiAction
         if (!empty($reportChannel)) {
             $reportList->andFilterWhere(['guest_channel' => $reportChannel]);
         }
-        $reportList->andFilterWhere(['visit_type' => 0]);
+//        $reportList->andFilterWhere(['visit_type' => 0]);
 
         $reportList = $reportList->all();
 
@@ -246,6 +246,7 @@ class DataApi extends ApiAction
         if (!empty($reportIds)) {
             $visitList = Visit::find();
             $visitList->andFilterWhere(['report_id' => $reportIds]);
+            $visitList->andFilterWhere(['visit_type' => 0]);
             $visitList = $visitList->all();
         }
 //        else {
