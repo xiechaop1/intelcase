@@ -322,6 +322,7 @@ class DataApi extends ApiAction
                                     $arrivedCt[$parAppeal]['total'][$ch] += 1;
                                 }
                             }
+                        }
                         if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
                             $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
                         } else {
