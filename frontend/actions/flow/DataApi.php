@@ -228,19 +228,18 @@ class DataApi extends ApiAction
         if (!empty($reportChannel)) {
             $reportList->andFilterWhere(['guest_channel' => $reportChannel]);
         }
+        $reportList->andFilterWhere(['visit_type' => 0]);
 
         $reportList = $reportList->all();
 
         $reportIds = [];
         $reportAppealIds = [];
         $reportChannelList = [];
-        $reportDatas = [];
         if (!empty($reportList)) {
             foreach ($reportList as $rep) {
                 $reportIds[] = $rep->id;
                 $reportAppealIds[$rep->id] = $rep->guest_appeal;
                 $reportChannelList[$rep->id] = $rep->guest_channel;
-                $reportDatas[$rep->id] = $rep;
             }
         }
 
@@ -314,14 +313,10 @@ class DataApi extends ApiAction
                     ];
 
                     foreach ($channelList as $ch) {
-                        if (!empty($reportDatas[$vis->report_id])) {
-                            if ($reportDatas[$vis->report_id]->visit_type == 0) {
-                                if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
-                                    $arrivedCt[$parAppeal]['total'][$ch] = 1;
-                                } else {
-                                    $arrivedCt[$parAppeal]['total'][$ch] += 1;
-                                }
-                            }
+                        if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
+                            $arrivedCt[$parAppeal]['total'][$ch] = 1;
+                        } else {
+                            $arrivedCt[$parAppeal]['total'][$ch] += 1;
                         }
                         if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
                             $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
