@@ -142,6 +142,14 @@ class DataApi extends ApiAction
     }
 
     public function getDataNew() {
+
+        $currDay = strtotime(Date('Y-m-d'));
+        $currDayStr = Date('Y-m-d');
+        $currWeek = [
+            $currDay - (Date('N') - 1) * 86400,
+            $currDay + (7 - Date('N')) * 86400
+        ];
+
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d', strtotime('-7days'));
         $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d', strtotime('+1day'));
 
@@ -165,12 +173,7 @@ class DataApi extends ApiAction
 //            $endTime = strtotime($endTime);
 //        }
 
-        $currDay = strtotime(Date('Y-m-d'));
-        $currDayStr = Date('Y-m-d');
-        $currWeek = [
-            $currDay - (Date('N') - 1) * 86400,
-            $currDay + (7 - Date('N')) * 86400
-        ];
+
 
         $reportList = Report::find();
 
@@ -231,11 +234,13 @@ class DataApi extends ApiAction
         $reportIds = [];
         $reportAppealIds = [];
         $reportChannelList = [];
+        $reportDatas = [];
         if (!empty($reportList)) {
             foreach ($reportList as $rep) {
                 $reportIds[] = $rep->id;
                 $reportAppealIds[$rep->id] = $rep->guest_appeal;
                 $reportChannelList[$rep->id] = $rep->guest_channel;
+                $reportDatas[$rep->id] = $rep;
             }
         }
 
@@ -309,11 +314,14 @@ class DataApi extends ApiAction
                     ];
 
                     foreach ($channelList as $ch) {
-                        if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
-                            $arrivedCt[$parAppeal]['total'][$ch] = 1;
-                        } else {
-                            $arrivedCt[$parAppeal]['total'][$ch] += 1;
-                        }
+                        if (!empty($reportDatas[$vis->report_id])) {
+                            if ($reportDatas[$vis->report_id]->visit_type == 0) {
+                                if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
+                                    $arrivedCt[$parAppeal]['total'][$ch] = 1;
+                                } else {
+                                    $arrivedCt[$parAppeal]['total'][$ch] += 1;
+                                }
+                            }
                         if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
                             $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
                         } else {
