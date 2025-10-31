@@ -153,6 +153,9 @@ class DataApi extends ApiAction
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d', strtotime('-7days'));
         $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d', strtotime('+1day'));
 
+        $beginTime .= ' 00:00:00';
+        $endTime .= ' 23:59:59';
+
         $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
         $advStaffId = !empty($this->_get['adv_staff_id']) ? $this->_get['adv_staff_id'] : 0;
