@@ -249,7 +249,7 @@ class DataApi extends ApiAction
         if (!empty($reportIds)) {
             $visitList = Visit::find();
             $visitList->andFilterWhere(['report_id' => $reportIds]);
-            $visitList->andFilterWhere(['visit_type' => 0]);
+//            $visitList->andFilterWhere(['visit_type' => 0]);
             $visitList = $visitList->all();
         }
 //        else {
@@ -317,24 +317,27 @@ class DataApi extends ApiAction
                     ];
 
                     foreach ($channelList as $ch) {
-                        if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
-                            $arrivedCt[$parAppeal]['total'][$ch] = 1;
-                        } else {
-                            $arrivedCt[$parAppeal]['total'][$ch] += 1;
-                        }
-                        if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
-                            $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
-                        } else {
-                            $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] += 1;
-                        }
-                        if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
-                            $arrivedCt[$parAppeal]['curr_week'][$ch] = 0;
-                        }
-                        if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
-                            if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
-                                $arrivedCt[$parAppeal]['curr_week'][$ch] = 1;
+                        if ($vis->visit_type == 0) {
+                            if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
+                                $arrivedCt[$parAppeal]['total'][$ch] = 1;
                             } else {
-                                $arrivedCt[$parAppeal]['curr_week'][$ch] += 1;
+                                $arrivedCt[$parAppeal]['total'][$ch] += 1;
+                            }
+
+                            if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
+                                $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
+                            } else {
+                                $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] += 1;
+                            }
+                            if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
+                                $arrivedCt[$parAppeal]['curr_week'][$ch] = 0;
+                            }
+                            if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
+                                if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
+                                    $arrivedCt[$parAppeal]['curr_week'][$ch] = 1;
+                                } else {
+                                    $arrivedCt[$parAppeal]['curr_week'][$ch] += 1;
+                                }
                             }
                         }
                     }
