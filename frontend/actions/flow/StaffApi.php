@@ -97,9 +97,15 @@ class StaffApi extends ApiAction
                 'team' => $team,
             ]);
         }
+//        else {
+//            $query = $query->andFilterWhere([
+//               'in', 'id', Staff::find()->select('id')->min()->groupBy('mobile')
+//            ]);
+//        }
         $query = $query->andWhere([
             '<>', 'staff_status', Staff::STAFF_STATUS_DISABLE,
         ]);
+
         if ($isTeam == 1) {
             $query = $query->groupBy('team');
             $count = $query->count();
@@ -131,20 +137,25 @@ class StaffApi extends ApiAction
     public function getByName() {
 
         $staffName = !empty($this->_get['staff_name']) ? $this->_get['staff_name'] : '';
+        $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
+        $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 20;
 
-        if (empty($staffName)) {
-            return $this->fail('需要指定用户', -1000);
-        }
 
-        $model = Staff::find()
-            ->where([
+//        if (empty($staffName)) {
+//            return $this->fail('需要指定用户', -1000);
+//        }
+
+        $model = Staff::find();
+        if (!empty($staffName)) {
+            $model->where([
                 'like', 'staff_name', $staffName,
-            ])
-            ->all();
-
-        if (empty($model)) {
-            return $this->fail('用户不存在', -1000);
+            ]);
         }
+        $model = $model->offset(($page-1) * $pageSize)->limit($pageSize)->all();
+
+//        if (empty($model)) {
+//            return $this->fail('用户不存在', -1000);
+//        }
 
         $ret = [];
         if (!empty($model)) {
@@ -245,29 +256,34 @@ class StaffApi extends ApiAction
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            if (!empty($staffName)) {
-                $model->staff_name = $staffName;
-            }
-            if (!empty($role)) {
-                $model->role = $role;
-            }
-            if (!empty($staffStatus)) {
-                $model->staff_status = $staffStatus;
-            }
-            if (!empty($mobile)) {
-                $model->mobile = $mobile;
-            }
-            if (!empty($team)) {
-                $model->team = $team;
-            }
-            if (!empty($wx_id)) {
-                $model->wx_id = $wx_id;
-            }
-            if (!empty($rules)) {
-                $model->rules = $rules;
-            }
+            if ($staffStatus == Staff::STAFF_STATUS_REMOVE) {
+                $model->delete();
+            } else {
 
-            $model->save();
+                if (!empty($staffName)) {
+                    $model->staff_name = $staffName;
+                }
+                if (!empty($role)) {
+                    $model->role = $role;
+                }
+                if (!empty($staffStatus)) {
+                    $model->staff_status = $staffStatus;
+                }
+                if (!empty($mobile)) {
+                    $model->mobile = $mobile;
+                }
+//            if (!empty($team)) {
+                $model->team = $team;
+//            }
+                if (!empty($wx_id)) {
+                    $model->wx_id = $wx_id;
+                }
+                if (!empty($rules)) {
+                    $model->rules = $rules;
+                }
+
+                $model->save();
+            }
 
             $transaction->commit();
 

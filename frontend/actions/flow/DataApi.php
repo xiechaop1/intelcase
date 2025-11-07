@@ -75,6 +75,9 @@ class DataApi extends ApiAction
                 case 'export_guest_list':
                     $ret = $this->exportGuestList();
                     break;
+                case 'export_report_list':
+                    $ret = $this->exportReportList();
+                    break;
                 default:
                     $ret = [];
                     break;
@@ -139,8 +142,19 @@ class DataApi extends ApiAction
     }
 
     public function getDataNew() {
+
+        $currDay = strtotime(Date('Y-m-d'));
+        $currDayStr = Date('Y-m-d');
+        $currWeek = [
+            $currDay - (Date('N') - 1) * 86400,
+            $currDay + (7 - Date('N')) * 86400
+        ];
+
         $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] : Date('Y-m-d', strtotime('-7days'));
-        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d');
+        $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] : Date('Y-m-d', strtotime('+1day'));
+
+        $beginTime .= ' 00:00:00';
+        $endTime .= ' 23:59:59';
 
         $guestMobile = !empty($this->_get['guest_mobile']) ? $this->_get['guest_mobile'] : '';
         $projectId = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
@@ -162,12 +176,7 @@ class DataApi extends ApiAction
 //            $endTime = strtotime($endTime);
 //        }
 
-        $currDay = strtotime(Date('Y-m-d'));
-        $currDayStr = Date('Y-m-d');
-        $currWeek = [
-            $currDay - (Date('N') - 1) * 86400,
-            $currDay + (7 - Date('N')) * 86400
-        ];
+
 
         $reportList = Report::find();
 
@@ -222,6 +231,7 @@ class DataApi extends ApiAction
         if (!empty($reportChannel)) {
             $reportList->andFilterWhere(['guest_channel' => $reportChannel]);
         }
+//        $reportList->andFilterWhere(['visit_type' => 0]);
 
         $reportList = $reportList->all();
 
@@ -239,23 +249,25 @@ class DataApi extends ApiAction
         if (!empty($reportIds)) {
             $visitList = Visit::find();
             $visitList->andFilterWhere(['report_id' => $reportIds]);
-            $visitList = $visitList->all();
-        } else {
-            $visitList = Visit::find();
-            if (!empty($beginTime)) {
-                $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
-            }
-            if (!empty($endTime)) {
-                $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
-            }
-            if (!empty($projectId)) {
-                $visitList->andFilterWhere(['project_id' => $projectId]);
-            }
-            if (!empty($reportAppeal)) {
-                $visitList->andFilterWhere(['guest_appeal' => $reportAppeal]);
-            }
+//            $visitList->andFilterWhere(['visit_type' => 0]);
             $visitList = $visitList->all();
         }
+//        else {
+//            $visitList = Visit::find();
+//            if (!empty($beginTime)) {
+//                $visitList->andFilterWhere(['>=', 'visit_time', $beginTime]);
+//            }
+//            if (!empty($endTime)) {
+//                $visitList->andFilterWhere(['<=', 'visit_time', $endTime]);
+//            }
+//            if (!empty($projectId)) {
+//                $visitList->andFilterWhere(['project_id' => $projectId]);
+//            }
+//            if (!empty($reportAppeal)) {
+//                $visitList->andFilterWhere(['guest_appeal' => $reportAppeal]);
+//            }
+//            $visitList = $visitList->all();
+//        }
 
         $visitIds = [];
         $arrivedCt = [];
@@ -305,24 +317,27 @@ class DataApi extends ApiAction
                     ];
 
                     foreach ($channelList as $ch) {
-                        if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
-                            $arrivedCt[$parAppeal]['total'][$ch] = 1;
-                        } else {
-                            $arrivedCt[$parAppeal]['total'][$ch] += 1;
-                        }
-                        if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
-                            $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
-                        } else {
-                            $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] += 1;
-                        }
-                        if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
-                            $arrivedCt[$parAppeal]['curr_week'][$ch] = 0;
-                        }
-                        if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
-                            if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
-                                $arrivedCt[$parAppeal]['curr_week'][$ch] = 1;
+                        if ($vis->visit_type == 0) {
+                            if (empty($arrivedCt[$parAppeal]['total'][$ch])) {
+                                $arrivedCt[$parAppeal]['total'][$ch] = 1;
                             } else {
-                                $arrivedCt[$parAppeal]['curr_week'][$ch] += 1;
+                                $arrivedCt[$parAppeal]['total'][$ch] += 1;
+                            }
+
+                            if (empty($arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch])) {
+                                $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] = 1;
+                            } else {
+                                $arrivedCt[$parAppeal][Date('Y-m-d', strtotime($vis->visit_time))][$ch] += 1;
+                            }
+                            if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
+                                $arrivedCt[$parAppeal]['curr_week'][$ch] = 0;
+                            }
+                            if (strtotime($vis->visit_time) >= $currWeek[0] && strtotime($vis->visit_time) < $currWeek[1]) {
+                                if (empty($arrivedCt[$parAppeal]['curr_week'][$ch])) {
+                                    $arrivedCt[$parAppeal]['curr_week'][$ch] = 1;
+                                } else {
+                                    $arrivedCt[$parAppeal]['curr_week'][$ch] += 1;
+                                }
                             }
                         }
                     }
@@ -1255,6 +1270,94 @@ class DataApi extends ApiAction
         return $ret;
     }
 
+    public function exportReportList()
+    {
+        try {
+            $projectIds = !empty($this->_get['project_id']) ? $this->_get['project_id'] : 0;
+            $beginTime = !empty($this->_get['begin_time']) ? $this->_get['begin_time'] . ' 00:00:00' : '';
+            $endTime = !empty($this->_get['end_time']) ? $this->_get['end_time'] . ' 23:59:59' : '';
+
+            $reportChannel = !empty($this->_get['report_channel']) ? $this->_get['report_channel'] : '';
+
+            $reportIds = [];
+
+            $isDebug = !empty($this->_get['is_debug']) ? $this->_get['is_debug'] : 0;
+
+            $projectId = \common\helpers\Common::splitMobile($projectIds);
+
+            // 使用 join 查询获取所有需要的数据
+            $query = Report::find();
+            if (!empty($projectId)) {
+                $query->andFilterWhere(['project_id' => $projectId]);
+            }
+            if (!empty($reportChannel)) {
+                $query->andFilterWhere(['guest_channel' => $reportChannel]);
+            }
+            if (!empty($beginTime)) {
+                $query->andFilterWhere(['>', 'visit_time', $beginTime]);
+            }
+            if (!empty($endTime)) {
+                $query->andFilterWhere(['<', 'visit_time', $endTime]);
+            }
+            switch ($this->_staff->role) {
+                case Staff::STAFF_ROLE_SALES:
+                    $query->andFilterWhere(['staff_id' => $this->_staff->id]);
+                    break;
+                case Staff::STAFF_ROLE_ADVISOR:
+                    $query->andFilterWhere(['advisor_staff_id' => $this->_staff->id]);
+                    break;
+                case Staff::STAFF_ROLE_CONSULTANT:
+                    $query->andFilterWhere(['consultant_staff_id' => $this->_staff->id]);
+                    break;
+                default:
+                    break;
+            }
+            $reports = $query->orderBy(['project_id' => SORT_ASC, 'created_at' => SORT_DESC])->all();
+            // 准备Excel数据
+            $data = [];
+            $headers = [
+                '序号',
+                '访客姓名',
+                '访客手机号',
+                '访客渠道',
+                '访客诉求',
+                '经纪人姓名',
+                '招商顾问',
+                '投资顾问',
+                '报备时间',
+                '报备状态',
+                ];
+
+            foreach ($reports as $index => $report) {
+                $row = [];
+                $row[] = $index + 1;
+                $row[] = $report->guest_name ?? '';
+                $row[] = $report->guest_mobile ?? ' - ';
+                $row[] = $report->guest_channel ?? ' - ';
+                $row[] = $report->guest_appeal ?? '';
+                $row[] = $report->staff_name ?? ' - ';
+                $row[] = $report->staff_mobile ?? ' - ';
+                $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->staff_name : ' - ';
+                $row[] = !empty($report->consultantStaff) ? $report->consultantStaff->staff_name : ' - ';
+                $row[] = $report->visit_time ?? '';
+                $row[] = !empty(Report::$reportStatus2Name[$report->report_status]) ? Report::$reportStatus2Name[$report->report_status] : '未知';
+
+                $data[] = $row;
+            }
+            $fileName = '报备列表_' . date('YmdHis') . '.xlsx';
+            $fileUrl = $this->_genExcel($data, $headers, $fileName);
+
+            return $this->success([
+                'file_url' => $fileUrl,
+                'file_name' => $fileName
+            ]);
+
+        } catch (\Exception $e) {
+            Yii::error('导出Excel失败: ' . $e->getMessage());
+            return $this->fail('导出失败：' . $e->getMessage());
+        }
+    }
+
     public function exportGuestList()
     {
         try {
@@ -1530,57 +1633,59 @@ class DataApi extends ApiAction
                 echo json_encode($data, JSON_UNESCAPED_UNICODE);exit;
             }
             
-            // 生成Excel文件
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-
-            // 计算总行数和列数
-            $totalRows = count($data) + 1;
-            $totalColumns = count($headers);
-            $highestColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
-
-            // 写入表头
-            foreach ($headers as $key => $header) {
-                $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
-            }
-
-            // 写入数据
-            foreach ($data as $row => $rowData) {
-                foreach ($rowData as $col => $value) {
-                    $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col + 1) . ($row + 2);
-                    $sheet->setCellValue($cellCoordinate, $value);
-                    
-                    // 特殊处理身份证号码字段（第18列和第39列）
-                    if ($col == 21 || $col == 42) { // 身份证号码和补充身份证号码
-//                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
-                        // 强制设置为文本格式，在值前加单引号
-                        $sheet->setCellValueExplicitByColumnAndRow($col + 1, $row + 2, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-//                        if (!empty($value) && is_numeric($value)) {
-//                            $sheet->setCellValue($cellCoordinate, $value);
-//                        }
-                    }
-                }
-            }
-
-            // 设置所有单元格为文本格式
-            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
-
-            // 创建保存目录
-            $saveDir = Yii::getAlias('@frontend/web/xls');
-            if (!file_exists($saveDir)) {
-                mkdir($saveDir, 0777, true);
-            }
-
-            // 生成文件名
+//            // 生成Excel文件
+//            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+//            $sheet = $spreadsheet->getActiveSheet();
+//
+//            // 计算总行数和列数
+//            $totalRows = count($data) + 1;
+//            $totalColumns = count($headers);
+//            $highestColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
+//
+//            // 写入表头
+//            foreach ($headers as $key => $header) {
+//                $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
+//            }
+//
+//            // 写入数据
+//            foreach ($data as $row => $rowData) {
+//                foreach ($rowData as $col => $value) {
+//                    $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col + 1) . ($row + 2);
+//                    $sheet->setCellValue($cellCoordinate, $value);
+//
+//                    // 特殊处理身份证号码字段（第18列和第39列）
+//                    if ($col == 21 || $col == 42) { // 身份证号码和补充身份证号码
+////                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+//                        // 强制设置为文本格式，在值前加单引号
+//                        $sheet->setCellValueExplicitByColumnAndRow($col + 1, $row + 2, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+////                        if (!empty($value) && is_numeric($value)) {
+////                            $sheet->setCellValue($cellCoordinate, $value);
+////                        }
+//                    }
+//                }
+//            }
+//
+//            // 设置所有单元格为文本格式
+//            $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+//
+//            // 创建保存目录
+//            $saveDir = Yii::getAlias('@frontend/web/xls');
+//            if (!file_exists($saveDir)) {
+//                mkdir($saveDir, 0777, true);
+//            }
+//
+//            // 生成文件名
+//            $fileName = '访客列表_' . date('YmdHis') . '.xlsx';
+//            $filePath = $saveDir . '/' . $fileName;
+//
+//            // 保存Excel文件
+//            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+//            $writer->save($filePath);
+//
+//            // 返回文件URL
+//            $fileUrl = Yii::$app->request->baseUrl . '/xls/' . $fileName;
             $fileName = '访客列表_' . date('YmdHis') . '.xlsx';
-            $filePath = $saveDir . '/' . $fileName;
-
-            // 保存Excel文件
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $writer->save($filePath);
-
-            // 返回文件URL
-            $fileUrl = Yii::$app->request->baseUrl . '/xls/' . $fileName;
+            $fileUrl = $this->_genExcel($data, $headers, $fileName);
             
             return $this->success([
                 'file_url' => $fileUrl,
@@ -1591,6 +1696,62 @@ class DataApi extends ApiAction
             Yii::error('导出Excel失败: ' . $e->getMessage());
             return $this->fail('导出失败：' . $e->getMessage());
         }
+    }
+
+    private function _genExcel($data, $headers, $fileName) {
+        // 生成Excel文件
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // 计算总行数和列数
+        $totalRows = count($data) + 1;
+        $totalColumns = count($headers);
+        $highestColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
+
+        // 写入表头
+        foreach ($headers as $key => $header) {
+            $sheet->setCellValueByColumnAndRow($key + 1, 1, $header);
+        }
+
+        // 写入数据
+        foreach ($data as $row => $rowData) {
+            foreach ($rowData as $col => $value) {
+                $cellCoordinate = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col + 1) . ($row + 2);
+                $sheet->setCellValue($cellCoordinate, $value);
+
+                // 特殊处理身份证号码字段（第18列和第39列）
+                if ($col == 21 || $col == 42) { // 身份证号码和补充身份证号码
+//                        $sheet->getStyle($cellCoordinate)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+                    // 强制设置为文本格式，在值前加单引号
+                    $sheet->setCellValueExplicitByColumnAndRow($col + 1, $row + 2, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+//                        if (!empty($value) && is_numeric($value)) {
+//                            $sheet->setCellValue($cellCoordinate, $value);
+//                        }
+                }
+            }
+        }
+
+        // 设置所有单元格为文本格式
+        $sheet->getStyle('A1:' . $highestColumn . $totalRows)->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+
+        // 创建保存目录
+        $saveDir = Yii::getAlias('@frontend/web/xls');
+        if (!file_exists($saveDir)) {
+            mkdir($saveDir, 0777, true);
+        }
+
+        // 生成文件名
+//        $fileName = '访客列表_' . date('YmdHis') . '.xlsx';
+        $filePath = $saveDir . '/' . $fileName;
+
+        // 保存Excel文件
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($filePath);
+
+        // 返回文件URL
+        $fileUrl = Yii::$app->request->baseUrl . '/xls/' . $fileName;
+
+        return $fileUrl;
     }
 
     public function getReportList() {
