@@ -243,7 +243,10 @@ class VisitApi extends ApiAction
         if (
             $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_SIGNED
             ||
-            $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY) {
+            $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_BUY
+            ||
+            $visitConfirmStatus == Visit::VISIT_CONFIRM_STATUS_RENT
+        ) {
 
             if ($this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
                 || $this->_report->guest_appeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {

@@ -374,7 +374,9 @@ class DataApi extends ApiAction
 
                 if (!empty($visitConfirmStatus[$sub->visit_id])) {
                     $currDt = Date('Y-m-d', $sub->created_at);
-                    if ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_BUY) {
+                    if ($visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_BUY
+                        || $visitConfirmStatus[$sub->visit_id] == Visit::VISIT_CONFIRM_STATUS_RENT
+                    ) {
                         $parType = 'buy';
 
                         $subCt = $this->_computeSubCt($subCt, $parType, $visitAppealIds, $visitChannelList, $sub, $currWeek);

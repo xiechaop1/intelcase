@@ -139,6 +139,50 @@ class Wechat extends Component
         return $ret;
     }
 
+    /**
+     * 发送订阅消息
+     * @param string $touser 接收者（用户）的 openid
+     * @param string $template_id 所需下发的订阅消息的id
+     * @param array $data 模板内容，格式形如 { "key1": { "value": any }, "key2": { "value": any } }
+     * @param string|null $page 点击模板卡片后的跳转页面，仅限本小程序内的页面
+     * @param string|null $miniprogram_state 跳转小程序类型：developer为开发版；trial为体验版；formal为正式版；默认为正式版
+     * @return mixed
+     * @throws \Exception
+     */
+    public function sendSubscribeMessage($touser, $template_id, $data, $page = null, $miniprogram_state = null)
+    {
+        $uri = '/cgi-bin/message/subscribe/send';
+
+        $tokenRet = $this->getToken();
+        $token = !empty($tokenRet['access_token']) ? $tokenRet['access_token'] : '';
+
+        $params = [
+            'access_token' => $token,
+        ];
+
+        $uri = $this->_createUri($uri, self::WECHAT_HOST, $params);
+
+        $postData = [
+            'touser' => $touser,
+            'template_id' => $template_id,
+            'data' => $data,
+        ];
+
+        if (!empty($page)) {
+            $postData['page'] = $page;
+        }
+        if (!empty($miniprogram_state)) {
+            $postData['miniprogram_state'] = $miniprogram_state;
+        }
+
+        try {
+            $ret = $this->_getPostApi($uri, $postData);
+            return $ret;
+        } catch (\Exception $e) {
+            throw new \Exception('发送订阅消息失败：' . $e->getMessage());
+        }
+    }
+
     public function getToken() {
         if (!empty($this->_token)) {
             return $this->_token;

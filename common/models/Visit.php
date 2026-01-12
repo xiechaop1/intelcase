@@ -27,13 +27,15 @@ class Visit extends \common\models\gii\Visit
     const VISIT_CONFIRM_STATUS_CONFIRM  = 1;
     const VISIT_CONFIRM_STATUS_REJECT   = 2;
     const VISIT_CONFIRM_STATUS_BUY      = 3;
-    const VISIT_CONFIRM_STATUS_SIGNED    = 4;
+    const VISIT_CONFIRM_STATUS_SIGNED   = 4;
+    const VISIT_CONFIRM_STATUS_RENT     = 5;
 
     public static $visitConfirm2Name = [
         self::VISIT_CONFIRM_STATUS_CONFIRM    => '确认',
         self::VISIT_CONFIRM_STATUS_REJECT     => '拒绝',
         self::VISIT_CONFIRM_STATUS_BUY        => '认购',
         self::VISIT_CONFIRM_STATUS_SIGNED     => '签约',
+        self::VISIT_CONFIRM_STATUS_RENT       => '承租',
     ];
 
     // 投资，自用，租赁
