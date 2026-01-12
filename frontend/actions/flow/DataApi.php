@@ -537,7 +537,7 @@ class DataApi extends ApiAction
         $payCt['total'] = $payTotalAmount;
         $payCt['curr_week'] = 0;
         $payCt['wait'] = $subTotalAmount - $payTotalAmount;
-        $payCt['toady'] = 0;
+        $payCt['today'] = 0;
         if (!empty($payCt[$currDayStr])) {
             $payCt['today'] = $payCt[$currDayStr];
         }
