@@ -506,6 +506,8 @@ class VisitApi extends ApiAction
         $guestType = !empty($this->_get['guest_type']) ? $this->_get['guest_type'] : '';
         $msgId = !empty($this->_get['msg_id']) ? $this->_get['msg_id'] : 0;
 
+        $visitTimeDuration = !empty($this->_get['visit_time_duration']) ? $this->_get['visit_time_duration'] : '';
+
         Yii::$app->privilege->checkByUser($this->_user, Privilege::VISIT_INFO_CONFIRM);
 
         if (empty($visitId)) {
@@ -523,6 +525,7 @@ class VisitApi extends ApiAction
 //        $model->visit_confirm_status = $visitConfirmStatus;
         $model->visit_status = $visitStatus;
         $model->visit_status_comment = $visitStatusComment;
+        $model->visit_time_duration = $visitTimeDuration;
         $model->guest_type = $guestType;
         try {
             $ret = $model->save();

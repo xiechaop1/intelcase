@@ -32,7 +32,7 @@ class Visit extends \yii\db\ActiveRecord
             [[
 //                'visit_time',
                 'visit_type', 'visit_status', 'visit_confirm_status', 'visit_ct', ], 'integer'],
-            [['visit_time',], 'string'],
+            [['visit_time', 'visit_time_duration'], 'string'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }
