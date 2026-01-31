@@ -1319,6 +1319,7 @@ class DataApi extends ApiAction
             $data = [];
             $headers = [
                 '序号',
+                '项目名称',
                 '访客姓名',
                 '访客手机号',
                 '访客渠道',
@@ -1333,6 +1334,7 @@ class DataApi extends ApiAction
             foreach ($reports as $index => $report) {
                 $row = [];
                 $row[] = $index + 1;
+                $row[] = !empty($report->project) ? $report->project->project_name : ' - ';
                 $row[] = $report->guest_name ?? '';
                 $row[] = $report->guest_mobile ?? ' - ';
                 $row[] = $report->guest_channel ?? ' - ';
@@ -1446,6 +1448,7 @@ class DataApi extends ApiAction
             $data = [];
             $headers = [
                 '序号',
+                '项目名称',
                 // 访客基本信息
                 '访客姓名',
                 '访客手机号',
@@ -1462,6 +1465,8 @@ class DataApi extends ApiAction
                 '经纪人手机号',
                 '认购类型',
                 '认购人',
+                '目标公司名称',
+                '认购日期',
                 '房间号',
                 '建筑面积',
                 '认购总价',
@@ -1498,8 +1503,6 @@ class DataApi extends ApiAction
                 '补充证件号码',
                 '补充手机号',
                 '补充总价',
-                // 项目信息
-                '项目名称',
                 // 员工信息
                 '项目经理',
                 '招商顾问',
@@ -1519,7 +1522,7 @@ class DataApi extends ApiAction
                 '手续费',
                 '到账时间',
                 '付款状态',
-                
+
             ];
 
             $i = 0;
@@ -1547,6 +1550,7 @@ class DataApi extends ApiAction
 //                }
                 $row = [
                     ++$i,
+                    $project->project_name ?? '',
                     // 访客基本信息
                     $visit['guest_name'],
                     $visit['guest_mobile'],
@@ -1563,6 +1567,8 @@ class DataApi extends ApiAction
                     $report->staff_mobile ?? '',
                     !empty($sub->sub_type) ? ($sub->sub_type == 1 ? '全款' : '部分') : '',
                     $sub->sub_guest ?? '',
+                    $sub->company ?? '',
+                    !empty($sub->created_at) ? date('Y-m-d H:i:s', $sub->created_at) : '',
                     $sub->room_no ?? '',
                     $sub->building_area ?? '',
                     $sub->sub_total_price ?? '',
@@ -1598,14 +1604,12 @@ class DataApi extends ApiAction
                     $sub->supply_guest_id_no ?? '',
                     $sub->supply_guest_mobile ?? '',
                     $sub->supply_total_price ?? '',
-                    // 项目信息
-                    $project->project_name ?? '',
                     // 员工信息
                     $project->pmStaff->staff_name ?? '',
                     $report->consultantStaff->staff_name ?? '',
                     $report->advisorStaff->staff_name ?? '',
                     $project->financialStaff->staff_name ?? '',
-                    
+
                 ];
                 if (!empty($payments)) {
                     $tmp = $row;
