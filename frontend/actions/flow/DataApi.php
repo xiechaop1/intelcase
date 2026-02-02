@@ -1325,6 +1325,7 @@ class DataApi extends ApiAction
                 '访客渠道',
                 '访客诉求',
                 '经纪人姓名',
+                '经纪人手机号',
                 '招商顾问',
                 '投资顾问',
                 '报备时间',
@@ -1338,7 +1339,7 @@ class DataApi extends ApiAction
                 $row[] = $report->guest_name ?? '';
                 $row[] = $report->guest_mobile ?? ' - ';
                 $row[] = $report->guest_channel ?? ' - ';
-                $row[] = $report->guest_appeal ?? '';
+                $row[] = !empty(Visit::$visitGuestAppeal2Name[$report->guest_appeal]) ? Visit::$visitGuestAppeal2Name[$report->guest_appeal] : '';
                 $row[] = $report->staff_name ?? ' - ';
                 $row[] = $report->staff_mobile ?? ' - ';
                 $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->staff_name : ' - ';
@@ -1509,6 +1510,34 @@ class DataApi extends ApiAction
                 '投资顾问',
                 '财务',
                 // 支付信息
+                '付款人',
+                '付款类型',
+                '付款时间',
+                '支付方式',
+                '付款金额',
+                '款项性质',
+                '付款账户',
+                '收款户名',
+                '收据编号',
+                '到账金额',
+                '手续费',
+                '到账时间',
+                '付款状态',
+
+                '付款人',
+                '付款类型',
+                '付款时间',
+                '支付方式',
+                '付款金额',
+                '款项性质',
+                '付款账户',
+                '收款户名',
+                '收据编号',
+                '到账金额',
+                '手续费',
+                '到账时间',
+                '付款状态',
+
                 '付款人',
                 '付款类型',
                 '付款时间',
