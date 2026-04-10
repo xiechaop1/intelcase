@@ -1956,6 +1956,11 @@ class DataApi extends ApiAction
                     $one['guest_mobile_tag'] = 0;
                 }
                 $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
+
+                if (!empty($one['project_id'])) {
+                    $one['project'] = Project::findOne($one['project_id']);
+                }
+
                 $ret[] = $one;
             }
         }
