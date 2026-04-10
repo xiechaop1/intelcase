@@ -1824,7 +1824,7 @@ class DataApi extends ApiAction
                 break;
         }
         if (!empty($guestMobile)) {
-            $reportList->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $reportList->andFilterWhere(['like', 'guest_mobile', $guestMobile]);
         }
         if (!empty($projectId)) {
             $reportList->andFilterWhere(['project_id' => $projectId]);
@@ -1921,7 +1921,7 @@ class DataApi extends ApiAction
 
         $visitList = Visit::find();
         if (!empty($guestMobile)) {
-            $visitList->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $visitList->andFilterWhere(['like', 'guest_mobile', $guestMobile]);
         }
         if (!empty($projectId)) {
             $visitList->andFilterWhere(['project_id' => $projectId]);
