@@ -1342,8 +1342,8 @@ class DataApi extends ApiAction
                 $row[] = !empty(Visit::$visitGuestAppeal2Name[$report->guest_appeal]) ? Visit::$visitGuestAppeal2Name[$report->guest_appeal] : '';
                 $row[] = $report->staff_name ?? ' - ';
                 $row[] = $report->staff_mobile ?? ' - ';
-                $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->staff_name : ' - ';
                 $row[] = !empty($report->consultantStaff) ? $report->consultantStaff->staff_name : ' - ';
+                $row[] = !empty($report->advisorStaff) ? $report->advisorStaff->staff_name : ' - ';
                 $row[] = $report->visit_time ?? '';
                 $row[] = !empty(Report::$reportStatus2Name[$report->report_status]) ? Report::$reportStatus2Name[$report->report_status] : '未知';
 
@@ -1824,7 +1824,7 @@ class DataApi extends ApiAction
                 break;
         }
         if (!empty($guestMobile)) {
-            $reportList->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $reportList->andFilterWhere(['like', 'guest_mobile', $guestMobile]);
         }
         if (!empty($projectId)) {
             $reportList->andFilterWhere(['project_id' => $projectId]);
@@ -1859,6 +1859,10 @@ class DataApi extends ApiAction
                             $one['guest_mobile_tag'] = 0;
                         }
                     }
+                }
+
+                if (!empty($one['project_id'])) {
+                    $one['project'] = Project::findOne($one['project_id']);
                 }
 
                 $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
@@ -1921,7 +1925,7 @@ class DataApi extends ApiAction
 
         $visitList = Visit::find();
         if (!empty($guestMobile)) {
-            $visitList->andFilterWhere(['guest_mobile' => $guestMobile]);
+            $visitList->andFilterWhere(['like', 'guest_mobile', $guestMobile]);
         }
         if (!empty($projectId)) {
             $visitList->andFilterWhere(['project_id' => $projectId]);
@@ -1956,6 +1960,11 @@ class DataApi extends ApiAction
                     $one['guest_mobile_tag'] = 0;
                 }
                 $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
+
+                if (!empty($one['project_id'])) {
+                    $one['project'] = Project::findOne($one['project_id']);
+                }
+
                 $ret[] = $one;
             }
         }
