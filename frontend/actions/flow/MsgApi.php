@@ -127,6 +127,7 @@ class MsgApi extends ApiAction
     {
         $recvId = !empty($this->_get['recv_id']) ? $this->_get['recv_id'] : 0;
         $k = !empty($this->_get['k']) ? $this->_get['k'] : '';
+        $msgStatus = !empty($this->_get['msg_status']) ? $this->_get['msg_status'] : -1;
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
 
@@ -140,8 +141,12 @@ class MsgApi extends ApiAction
         if (!empty($k)) {
             $msgList->andFilterWhere(['like', 'content', $k]);
         }
-        $msgList = $msgList->andFilterWhere(['<>', 'msg_status', Msg::MSG_STATUS_DELETE])
-            ->orderBy('created_at desc')
+        if ($msgStatus >= 0) {
+            $msgList = $msgList->andFilterWhere(['msg_status' => $msgStatus]);
+        } else {
+            $msgList = $msgList->andFilterWhere(['<>', 'msg_status', Msg::MSG_STATUS_DELETE]);
+        }
+        $msgList = $msgList->orderBy('created_at desc')
             ->offset(($page - 1) * $pageSize)
             ->limit($pageSize)
             ->asArray()
