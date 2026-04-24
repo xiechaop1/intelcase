@@ -1965,6 +1965,8 @@ class DataApi extends ApiAction
                     $one['project'] = Project::findOne($one['project_id']);
                 }
 
+                $one['report'] = $report;
+
                 $ret[] = $one;
             }
         }

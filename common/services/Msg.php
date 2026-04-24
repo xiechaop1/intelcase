@@ -31,7 +31,7 @@ class Msg extends Component
         $model->sender_id = $senderId;
         $model->msg_type = $msgType;
         $model->msg_status = $msgStatus;
-
+        $model->proc_status = \common\models\Msg::MSG_PROC_STATUS_WAIT;
 
         try {
             $r = $model->save();
@@ -50,6 +50,7 @@ class Msg extends Component
             if (isset($cont['btn'])) {
                 unset($cont['btn']);
                 $msg->content = json_encode($cont, JSON_UNESCAPED_UNICODE);
+                $msg->proc_status = \common\models\Msg::MSG_PROC_STATUS_PROCESSED;
                 try {
                     $r = $msg->save();
                 } catch (\Exception $e) {

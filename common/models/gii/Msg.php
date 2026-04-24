@@ -28,7 +28,7 @@ class Msg extends \yii\db\ActiveRecord
     {
         return [
             [['content',  ], 'string'],
-            [['sender_id', 'recv_id', 'msg_type', 'msg_status' ], 'integer'],
+            [['sender_id', 'recv_id', 'msg_type', 'msg_status', 'proc_status' ], 'integer'],
             [['status', 'created_at', 'updated_at',], 'integer'],
         ];
     }

@@ -228,6 +228,7 @@ class PaymentApi extends ApiAction
                             'content' => $guestInfo . $guestInfo2 . ' 退款被拒绝，请您重新提交',
                             'project_id' => $this->_projectId,
                             'title' => '退款拒绝',
+                            'pay_status' => $pay_status,
                             'btn' => [
                                 [
                                     'label' => '退款',
@@ -246,6 +247,7 @@ class PaymentApi extends ApiAction
                             'content' => $guestInfo . $guestInfo2 . ' 支付被拒绝，请您重新提交',
                             'project_id' => $this->_projectId,
                             'title' => '支付拒绝',
+                            'pay_status' => $pay_status,
                             'btn' => [
                                 [
                                     'label' => '支付',
@@ -287,6 +289,7 @@ class PaymentApi extends ApiAction
                                 'content' => $guestInfo . $guestInfo2 . ' 完成支付',
                                 'project_id' => $this->_projectId,
                                 'title' => '完成支付',
+                                'pay_status' => $payStatus,
                                 'btn' => [
                                     [
                                         'label' => '平移',
@@ -316,6 +319,7 @@ class PaymentApi extends ApiAction
                                 $content = [
                                     'content' => $guestInfo . $guestInfo2 . ' 完成支付',
                                     'project_id' => $this->_projectId,
+                                    'pay_status' => $payStatus,
                                     'title' => '完成支付',
                                     'btn' => [
                                         [
@@ -358,6 +362,7 @@ class PaymentApi extends ApiAction
                                 $content = [
                                     'content' => $guestInfo . $guestInfo2 . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
                                     'project_id' => $this->_projectId,
+                                    'pay_status' => $payStatus,
                                     'title' => '完成部分支付',
                                     'btn' => [
                                         [

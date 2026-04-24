@@ -23,6 +23,14 @@ class Msg extends \common\models\gii\Msg
         self::MSG_STATUS_DELETE       => '删除',
     ];
 
+    const MSG_PROC_STATUS_WAIT         = 1;      // 待处理
+    const MSG_PROC_STATUS_PROCESSED    = 2;      // 已处理
+
+    public static $msgProcStatus2Name = [
+        self::MSG_PROC_STATUS_WAIT         => '待处理',
+        self::MSG_PROC_STATUS_PROCESSED    => '已处理',
+    ];
+
     const MSG_TYPE_SYSTEM         = 1;      // 系统消息
     const MSG_TYPE_USER           = 2;      // 用户消息
 

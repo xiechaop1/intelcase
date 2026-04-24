@@ -131,6 +131,8 @@ class MsgApi extends ApiAction
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
 
+        $msgProcStatus = !empty($this->_get['msg_proc_status']) ? $this->_get['msg_proc_status'] : -1;
+
         if (empty($recvId)) {
             return $this->fail('需要指定接收人', -1000);
         }
@@ -146,6 +148,11 @@ class MsgApi extends ApiAction
         } else {
             $msgList = $msgList->andFilterWhere(['<>', 'msg_status', Msg::MSG_STATUS_DELETE]);
         }
+
+        if (!empty($msgProcStatus)) {
+            $msgList = $msgList->andFilterWhere(['proc_status' => $msgProcStatus]);
+        }
+
         $msgList = $msgList->orderBy('created_at desc')
             ->offset(($page - 1) * $pageSize)
             ->limit($pageSize)
