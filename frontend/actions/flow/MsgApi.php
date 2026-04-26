@@ -131,7 +131,7 @@ class MsgApi extends ApiAction
         $page = !empty($this->_get['page']) ? $this->_get['page'] : 1;
         $pageSize = !empty($this->_get['page_size']) ? $this->_get['page_size'] : 10;
 
-        $msgProcStatus = !empty($this->_get['msg_proc_status']) ? $this->_get['msg_proc_status'] : -1;
+        $msgProcStatus = !empty($this->_get['msg_proc_status']) ? $this->_get['msg_proc_status'] : 0;
 
         if (empty($recvId)) {
             return $this->fail('需要指定接收人', -1000);
