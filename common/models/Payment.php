@@ -12,7 +12,7 @@ namespace common\models;
 class Payment extends \common\models\gii\Payment
 {
 
-    const PAYMENT_STATUS_WAIT           = 1;
+    const PAYMENT_STATUS_WAIT           = 0;
     const PAYMENT_STATUS_COMPLETED      = 10;
     const PAYMENT_STATUS_REFUSED        = 20; // 拒绝支付
 
