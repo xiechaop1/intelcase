@@ -1863,6 +1863,7 @@ class DataApi extends ApiAction
 
                 if (!empty($one['project_id'])) {
                     $one['project'] = Project::findOne($one['project_id']);
+                    unset($one['project']['qr_code']);
                 }
 
                 $one['guest_mobile']  = preg_replace('/(\d{3})\d{4}(\d{4})/', '$1****$2', $one['guest_mobile']);
@@ -1963,6 +1964,7 @@ class DataApi extends ApiAction
 
                 if (!empty($one['project_id'])) {
                     $one['project'] = Project::findOne($one['project_id']);
+                    unset($one['project']['qr_code']);
                 }
 
                 $one['report'] = $report;
