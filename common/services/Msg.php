@@ -18,7 +18,7 @@ use function Symfony\Component\String\u;
 class Msg extends Component
 {
 
-    public function add($recvId = 0, $content, $senderId = 0, $msgType = \common\models\Msg::MSG_TYPE_SYSTEM, $msgStatus = \common\models\Msg::MSG_STATUS_UNREAD) {
+    public function add($recvId = 0, $content, $senderId = 0, $msgType = \common\models\Msg::MSG_TYPE_SYSTEM, $msgProcStatus = \common\models\Msg::MSG_PROC_STATUS_WAIT, $msgStatus = \common\models\Msg::MSG_STATUS_UNREAD) {
 
 
         if (is_array($content)) {
@@ -31,6 +31,7 @@ class Msg extends Component
         $model->sender_id = $senderId;
         $model->msg_type = $msgType;
         $model->msg_status = $msgStatus;
+        $model->proc_status = $msgProcStatus;
         $model->proc_status = \common\models\Msg::MSG_PROC_STATUS_WAIT;
 
         try {

@@ -303,7 +303,7 @@ class VisitApi extends ApiAction
                     'project_id' => $this->_projectId,
                 ];
 
-                Yii::$app->msg->add($recvStaffId, $content, Msg::MSG_SENDER_SYSTEM);
+                Yii::$app->msg->add($recvStaffId, $content, Msg::MSG_SENDER_SYSTEM, Msg::MSG_PROC_STATUS_PROCESSED);
 
             }
 
