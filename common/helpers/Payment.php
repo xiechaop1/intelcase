@@ -45,6 +45,7 @@ class Payment
         } else {
             $payStatus = Subscribed::SUB_PAY_WAIT;
         }
+        Yii::info("checkTotalAmount: payTotal={$payTotal}, subTotalPrice={$subTotalPrice}, payStatus={$payStatus}", 'payment');
 
         return $payStatus;
 
