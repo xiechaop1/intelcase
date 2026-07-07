@@ -840,7 +840,7 @@ class VisitApi extends ApiAction
                     $recvId = $nextStaffId;
                     $this->_report->save();
                 } else {
-                    $recvId = $this->_report->advisor_staff_id;
+                    $recvId = $this->_report->consultant_staff_id;
                 }
 //                $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
 
