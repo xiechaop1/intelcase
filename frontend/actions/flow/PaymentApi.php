@@ -285,34 +285,67 @@ class PaymentApi extends ApiAction
                         $payStatus = \common\helpers\Payment::checkTotalAmount($payments, $subTotalPrice);
 
                         if (!empty($sub->sub_type) && $sub->sub_type == Subscribed::SUB_TYPE_RENT) {
-                            $content = [
-                                'content' => $guestInfo . $guestInfo2 . ' 完成支付',
-                                'project_id' => $this->_projectId,
-                                'title' => '完成支付',
-                                'pay_status' => $payStatus,
-                                'btn' => [
-                                    [
-                                        'label' => '平移',
-                                        'type' => 'movetime_page',
-                                        'sub_id' => $model->sub_id,
-                                        'project_id' => $this->_projectId,
-                                        'report_id' => $this->_reportId,
-                                        'payment_id' => $model->id,
+                            if ($payStatus == Subscribed::SUB_PAY_FULLY) {
+
+                                $content = [
+                                    'content' => $guestInfo . $guestInfo2 . ' 完成支付',
+                                    'project_id' => $this->_projectId,
+                                    'title' => '完成支付',
+                                    'pay_status' => $payStatus,
+                                    'btn' => [
+                                        [
+                                            'label' => '平移',
+                                            'type' => 'movetime_page',
+                                            'sub_id' => $model->sub_id,
+                                            'project_id' => $this->_projectId,
+                                            'report_id' => $this->_reportId,
+                                            'payment_id' => $model->id,
+                                        ],
                                     ],
-                                ],
-                            ];
-                            $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                            if (!empty($guestAppeal)) {
-                                if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                                    || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                                    $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
-                                } else {
-                                    $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                ];
+                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                if (!empty($guestAppeal)) {
+                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                    } else {
+                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                    }
+                                }
+                                if (!empty($recvId)) {
+                                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
+                                }
+                            } else {
+                                $content = [
+                                    'content' => $guestInfo . $guestInfo2 . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
+                                    'project_id' => $this->_projectId,
+                                    'pay_status' => $payStatus,
+                                    'title' => '完成部分支付',
+                                    'btn' => [
+                                        [
+                                            'label' => '再次支付',
+                                            'type' => $jumpType,
+                                            'project_id' => $this->_projectId,
+                                            'report_id' => $this->_reportId,
+                                            'sub_id' => $model->sub_id,
+                                            'payment_id' => $model->id,
+                                        ],
+                                    ],
+                                ];
+                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                if (!empty($guestAppeal)) {
+                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                    } else {
+                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                    }
+                                }
+                                if (!empty($recvId)) {
+                                    Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                                 }
                             }
-                            if (!empty($recvId)) {
-                                Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
-                            }
+
                         } else {
                             if ($payStatus == Subscribed::SUB_PAY_FULLY) {
 
