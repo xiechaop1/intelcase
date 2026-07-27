@@ -341,6 +341,14 @@ class PaymentApi extends ApiAction
                                             'sub_id' => $model->sub_id,
                                             'payment_id' => $model->id,
                                         ],
+                                        [
+                                            'label' => '平移',
+                                            'type' => 'movetime_page',
+                                            'sub_id' => $model->sub_id,
+                                            'project_id' => $this->_projectId,
+                                            'report_id' => $this->_reportId,
+                                            'payment_id' => $model->id,
+                                        ],
                                     ],
                                 ];
                                 // $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
