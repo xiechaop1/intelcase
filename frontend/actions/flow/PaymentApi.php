@@ -316,6 +316,17 @@ class PaymentApi extends ApiAction
                                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                                 }
                             } else {
+                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                if (!empty($guestAppeal)) {
+                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                        $jumpType = 'sub_buy_page';
+                                    } else {
+                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                        $jumpType = 'sub_rent_page';
+                                    }
+                                }
                                 $content = [
                                     'content' => $guestInfo . $guestInfo2 . ' 完成部分支付，下次客户到来，请通过此链接继续进入进行支付',
                                     'project_id' => $this->_projectId,
@@ -332,15 +343,15 @@ class PaymentApi extends ApiAction
                                         ],
                                     ],
                                 ];
-                                $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
-                                if (!empty($guestAppeal)) {
-                                    if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
-                                        || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
-                                        $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
-                                    } else {
-                                        $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
-                                    }
-                                }
+                                // $guestAppeal = !empty($this->_report->guest_appeal) ? $this->_report->guest_appeal : '';
+                                // if (!empty($guestAppeal)) {
+                                //     if ($guestAppeal == Visit::VISIT_GUEST_APPEAL_INVESTMENT
+                                //         || $guestAppeal == Visit::VISIT_GUEST_APPEAL_SELF_USE) {
+                                //         $recvId = !empty($this->_report->advisor_staff_id) ? $this->_report->advisor_staff_id : 0;
+                                //     } else {
+                                //         $recvId = !empty($this->_report->consultant_staff_id) ? $this->_report->consultant_staff_id : 0;
+                                //     }
+                                // }
                                 if (!empty($recvId)) {
                                     Yii::$app->msg->add($recvId, $content, Msg::MSG_SENDER_SYSTEM);
                                 }
